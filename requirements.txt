@@ -1,2 +1,3 @@
+git+git://github.com/biolink/kgx
 git+git://github.com/OntoGene/OGER
 click
