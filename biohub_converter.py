@@ -37,7 +37,7 @@ def parse(input_filename, output_filename) -> None:
                 counter += 1
                 continue
 
-            elements = line.split('\t')
+            elements = [x.rstrip() for x in line.split('\t')]
             if any(x in elements[header_dict['category']] for x in EXCLUDE):
                 # 'category' field is one of the ones in EXCLUDE list
                 logging.info(f"Skipping line as part of excludes: {line.rstrip()}")
@@ -50,8 +50,10 @@ def parse(input_filename, output_filename) -> None:
 
             parsed_record = list()
             parsed_record.append('CUI-less')
-            # TODO: input nodes should have a source or a provided_by
-            parsed_record.append('N/A')
+            if 'provided_by' in header_dict:
+                parsed_record.append(elements[header_dict['provided_by']])
+            else:
+                parsed_record.append('N/A')
             parsed_record.append(elements[header_dict['id']])
             parsed_record.append(elements[header_dict['name']])
             parsed_record.append(elements[header_dict['name']])
@@ -62,7 +64,6 @@ def parse(input_filename, output_filename) -> None:
                     syn_record = [x for x in parsed_record]
                     syn_record[3] = s
                     write_line(syn_record, OUTSTREAM)
-
             write_line(parsed_record, OUTSTREAM)
 
 
