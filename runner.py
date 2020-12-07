@@ -20,29 +20,29 @@ def prepare_termlist(input, output):
 
 
 @cli.command('run-oger')
-@click.argument('content', type=click.Path(exists=True), required=True)
-@click.option('--termlist', '-t', type=click.Path(exists=True), required=True)
-@click.option('--output', '-o', type=str, required=True)
+@click.option('--content', '-c', type=click.Path(exists=True))
+@click.option('--termlist', '-t', type=click.Path(exists=True))
+@click.option('--output', '-o', type=str)
 @click.option('--output-format', '-f', type=click.Choice(EXPORTERS), default='bioc_json')
-def run_oger(content, termlist, output, output_format):
-    conf = Router(termlist_path=termlist)
-    pl = PipelineServer(conf)
-    doc = pl.load_one(content, 'txt')
-    pl.process(doc)
-    n = len([x for x in doc.iter_entities()])
-    print(f"Number of recognized entities: {n}")
-    with open(output, 'w', encoding='utf8') as f:
-        pl.write(doc, output_format, f)
-
-@cli.command('run-oger-with-settings')
-@click.option('--n_workers', '-w', default = 1)
-def run_oger_with_settings(n_workers):
-    config = configparser.ConfigParser()
-    config.read('settings.ini')
-    sections = config._sections
-    settings = sections['Main']
-    settings['n_workers'] = n_workers
-    run(**settings)
+@click.option('--settings', '-s', type=click.Path(exists=True))
+@click.option('--workers', '-w', default = 1)
+def run_oger(content, termlist, output, output_format, settings, workers):
+    if settings:
+        config = configparser.ConfigParser()
+        config.read('settings.ini')
+        sections = config._sections
+        settings = sections['Main']
+        settings['n_workers'] = workers
+        run(**settings)
+    else:
+        conf = Router(termlist_path=termlist)
+        pl = PipelineServer(conf)
+        doc = pl.load_one(content, 'txt')
+        pl.process(doc)
+        n = len([x for x in doc.iter_entities()])
+        print(f"Number of recognized entities: {n}")
+        with open(output, 'w', encoding='utf8') as f:
+            pl.write(doc, output_format, f)
     
 
 if __name__ == '__main__':
