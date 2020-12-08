@@ -32,3 +32,10 @@ python runner.py run-oger abstract.txt -t termlist.tsv -o out.json -f bioc_json
 > For more complex use cases, it is advised to run OGER
 > as recommended [here](https://github.com/OntoGene/OGER/wiki/run).
 
+## Running OGER using a 'settings.ini' file
+
+You can run OGER using a 'settings' file as follows,
+```
+python runner.py run-oger -s settings.ini
+```
+The [settings.ini](https://github.com/monarch-initiative/runner/blob/master/settings.ini) file provides all relevant arguments to OGER. More information on the parameter list could be found at the [OGER GitHub](https://github.com/OntoGene/OGER/wiki/run#parameter-index)
