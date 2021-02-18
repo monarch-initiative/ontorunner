@@ -20,7 +20,6 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    description=DESCRIPTION,
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     license=LICENSE,
