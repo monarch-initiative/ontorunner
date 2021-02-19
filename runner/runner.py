@@ -20,7 +20,7 @@ def json2tsv(input, output):
     """
     if input:
         if output == None:
-            output = 'data/output'
+            output = 'data/output/output'
 
         transform(inputs=[input], input_format='obojson', output=output, output_format='tsv')
     else:
