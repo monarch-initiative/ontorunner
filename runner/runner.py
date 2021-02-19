@@ -12,9 +12,9 @@ def cli():
     pass
 
 @cli.command('json2tsv')
+@click.option('--input', '-i', type=click.Path(exists=True))
+@click.option('--output', '-o', type=str)
 @click.pass_context
-@click.option('--input', '-i', type=click.Path(exists=True))#, required=True)
-@click.option('--output', '-o', type=str)#, required=True)
 def json2tsv(input, output):
     """
     Converts an JSON file into 'nodes' and 'edges' TSV.
