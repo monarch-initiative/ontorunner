@@ -35,7 +35,20 @@ def prepare_termlist(input, output):
     """
     parse(input, output)
 
-def run_oger(content, termlist, output, output_format, settings, workers):
+def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/output/', output_format='tsv', settings='settings.ini', workers=5):
+    '''
+    Run Oger 
+
+    Arguments:
+        content: Input file OR folder containing txt files
+        termlist: Path to the dictionary (TSV format)
+        output: Path to save the output file
+        output_format: tsv (default)
+        settings: (default:'settings.ini')
+                  If this is provided, all other arguments are provided in this file and are hence optional.
+                  Make changes to this file according to project needs.
+        workers: Number of parallel threads (default = 5)
+    '''
     if settings:
         config = configparser.ConfigParser()
         config.read('settings.ini')
