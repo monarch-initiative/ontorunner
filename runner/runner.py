@@ -7,16 +7,11 @@ import configparser
 from kgx.cli.cli_utils import transform
 import os
 
-@click.group()
-def cli():
-    pass
 
-@cli.command('json-2-tsv')
-@click.option('--input', '-i', type=click.Path(exists=True))
-@click.option('--output', '-o', type=str)
 def json2tsv(input, output):
     """
     Converts an JSON file into 'nodes' and 'edges' TSV.
+    
     """
     if input:
         if output == None:
@@ -33,25 +28,13 @@ def json2tsv(input, output):
 
                 if ext == '.json':
                     transform(inputs=[subdir+file], input_format='obojson', output=output_folder+fn, output_format='tsv')
-                
-
-@cli.command('prepare-termlist')
-@click.option('--input', '-i', type=click.Path(exists=True), required=True)
-@click.option('--output', '-o', type=str, required=True)
+    
 def prepare_termlist(input, output):
     """
     Generates a Bio Term Hub formatted term list for use with OGER.
     """
     parse(input, output)
 
-
-@cli.command('run-oger')
-@click.option('--content', '-c', type=click.Path(exists=True))
-@click.option('--termlist', '-t', type=click.Path(exists=True))
-@click.option('--output', '-o', type=str)
-@click.option('--output-format', '-f', type=click.Choice(EXPORTERS), default='bioc_json')
-@click.option('--settings', '-s', type=click.Path(exists=True))
-@click.option('--workers', '-w', default = 1)
 def run_oger(content, termlist, output, output_format, settings, workers):
     if settings:
         config = configparser.ConfigParser()
@@ -69,6 +52,36 @@ def run_oger(content, termlist, output, output_format, settings, workers):
         print(f"Number of recognized entities: {n}")
         with open(output, 'w', encoding='utf8') as f:
             pl.write(doc, output_format, f)
+
+@click.group()
+def cli():
+    pass
+
+@cli.command('json2tsv')
+@click.option('--input', '-i', type=click.Path(exists=True))
+@click.option('--output', '-o', type=str)
+def json2tsv_click(input, output):
+    json2tsv(input, output)
+
+@cli.command('prepare-termlist')
+@click.option('--input', '-i', type=click.Path(exists=True), required=True)
+@click.option('--output', '-o', type=str, required=True)
+def prepare_termlist_click(input, output):
+    """
+    Generates a Bio Term Hub formatted term list for use with OGER.
+    """
+    #parse(input, output)
+    prepare_termlist(input, output)
+
+@cli.command('run-oger')
+@click.option('--content', '-c', type=click.Path(exists=True))
+@click.option('--termlist', '-t', type=click.Path(exists=True))
+@click.option('--output', '-o', type=str)
+@click.option('--output-format', '-f', type=click.Choice(EXPORTERS), default='bioc_json')
+@click.option('--settings', '-s', type=click.Path(exists=True))
+@click.option('--workers', '-w', default = 1)
+def run_oger_click(content, termlist, output, output_format, settings, workers):
+    run_oger(content, termlist, output, output_format, settings, workers)
     
 
 if __name__ == '__main__':
