@@ -51,7 +51,7 @@ def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/
     '''
     if settings:
         config = configparser.ConfigParser()
-        config.read('settings.ini')
+        config.read(settings)
         sections = config._sections
         settings = sections['Main']
         settings['n_workers'] = workers
