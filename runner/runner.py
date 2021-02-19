@@ -35,7 +35,7 @@ def prepare_termlist(input, output):
     """
     parse(input, output)
 
-def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/output/', output_format='tsv', settings='settings.ini', workers=5):
+def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/output/', output_format='tsv', settings='settings.ini', workers=1):
     '''
     Run Oger 
 
