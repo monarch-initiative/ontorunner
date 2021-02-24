@@ -1,5 +1,5 @@
 import click
-from biohub_converter import parse
+from  runner.converters import biohub_converter as bc
 from oger.ctrl.router import Router, PipelineServer
 from oger.doc import EXPORTERS
 from oger.ctrl.run import run
@@ -33,7 +33,7 @@ def prepare_termlist(input, output):
     """
     Generates a Bio Term Hub formatted term list for use with OGER.
     """
-    parse(input, output)
+    bc.parse(input, output)
 
 def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/output/', output_format='tsv', settings='settings.ini', workers=1):
     '''
