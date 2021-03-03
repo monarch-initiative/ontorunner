@@ -8,7 +8,7 @@ from kgx.cli.cli_utils import transform
 import os
 
 
-def json2tsv(input, output):
+def json2tsv(input:str, output:str) -> None:
     """
     Converts an JSON file into 'nodes' and 'edges' TSV.
 
@@ -32,7 +32,7 @@ def json2tsv(input, output):
                 if ext == '.json':
                     transform(inputs=[subdir+file], input_format='obojson', output=output_folder+fn, output_format='tsv')
     
-def prepare_termlist(input, output):
+def prepare_termlist(input: str, output: str) -> None:
     """
     Generates a Bio Term Hub formatted term list for use with OGER.
 
@@ -42,7 +42,7 @@ def prepare_termlist(input, output):
     """
     bc.parse(input, output)
 
-def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/output/', output_format='tsv', settings='settings.ini', workers=1):
+def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/output/', output_format='tsv', settings='settings.ini', workers=1) -> None:
     """
     Run Oger 
 
