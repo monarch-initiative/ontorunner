@@ -162,20 +162,40 @@ NER tools in addition to OGER.</p>
 <div class="section" id="ontology-to-kgx-tsv">
 <h2>Ontology to KGX TSV<a class="headerlink" href="#ontology-to-kgx-tsv" title="Permalink to this headline">¶</a></h2>
 <p>To generate a TSV from your OBO JSON ontology,</p>
+<div class="section" id="cli">
+<h3>CLI<a class="headerlink" href="#cli" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kgx</span> <span class="n">transform</span> <span class="n">ontology</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">obojson</span> <span class="o">--</span><span class="n">output</span> <span class="n">output</span> <span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="n">tsv</span> 
 </pre></div>
 </div>
 </div>
+<div class="section" id="python">
+<h3>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">runner</span><span class="o">.</span><span class="n">json2tsv</span><span class="p">(</span><span class="s1">&#39;ontology.json&#39;</span><span class="p">,</span> <span class="s1">&#39;output.tsv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="section" id="preparing-term-list">
 <h2>Preparing term-list<a class="headerlink" href="#preparing-term-list" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>CLI<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The conversion can be done as follows,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">runner</span><span class="o">.</span><span class="n">py</span> <span class="n">prepare</span><span class="o">-</span><span class="n">termlist</span> <span class="o">-</span><span class="n">i</span> <span class="n">output_nodes</span><span class="o">.</span><span class="n">tsv</span> <span class="o">-</span><span class="n">o</span> <span class="n">termlist</span><span class="o">.</span><span class="n">tsv</span>
 </pre></div>
 </div>
 </div>
+<div class="section" id="id2">
+<h3>Python<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">runner</span><span class="o">.</span><span class="n">prepare_termlist</span><span class="p">(</span><span class="s1">&#39;output_nodes.tsv&#39;</span><span class="p">,</span> <span class="s1">&#39;termlist.tsv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="section" id="running-oger-on-a-document">
 <h2>Running OGER on a document<a class="headerlink" href="#running-oger-on-a-document" title="Permalink to this headline">¶</a></h2>
 <p>You can run OGER against a text document as follows,</p>
+<div class="section" id="id3">
+<h3>CLI<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">runner</span><span class="o">.</span><span class="n">py</span> <span class="n">run</span><span class="o">-</span><span class="n">oger</span> <span class="n">abstract</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">t</span> <span class="n">termlist</span><span class="o">.</span><span class="n">tsv</span> <span class="o">-</span><span class="n">o</span> <span class="n">out</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">f</span> <span class="n">bioc_json</span>
 </pre></div>
 </div>
@@ -185,13 +205,25 @@ For more complex use cases, it is advised to run OGER
 as recommended <a class="reference external" href="https://github.com/OntoGene/OGER/wiki/run">here</a>.</p>
 </div></blockquote>
 </div>
+</div>
 <div class="section" id="running-oger-using-a-settings-ini-file">
 <h2>Running OGER using a ‘settings.ini’ file<a class="headerlink" href="#running-oger-using-a-settings-ini-file" title="Permalink to this headline">¶</a></h2>
 <p>You can run OGER using a ‘settings’ file as follows,</p>
+<div class="section" id="id4">
+<h3>CLI<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">runner</span><span class="o">.</span><span class="n">py</span> <span class="n">run</span><span class="o">-</span><span class="n">oger</span> <span class="o">-</span><span class="n">s</span> <span class="n">settings</span><span class="o">.</span><span class="n">ini</span>
 </pre></div>
 </div>
-<p>The <a class="reference external" href="https://github.com/monarch-initiative/runner/blob/master/runner/settings.ini">settings.ini</a> file provides all relevant arguments to OGER. More information on the parameter list could be found at the <a class="reference external" href="https://github.com/OntoGene/OGER/wiki/run#parameter-index">OGER GitHub</a></p>
+</div>
+<div class="section" id="id5">
+<h3>Python<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">runner</span><span class="o">.</span><span class="n">run_oger</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">settingsFile</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>The <a class="reference external" href="https://github.com/monarch-initiative/runner/blob/master/runner/settings.ini">settings.ini</a> file provides all relevant arguments to OGER. More information on the parameter list could be found at the <a class="reference external" href="https://github.com/OntoGene/OGER/wiki/run#parameter-index">OGER GitHub</a></p>
+</div></blockquote>
+</div>
 </div>
 </div>
 
