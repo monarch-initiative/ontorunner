@@ -16,10 +16,9 @@ def parse(input_filename, output_filename) -> None:
     -   [4] name -> preferred form
     -   [5] category -> type
 
-    :param input_filename: (str) Input file path
-    :param output_filename: (str) Output file path
-    :return: None
-
+    :param input_filename: (str) Input file path.
+    :param output_filename: (str) Output file path.
+    :return: None.
     """
     counter = 0
     OUTSTREAM = open(output_filename, 'w')
@@ -65,11 +64,10 @@ def parse(input_filename, output_filename) -> None:
 
 def parse_header(elements) -> dict:
     """
-    Parse headers from nodes TSV
+    Parse headers from nodes TSV.
 
-    :param elements: (list) The header record
-    :return: (dict) A dictionary of node header names to index
-
+    :param elements: (list) The header record.
+    :return: (dict) A dictionary of node header names to index.
     """
     header_dict = {}
     for col in elements:
@@ -81,9 +79,8 @@ def write_line(elements, OUTSTREAM) -> None:
     """
     Write line to OUTSTREAM.
 
-    :param elements: list - The record to write
-    :param OUTSTREAM: File handle to the output file
-    :return: None
-
+    :param elements: list - The record to write.
+    :param OUTSTREAM: File handle to the output file.
+    :return: None.
     """
     OUTSTREAM.write('\t'.join(elements) + '\n')

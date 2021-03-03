@@ -15,7 +15,6 @@ def json2tsv(input, output):
     :param input: Input file (JSON file)
     :param ouput: Output file name desired.
     :return: None
-    
     """
     if input:
         if output == None:
@@ -44,7 +43,7 @@ def prepare_termlist(input, output):
     bc.parse(input, output)
 
 def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/output/', output_format='tsv', settings='settings.ini', workers=1):
-    '''
+    """
     Run Oger 
 
     :param content: Input file OR folder containing txt files
@@ -56,7 +55,7 @@ def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/
                   Make changes to this file according to project needs.
     :param workers: Number of parallel threads (default = 5)
     :return: None
-    '''
+    """
     if settings:
         config = configparser.ConfigParser()
         config.read(settings)
