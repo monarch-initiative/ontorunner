@@ -10,7 +10,7 @@ Welcome to runNER's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   static/index.md
+   static/intro.md
    
    modules
 
