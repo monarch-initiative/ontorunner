@@ -15,7 +15,6 @@ def json2tsv(input, output):
     :param input: Input file (JSON file)
     :param ouput: Output file name desired.
     :returns: None
-    
     """
     if input:
         if output == None:
