@@ -130,4 +130,4 @@ dmypy.json
 .vscode/settings.json
 data/
 runner/.DS_Store
-sphinx
+sphinx/_build
