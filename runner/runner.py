@@ -9,13 +9,12 @@ import os
 
 
 def json2tsv(input, output):
-    """
-    Converts an JSON file into 'nodes' and 'edges' TSV.
+    '''Converts an JSON file into 'nodes' and 'edges' TSV.
 
     :param input: Input file (JSON file)
     :param ouput: Output file name desired.
     :returns: None
-    """
+    '''
     if input:
         if output == None:
             output = 'data/output/output'
@@ -33,13 +32,13 @@ def json2tsv(input, output):
                     transform(inputs=[subdir+file], input_format='obojson', output=output_folder+fn, output_format='tsv')
     
 def prepare_termlist(input, output):
-    """
+    '''
     Generates a Bio Term Hub formatted term list for use with OGER.
 
     :param input: Input file 'ontology_nodes.tsv'
     :param ouput: TSV file of list of terms 'ontology_termlist.tsv'
     :returns: None
-    """
+    '''
     bc.parse(input, output)
 
 def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/output/', output_format='tsv', settings='settings.ini', workers=1):
@@ -87,9 +86,9 @@ def json2tsv_click(input, output):
 @click.option('--input', '-i', type=click.Path(exists=True), required=True)
 @click.option('--output', '-o', type=str, required=True)
 def prepare_termlist_click(input, output):
-    """
+    '''
     Generates a Bio Term Hub formatted term list for use with OGER.
-    """
+    '''
     #parse(input, output)
     prepare_termlist(input, output)
 
