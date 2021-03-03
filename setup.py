@@ -24,7 +24,16 @@ setup(
     long_description_content_type='text/markdown',
     license=LICENSE,
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
-    install_requires=[r for r in REQUIREMENTS if not r.startswith("#")],
+    #install_requires=[r for r in REQUIREMENTS if not r.startswith("#")],
     extras_require=EXTRAS,
-    include_package_data=True
+    include_package_data=True,
+    # add package dependencies
+    install_requires=[
+        'kgx',
+        'click',
+        'sphinx',
+        'sphinx_rtd_theme',
+        'recommonmark',
+        [r for r in REQUIREMENTS if not r.startswith("#")]
+    ],
 )

@@ -1,3 +1,1 @@
-kgx
 oger@git+https://github.com/OntoGene/OGER@master
-click
