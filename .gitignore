@@ -131,3 +131,4 @@ dmypy.json
 data/
 runner/.DS_Store
 sphinx/_build
+docs/.DS_Store
