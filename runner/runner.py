@@ -11,7 +11,7 @@ import os
 def json2tsv(input:str, output:str) -> None:
     """
     Converts an JSON file into 'nodes' and 'edges' TSV.
-
+    
     :param input: Input file (JSON file)
     :param ouput: Output file name desired.
     :return: None

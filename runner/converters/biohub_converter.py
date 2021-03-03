@@ -66,8 +66,10 @@ def parse_header(elements) -> dict:
     """
     Parse headers from nodes TSV.
 
-    :param elements: (list) The header record.
-    :return: (dict) A dictionary of node header names to index.
+    :param elements:The header record.
+    :type elements:List
+    :return:A dictionary of node header names to index.
+    :rtype:Dict
     """
     header_dict = {}
     for col in elements:
