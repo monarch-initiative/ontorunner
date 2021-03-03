@@ -92,12 +92,8 @@ def write_line(elements, OUTSTREAM) -> None:
     """
     Write line to OUTSTREAM.
 
-    Parameters
-    ----------
-    elements: list
-        The record to write
-    OUTSTREAM:
-        File handle to the output file
+    :param elements: list - The record to write
+    :param OUTSTREAM: File handle to the output file
 
     """
     OUTSTREAM.write('\t'.join(elements) + '\n')

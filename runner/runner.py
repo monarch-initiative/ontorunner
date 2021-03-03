@@ -11,6 +11,10 @@ import os
 def json2tsv(input, output):
     """
     Converts an JSON file into 'nodes' and 'edges' TSV.
+
+    :param input: Input file (JSON file)
+    :param ouput: Output file name desired.
+    :returns: None
     
     """
     if input:
@@ -32,6 +36,10 @@ def json2tsv(input, output):
 def prepare_termlist(input, output):
     """
     Generates a Bio Term Hub formatted term list for use with OGER.
+
+    :param input: Input file 'ontology_nodes.tsv'
+    :param ouput: TSV file of list of terms 'ontology_termlist.tsv'
+    :returns: None
     """
     bc.parse(input, output)
 
@@ -39,15 +47,15 @@ def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/
     '''
     Run Oger 
 
-    Arguments:
-        content: Input file OR folder containing txt files
-        termlist: Path to the dictionary (TSV format)
-        output: Path to save the output file
-        output_format: tsv (default)
-        settings: (default:'settings.ini')
+    :param content: Input file OR folder containing txt files
+    :param termlist: Path to the dictionary (TSV format)
+    :param output: Path to save the output file
+    :param output_format: tsv (default)
+    :param settings: (default:'settings.ini')
                   If this is provided, all other arguments are provided in this file and are hence optional.
                   Make changes to this file according to project needs.
-        workers: Number of parallel threads (default = 5)
+    :param workers: Number of parallel threads (default = 5)
+    :returns: None
     '''
     if settings:
         config = configparser.ConfigParser()
