@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 .vscode/settings.json
 data/
-runner/.DS_Store
 sphinx/_build
-docs/.DS_Store
+**/.DS_Store
+
