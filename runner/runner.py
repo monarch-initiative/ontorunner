@@ -8,16 +8,13 @@ from kgx.cli.cli_utils import transform
 import os
 
 
-def json2tsv(input:str, output:str) -> None:
+def json2tsv(input, output) -> None:
     """
     Converts an JSON file into 'nodes' and 'edges' TSV.
 
-    Args:
-        input (str): Input file (JSON file).
-        ouput (str): Output file name desired.
-    
-    Returns:
-        None
+    :param input: Input file (JSON file).
+    :param ouput: Output file name desired.
+    :return: None.
     """
     if input:
         if output == None:
@@ -35,7 +32,7 @@ def json2tsv(input:str, output:str) -> None:
                 if ext == '.json':
                     transform(inputs=[subdir+file], input_format='obojson', output=output_folder+fn, output_format='tsv')
     
-def prepare_termlist(input: str, output: str) -> None:
+def prepare_termlist(input, output) -> None:
     """
     Generates a Bio Term Hub formatted term list for use with OGER.
 
