@@ -206,17 +206,18 @@
 <dt id="runner.runner.run_oger">
 <code class="sig-prename descclassname"><span class="pre">runner.runner.</span></code><code class="sig-name descname"><span class="pre">run_oger</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data/input'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">termlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data/terms/DICT.tsv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data/output/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tsv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'settings.ini'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runner.runner.run_oger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run Oger</p>
-<dl>
-<dt>Arguments:</dt><dd><p>content: Input file OR folder containing txt files
-termlist: Path to the dictionary (TSV format)
-output: Path to save the output file
-output_format: tsv (default)
-settings: (default:’settings.ini’)</p>
-<blockquote>
-<div><p>If this is provided, all other arguments are provided in this file and are hence optional.
-Make changes to this file according to project needs.</p>
-</div></blockquote>
-<p>workers: Number of parallel threads (default = 5)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>content</strong> – Input file OR folder containing txt files</p></li>
+<li><p><strong>termlist</strong> – Path to the dictionary (TSV format)</p></li>
+<li><p><strong>output</strong> – Path to save the output file</p></li>
+<li><p><strong>output_format</strong> – tsv (default)</p></li>
+<li><p><strong>settings</strong> – (default:’settings.ini’)
+If this is provided, all other arguments are provided in this file and are hence optional.
+Make changes to this file according to project needs.</p></li>
+<li><p><strong>workers</strong> – Number of parallel threads (default = 5)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

@@ -191,10 +191,12 @@ for compatibility with OGER.</p>
 [3] name -&gt; term (this is the field that is tokenized)
 [4] name -&gt; preferred form
 [5] category -&gt; type</p>
-<dl class="simple">
-<dt>input_filename: str</dt><dd><p>Input file path</p>
-</dd>
-<dt>output_filename: str</dt><dd><p>Output file path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_filename</strong> (<em>str</em>) – Input file path</p></li>
+<li><p><strong>output_filename</strong> (<em>str</em>) – Output file path</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -203,12 +205,15 @@ for compatibility with OGER.</p>
 <dt id="runner.converters.biohub_converter.parse_header">
 <code class="sig-prename descclassname"><span class="pre">runner.converters.biohub_converter.</span></code><code class="sig-name descname"><span class="pre">parse_header</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elements</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#runner.converters.biohub_converter.parse_header" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse headers from nodes TSV</p>
-<dl class="simple">
-<dt>elements: list</dt><dd><p>The header record</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>elements</strong> (<em>list</em>) – The header record</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>dict:</dt><dd><p>A dictionary of node header names to index</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of node header names to index</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -217,10 +222,12 @@ for compatibility with OGER.</p>
 <dt id="runner.converters.biohub_converter.write_line">
 <code class="sig-prename descclassname"><span class="pre">runner.converters.biohub_converter.</span></code><code class="sig-name descname"><span class="pre">write_line</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elements</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">OUTSTREAM</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#runner.converters.biohub_converter.write_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write line to OUTSTREAM.</p>
-<dl class="simple">
-<dt>elements: list</dt><dd><p>The record to write</p>
-</dd>
-<dt>OUTSTREAM:</dt><dd><p>File handle to the output file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elements</strong> (<em>list</em>) – The record to write</p></li>
+<li><p><strong>OUTSTREAM</strong> – File handle to the output file</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
