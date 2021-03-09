@@ -1,5 +1,5 @@
 .. runNER documentation master file, created by
-   sphinx-quickstart on Wed Mar  3 08:55:55 2021.
+   sphinx-quickstart on Tue Mar  9 10:49:33 2021.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -11,8 +11,9 @@ Welcome to runNER's documentation!
    :caption: Contents:
 
    static/intro.md
-   
    modules
+
+
 
 Indices and tables
 ==================
