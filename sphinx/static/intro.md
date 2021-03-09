@@ -10,7 +10,7 @@ NER tools in addition to OGER.
 ## Setup
 To setup runner,
 ```
-python setup.py
+python setup.py install
 ```
 
 ## Ontology to KGX TSV
