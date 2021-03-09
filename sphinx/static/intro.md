@@ -7,6 +7,12 @@ that is compatible with [OGER](https://github.com/OntoGene/OGER).
 The long term goal is to build term list inputs for
 NER tools in addition to OGER.
 
+## Setup
+To setup runner,
+```
+python setup.py
+```
+
 ## Ontology to KGX TSV
 
 To generate a TSV from your OBO JSON ontology,
