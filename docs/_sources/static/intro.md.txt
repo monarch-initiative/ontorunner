@@ -25,7 +25,7 @@ runner.json2tsv('ontology.json', 'output.tsv')
 ### CLI
 The conversion can be done as follows,
 ```
-python runner.py prepare-termlist -i output_nodes.tsv -o termlist.tsv
+python -m runner.runner prepare-termlist -i output_nodes.tsv -o termlist.tsv
 ```
 
 ### Python
@@ -39,7 +39,7 @@ You can run OGER against a text document as follows,
 
 ### CLI
 ```
-python runner.py run-oger abstract.txt -t termlist.tsv -o out.json -f bioc_json
+python -m runner.runner run-oger abstract.txt -t termlist.tsv -o out.json -f bioc_json
 ```
 
 > **Note:** This command is just to demonstrate how to OGER.
@@ -52,7 +52,7 @@ You can run OGER using a 'settings' file as follows,
 
 ### CLI
 ```
-python runner.py run-oger -s settings.ini
+python -m runner.runner run-oger -s settings.ini
 ```
 
 ### Python

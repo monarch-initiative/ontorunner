@@ -184,23 +184,18 @@
 <dt id="runner.converters.biohub_converter.parse">
 <code class="sig-prename descclassname">runner.converters.biohub_converter.</code><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_filename</span></em>, <em class="sig-param"><span class="n">output_filename</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#runner.converters.biohub_converter.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the typical KGX compatible nodes TSV into Bio Term Hub format
-for compatibility with OGER.
-Mapping of columns from KGX format to Bio Term Hub format,
--   [0] ‘CUI-less’ -&gt; UMLS CUI
--   [1] ‘N/A’ -&gt; resource from which it comes
--   [2] CURIE -&gt; native ID
--   [3] name -&gt; term (this is the field that is tokenized)
--   [4] name -&gt; preferred form
--   [5] category -&gt; type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_filename</strong> – (str) Input file path.</p></li>
-<li><p><strong>output_filename</strong> – (str) Output file path.</p></li>
-</ul>
+for compatibility with OGER.</p>
+<p>Mapping of columns from KGX format to Bio Term Hub format,
+[0] ‘CUI-less’ -&gt; UMLS CUI
+[1] ‘N/A’ -&gt; resource from which it comes
+[2] CURIE -&gt; native ID
+[3] name -&gt; term (this is the field that is tokenized)
+[4] name -&gt; preferred form
+[5] category -&gt; type</p>
+<dl class="simple">
+<dt>input_filename: str</dt><dd><p>Input file path</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>None.</p>
+<dt>output_filename: str</dt><dd><p>Output file path</p>
 </dd>
 </dl>
 </dd></dl>
@@ -208,26 +203,25 @@ Mapping of columns from KGX format to Bio Term Hub format,
 <dl class="py function">
 <dt id="runner.converters.biohub_converter.parse_header">
 <code class="sig-prename descclassname">runner.converters.biohub_converter.</code><code class="sig-name descname">parse_header</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">elements</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#runner.converters.biohub_converter.parse_header" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse headers from nodes TSV.</p>
-<p>:param elements:The header record.
-:type elements:List
-:return:A dictionary of node header names to index.
-:rtype:Dict</p>
+<dd><p>Parse headers from nodes TSV</p>
+<dl class="simple">
+<dt>elements: list</dt><dd><p>The header record</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>dict:</dt><dd><p>A dictionary of node header names to index</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="runner.converters.biohub_converter.write_line">
 <code class="sig-prename descclassname">runner.converters.biohub_converter.</code><code class="sig-name descname">write_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">elements</span></em>, <em class="sig-param"><span class="n">OUTSTREAM</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#runner.converters.biohub_converter.write_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write line to OUTSTREAM.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>elements</strong> – list - The record to write.</p></li>
-<li><p><strong>OUTSTREAM</strong> – File handle to the output file.</p></li>
-</ul>
+<dl class="simple">
+<dt>elements: list</dt><dd><p>The record to write</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>None.</p>
+<dt>OUTSTREAM:</dt><dd><p>File handle to the output file</p>
 </dd>
 </dl>
 </dd></dl>
