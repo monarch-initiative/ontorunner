@@ -45,7 +45,7 @@ You can run OGER against a text document as follows,
 
 ### CLI
 ```
-python -m runner.runner run-oger abstract.txt -t termlist.tsv -o out.json -f bioc_json
+python -m runner.runner run-oger -c abstract.txt -t termlist.tsv -o out.json -f bioc_json
 ```
 
 > **Note:** This command is just to demonstrate how to OGER.
