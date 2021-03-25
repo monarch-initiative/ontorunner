@@ -1,1 +1,1 @@
-oger@git+https://github.com/OntoGene/OGER@master
+oger@git+https://github.com/OntoGene/OGER.git
