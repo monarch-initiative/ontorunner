@@ -64,8 +64,6 @@ def sentencify(input_df, output_df, output_fn):
                             
                             single_tok = [x for x in relevant_tok if term_of_interest.strip() in x]
 
-                            import pdb; pdb.set_trace()
-
                             if count > 30 and 1 < len(single_tok):
                                 single_tok = [single_tok[0]]
                                 count = 0
