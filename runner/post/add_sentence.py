@@ -23,7 +23,7 @@ def sentencify(input_df, output_df, output_fn):
             if text == text:
                 text_tok = nltk.sent_tokenize(text)
                 sub_df = output_df[output_df['DOCUMENT ID'] == idx]
-
+                
                 if len(text_tok) == 1:
                     sub_df['SENTENCE'] = text
                 else:
@@ -63,6 +63,8 @@ def sentencify(input_df, output_df, output_fn):
                             
                             
                             single_tok = [x for x in relevant_tok if term_of_interest.strip() in x]
+
+                            import pdb; pdb.set_trace()
 
                             if count > 30 and 1 < len(single_tok):
                                 single_tok = [single_tok[0]]
@@ -110,42 +112,19 @@ def parse(input_directory, output_directory) -> None:
 
     if len(input_list_txt) > 0:
         # Read each text file such that Id = filename and text = full text
-        import pdb; pdb.set_trace()
-        pass
+        input_df = pd.DataFrame(columns=['id', 'text'])
+        for f in input_list_txt:
+            id = f.split('/')[-1].split('.txt')[0]
+            with open(f, 'r') as fn:
+                text = fn.readlines()
+                text = ''.join(text).replace('\n', ' ')
+            input_df = input_df.append({
+                'id': id,
+                'text': text
+            }, ignore_index=True)
 
-    '''for row in input_df.iterrows():
-        idx = row[1].Id
-        text = row[1].Text
+            sentencify(input_df, output_df, final_output_file)
 
-
-        text_tok = out_tok = nltk.sent_tokenize(text)
-
-        sub_df = output_df[output_df['DOCUMENT ID'] == idx]
-
-        if len(text_tok) == 1:
-            sub_df['SENTENCE'] = text
-        else:
-            sent_row = []
-            relevant_tok = []
-            for i, row2 in sub_df.iterrows():
-                term_of_interest = row2['MATCHED TERM']
-                start_pos = int(row2['START POSITION'])
-                end_pos = int(row2['END POSITION'])
-                while len(relevant_tok) != 1:
-                    relevant_tok = [x for x in text_tok if term_of_interest in x]
-                    text_tok = relevant_tok
-                    if start_pos != 0:
-                        start_pos -= 1
-                    if end_pos != len(text):
-                        end_pos += 1
-                    term_of_interest = text[start_pos:end_pos]
-                    
-
-                sub_df.at[i,'SENTENCE'] = relevant_tok[0]
-                import pdb; pdb.set_trace()
         
-        if not sub_df.empty:
-            sub_df.to_csv(final_output_file, mode='a', sep='\t', header=None, index=None )'''
-
 
     
