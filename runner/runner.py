@@ -1,5 +1,6 @@
 import click
 from  runner.converters import biohub_converter as bc
+from runner.post import add_sentence
 from oger.ctrl.router import Router, PipelineServer
 from oger.doc import EXPORTERS
 from oger.ctrl.run import run
@@ -61,6 +62,8 @@ def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/
         sections = config._sections
         settings = sections['Main']
         settings['n_workers'] = workers
+        output = settings['output-directory']
+        input = settings['input-directory']
         run(**settings)
     else:
         conf = Router(termlist_path=termlist)
@@ -71,6 +74,8 @@ def run_oger(content='data/input', termlist='data/terms/DICT.tsv', output='data/
         print(f"Number of recognized entities: {n}")
         with open(output, 'w', encoding='utf8') as f:
             pl.write(doc, output_format, f)
+
+    add_sentence.parse(input, output)
 
 @click.group()
 def cli():
