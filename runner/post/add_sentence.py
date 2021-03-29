@@ -9,6 +9,12 @@ from pandas.core.arrays.categorical import contains
 def find_extensions(dr, ext):
     return glob(os.path.join(dr, "*.{}".format(ext)))
 
+def filterAlikeTermSynonyms(df):
+    condition_1 = df['MATCHED TERM'].str.lower() == df['PREFERRED FORM'].str.lower()
+    condition_2 = df['ENTITY ID'].str.contains('_SYNONYM')
+    fullConditionStatement = ~(condition_1 & condition_2)
+    return df[fullConditionStatement]
+
 def sentencify(input_df, output_df, output_fn):
         '''
         Add relevant sentences to the tokenized term in every row of a pandas DataFrame
@@ -23,6 +29,12 @@ def sentencify(input_df, output_df, output_fn):
             if text == text:
                 text_tok = nltk.sent_tokenize(text)
                 sub_df = output_df[output_df['DOCUMENT ID'] == idx]
+                # In certain instances, in spite of the 'matched' and 'preferred' 
+                # terms being the same, the term is registered as a synonym by KGX and
+                # hence the biohub_converter codes this with a '_SYNONYM' tag.
+                # In order to counter this, we need to filter these extra rows out.
+                if not sub_df.empty and any(sub_df['ENTITY ID'].str.endswith('_SYNONYM')):
+                    sub_df = filterAlikeTermSynonyms(sub_df)
                 
                 if len(text_tok) == 1:
                     sub_df['SENTENCE'] = text
