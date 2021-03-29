@@ -58,6 +58,8 @@ def parse(input_filename, output_filename) -> None:
                 for s in synonyms.split('|'):
                     syn_record = [x for x in parsed_record]
                     syn_record[3] = s
+                    syn_record[2] = syn_record[2]+'_SYNONYM'
+                    import pdb; pdb.set_trace()
                     write_line(syn_record, OUTSTREAM)
             write_line(parsed_record, OUTSTREAM)
 
