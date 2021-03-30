@@ -9,11 +9,13 @@ from pandas.core.arrays.categorical import contains
 def find_extensions(dr, ext):
     return glob(os.path.join(dr, "*.{}".format(ext)))
 
-def filterAlikeTermSynonyms(df):
+# DEPRECATED
+'''def filterAlikeTermSynonyms(df):
     condition_1 = df['MATCHED TERM'].str.lower() == df['PREFERRED FORM'].str.lower()
     condition_2 = df['ENTITY ID'].str.contains('_SYNONYM')
     fullConditionStatement = ~(condition_1 & condition_2)
-    return df[fullConditionStatement]
+    import pdb; pdb.set_trace()
+    return df[fullConditionStatement]'''
 
 def sentencify(input_df, output_df, output_fn):
         '''
@@ -33,8 +35,8 @@ def sentencify(input_df, output_df, output_fn):
                 # terms being the same, the term is registered as a synonym by KGX and
                 # hence the biohub_converter codes this with a '_SYNONYM' tag.
                 # In order to counter this, we need to filter these extra rows out.
-                if not sub_df.empty and any(sub_df['ENTITY ID'].str.endswith('_SYNONYM')):
-                    sub_df = filterAlikeTermSynonyms(sub_df)
+                #if not sub_df.empty and any(sub_df['ENTITY ID'].str.endswith('_SYNONYM')):
+                    #sub_df = filterAlikeTermSynonyms(sub_df)
                 
                 if len(text_tok) == 1:
                     sub_df['SENTENCE'] = text
