@@ -58,9 +58,9 @@ def parse(input_filename, output_filename) -> None:
                 for s in synonyms.split('|'):
                     syn_record = [x for x in parsed_record]
                     syn_record[3] = s
-                    if syn_record[3] != syn_record[4]:
+                    if syn_record[3].lower() != syn_record[4].lower():
                         syn_record[2] = syn_record[2]+'_SYNONYM'
-                    write_line(syn_record, OUTSTREAM)
+                        write_line(syn_record, OUTSTREAM)
             write_line(parsed_record, OUTSTREAM)
 
 
