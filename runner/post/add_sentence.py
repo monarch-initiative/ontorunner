@@ -13,7 +13,6 @@ def filterAlikeTermSynonyms(df):
     condition_1 = df['MATCHED TERM'].str.lower() == df['PREFERRED FORM'].str.lower()
     condition_2 = df['ENTITY ID'].str.contains('_SYNONYM')
     fullConditionStatement = ~(condition_1 & condition_2)
-    import pdb; pdb.set_trace()
     return df[fullConditionStatement]
 
 def sentencify(input_df, output_df, output_fn):
