@@ -117,13 +117,14 @@ def parse(input_directory, output_directory) -> None:
     pd.DataFrame(output_df.columns).T.to_csv(final_output_file, sep='\t', index=None, header=None)
     
     if len(input_list_tsv) > 0:
-        input_df = pd.read_csv(input_list_tsv[0], sep='\t', low_memory=False, index_col=None)
-        sentencify(input_df, output_df, final_output_file)
+        for f in input_list_tsv:
+            input_df = pd.read_csv(f, sep='\t', low_memory=False, index_col=None)
+            sentencify(input_df, output_df, final_output_file)
 
     if len(input_list_txt) > 0:
         # Read each text file such that Id = filename and text = full text
-        input_df = pd.DataFrame(columns=['id', 'text'])
         for f in input_list_txt:
+            input_df = pd.DataFrame(columns=['id', 'text'])
             id = f.split('/')[-1].split('.txt')[0]
             with open(f, 'r') as fn:
                 text = fn.readlines()
