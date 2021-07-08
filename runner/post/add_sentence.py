@@ -43,7 +43,7 @@ def sentencify(input_df, output_df, output_fn):
                     start_reached = False
                     end_reached = False
                     for i, row2 in sub_df.iterrows():
-                        term_of_interest = row2['MATCHED TERM']
+                        term_of_interest = str(row2['MATCHED TERM'])
                         start_pos = int(row2['START POSITION'])
                         if start_pos == 0: start_reached = True
                         end_pos = int(row2['END POSITION'])
