@@ -105,4 +105,5 @@ def run_oger_click(content, termlist, output, output_format, settings, workers):
     
 
 if __name__ == '__main__':
+    __spec__ = None
     cli()
