@@ -14,8 +14,8 @@ def find_extensions(dr, ext):
 
 
 def filterAlikeTermSynonyms(df):
-    condition_1 = df["MATCHED TERM"].str.lower() == df["PREFERRED FORM"].str.lower()
-    condition_2 = df["ENTITY ID"].str.contains("_SYNONYM")
+    condition_1 = df["matched_term"].str.lower() == df["preferred_form"].str.lower()
+    condition_2 = df["entity_id"].str.contains("_SYNONYM")
     fullConditionStatement = ~(condition_1 & condition_2)
     return df[fullConditionStatement]
 
@@ -39,30 +39,30 @@ def sentencify(input_df, output_df, output_fn):
                 .replace("\r", "",)
             )
             text_tok = nltk.sent_tokenize(text)
-            sub_df = output_df[output_df["DOCUMENT ID"] == idx]
+            sub_df = output_df[output_df["document_id"] == idx]
             # In certain instances, in spite of the 'matched' and 'preferred'
             # terms being the same, the term is registered as a synonym by KGX and
             # hence the biohub_converter codes this with a '_SYNONYM' tag.
             # In order to counter this, we need to filter these extra rows out.
-            if not sub_df.empty and any(sub_df["ENTITY ID"].str.endswith("_SYNONYM")):
+            if not sub_df.empty and any(sub_df["entity_id"].str.endswith("_SYNONYM")):
                 sub_df = filterAlikeTermSynonyms(sub_df)
 
             if len(text_tok) == 1:
-                sub_df["SENTENCE"] = text
+                sub_df["sentence"] = text
             else:
                 relevant_tok = []
                 start_reached = False
                 end_reached = False
                 for i, row2 in sub_df.iterrows():
-                    term_of_interest = str(row2["MATCHED TERM"])
-                    start_pos = int(row2["START POSITION"])
+                    term_of_interest = str(row2["matched_term"])
+                    start_pos = int(row2["start_position"])
                     if start_pos == 0:
                         start_reached = True
-                    end_pos = int(row2["END POSITION"])
+                    end_pos = int(row2["end_position"])
                     if end_pos == len(text):
                         end_reached = True
                     if term_of_interest == "nan":
-                        term_of_interest = str(row2["PREFERRED FORM"]).lower()
+                        term_of_interest = str(row2["preferred_form"]).lower()
 
                     relevant_tok = [x for x in text_tok if term_of_interest in x]
                     single_tok = relevant_tok
@@ -104,7 +104,7 @@ def sentencify(input_df, output_df, output_fn):
                         # the unique sentence forever.
                         # It's a hack but for now it'll do until severe consequences detected.
 
-                    sub_df.loc[i, "SENTENCE"] = single_tok[0]
+                    sub_df.loc[i, "sentence"] = single_tok[0]
 
             if not sub_df.empty:
                 sub_df.to_csv(output_fn, mode="a", sep="\t", header=None, index=None)
@@ -129,7 +129,8 @@ def parse(input_directory, output_directory) -> None:
         if "runNER" not in x
     ][0]
     output_df = pd.read_csv(output_file, sep="\t", low_memory=False)
-    output_df["SENTENCE"] = ""
+    output_df["sentence"] = ""
+    output_df.columns = output_df.columns.str.replace(" ", "_").str.lower()
 
     final_output_file = os.path.join(output_directory, "runNER_Output.tsv")
 
