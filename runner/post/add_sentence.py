@@ -2,6 +2,7 @@ from sys import path
 import pandas as pd
 
 pd.options.mode.chained_assignment = None  # default='warn'
+from .util import *
 import os
 from glob import glob
 import nltk
@@ -11,13 +12,6 @@ from pandas.core.arrays.categorical import contains
 
 def find_extensions(dr, ext):
     return glob(os.path.join(dr, "*.{}".format(ext)))
-
-
-def filterAlikeTermSynonyms(df):
-    condition_1 = df["matched_term"].str.lower() == df["preferred_form"].str.lower()
-    condition_2 = df["entity_id"].str.contains("_SYNONYM")
-    fullConditionStatement = ~(condition_1 & condition_2)
-    return df[fullConditionStatement]
 
 
 def sentencify(input_df, output_df, output_fn):
@@ -45,7 +39,7 @@ def sentencify(input_df, output_df, output_fn):
             # hence the biohub_converter codes this with a '_SYNONYM' tag.
             # In order to counter this, we need to filter these extra rows out.
             if not sub_df.empty and any(sub_df["entity_id"].str.endswith("_SYNONYM")):
-                sub_df = filterAlikeTermSynonyms(sub_df)
+                sub_df = filter_synonyms(sub_df)
 
             if len(text_tok) == 1:
                 sub_df["sentence"] = text
@@ -129,8 +123,10 @@ def parse(input_directory, output_directory) -> None:
         if "runNER" not in x
     ][0]
     output_df = pd.read_csv(output_file, sep="\t", low_memory=False)
-    output_df["sentence"] = ""
     output_df.columns = output_df.columns.str.replace(" ", "_").str.lower()
+    # Consolidate rows where the entitys is the same and recognized from multiple origins
+    output_df = consolidate_rows(output_df)
+    output_df["sentence"] = ""
 
     final_output_file = os.path.join(output_directory, "runNER_Output.tsv")
 
