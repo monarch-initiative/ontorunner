@@ -33,7 +33,7 @@ def consolidate_rows(df: pd.DataFrame) -> pd.DataFrame:
 
     new_df = (
         df.groupby(grouping_columns)
-        .agg({"origin": lambda o: ",".join(o)})
+        .agg({"origin": lambda o: " | ".join(o)})
         .reset_index()
     )
     return new_df
