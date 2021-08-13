@@ -78,12 +78,12 @@ def sentencify(input_df, output_df, output_fn):
                         if not end_reached:
                             end_pos += 1
                         # -------------------------------------------------------------------
-                        import pdb
 
-                        pdb.set_trace()
                         term_of_interest = text[start_pos:end_pos]
 
-                        single_tok = [x for x in relevant_tok if term_of_interest in x]
+                        single_tok = [
+                            x for x in relevant_tok if term_of_interest.strip() in x
+                        ]
 
                         if count > 30 and 1 < len(single_tok):
                             single_tok = [single_tok[0]]
@@ -146,4 +146,3 @@ def parse(input_directory, output_directory) -> None:
             input_df = input_df.append({"id": id, "text": text}, ignore_index=True)
 
             sentencify(input_df, output_df, final_output_file)
-
