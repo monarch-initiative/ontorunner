@@ -32,7 +32,12 @@ def sentencify(input_df, output_df, output_fn):
         text = row.text
         # Check for text = NaN
         if text == text:
-            text = text.replace("\t", " ").replace("\u2028", " ")
+            text = (
+                text.replace("\t", " ")
+                .replace("\u2028", " ")
+                .replace("\n", "")
+                .replace("\r", "",)
+            )
             text_tok = nltk.sent_tokenize(text)
             sub_df = output_df[output_df["DOCUMENT ID"] == idx]
             # In certain instances, in spite of the 'matched' and 'preferred'
