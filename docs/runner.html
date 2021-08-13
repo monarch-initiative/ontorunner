@@ -193,33 +193,56 @@
 <span id="runner-runner-module"></span><h2>runner.runner module<a class="headerlink" href="#module-runner.runner" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="runner.runner.json2tsv">
-<code class="sig-prename descclassname">runner.runner.</code><code class="sig-name descname">json2tsv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span><a class="headerlink" href="#runner.runner.json2tsv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">runner.runner.</code><code class="sig-name descname">json2tsv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#runner.runner.json2tsv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts an JSON file into ‘nodes’ and ‘edges’ TSV.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – Input file (JSON file).</p></li>
+<li><p><strong>ouput</strong> – Output file name desired.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="runner.runner.prepare_termlist">
-<code class="sig-prename descclassname">runner.runner.</code><code class="sig-name descname">prepare_termlist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span><a class="headerlink" href="#runner.runner.prepare_termlist" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">runner.runner.</code><code class="sig-name descname">prepare_termlist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#runner.runner.prepare_termlist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a Bio Term Hub formatted term list for use with OGER.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – Input file ‘ontology_nodes.tsv’.</p></li>
+<li><p><strong>ouput</strong> – TSV file of list of terms ‘ontology_termlist.tsv’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="runner.runner.run_oger">
-<code class="sig-prename descclassname">runner.runner.</code><code class="sig-name descname">run_oger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">content</span><span class="o">=</span><span class="default_value">'data/input'</span></em>, <em class="sig-param"><span class="n">termlist</span><span class="o">=</span><span class="default_value">'data/terms/DICT.tsv'</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">'data/output/'</span></em>, <em class="sig-param"><span class="n">output_format</span><span class="o">=</span><span class="default_value">'tsv'</span></em>, <em class="sig-param"><span class="n">settings</span><span class="o">=</span><span class="default_value">'settings.ini'</span></em>, <em class="sig-param"><span class="n">workers</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#runner.runner.run_oger" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">runner.runner.</code><code class="sig-name descname">run_oger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">content</span><span class="o">=</span><span class="default_value">'data/input'</span></em>, <em class="sig-param"><span class="n">termlist</span><span class="o">=</span><span class="default_value">'data/terms/DICT.tsv'</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">'data/output/'</span></em>, <em class="sig-param"><span class="n">output_format</span><span class="o">=</span><span class="default_value">'tsv'</span></em>, <em class="sig-param"><span class="n">settings</span><span class="o">=</span><span class="default_value">'settings.ini'</span></em>, <em class="sig-param"><span class="n">workers</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#runner.runner.run_oger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run Oger</p>
-<dl>
-<dt>Arguments:</dt><dd><p>content: Input file OR folder containing txt files
-termlist: Path to the dictionary (TSV format)
-output: Path to save the output file
-output_format: tsv (default)
-settings: (default:’settings.ini’)</p>
-<blockquote>
-<div><p>If this is provided, all other arguments are provided in this file and are hence optional.
-Make changes to this file according to project needs.</p>
-</div></blockquote>
-<p>workers: Number of parallel threads (default = 5)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>content</strong> – Input file OR folder containing txt files.</p></li>
+<li><p><strong>termlist</strong> – Path to the dictionary (TSV format).</p></li>
+<li><p><strong>output</strong> – Path to save the output file.</p></li>
+<li><p><strong>output_format</strong> – tsv (default).</p></li>
+<li><p><strong>settings</strong> – If this is provided, all other arguments are provided in this file and are hence optional.</p></li>
+</ul>
 </dd>
 </dl>
+<p>Make changes to this file according to project needs (default:’settings.ini’).
+:param workers: Number of parallel threads (default = 5).
+:return: None.</p>
 </dd></dl>
 
 </div>
