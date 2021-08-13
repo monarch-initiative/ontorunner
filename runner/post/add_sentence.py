@@ -32,7 +32,12 @@ def sentencify(input_df, output_df, output_fn):
         text = row.text
         # Check for text = NaN
         if text == text:
-            text = text.replace("\t", " ")
+            text = (
+                text.replace("\t", " ")
+                .replace("\u2028", " ")
+                .replace("\n", "")
+                .replace("\r", "",)
+            )
             text_tok = nltk.sent_tokenize(text)
             sub_df = output_df[output_df["DOCUMENT ID"] == idx]
             # In certain instances, in spite of the 'matched' and 'preferred'
@@ -56,6 +61,9 @@ def sentencify(input_df, output_df, output_fn):
                     end_pos = int(row2["END POSITION"])
                     if end_pos == len(text):
                         end_reached = True
+                    if term_of_interest == "nan":
+                        term_of_interest = str(row2["PREFERRED FORM"]).lower()
+
                     relevant_tok = [x for x in text_tok if term_of_interest in x]
                     single_tok = relevant_tok
                     count = 0
@@ -78,7 +86,6 @@ def sentencify(input_df, output_df, output_fn):
                         if not end_reached:
                             end_pos += 1
                         # -------------------------------------------------------------------
-
                         term_of_interest = text[start_pos:end_pos]
 
                         single_tok = [
