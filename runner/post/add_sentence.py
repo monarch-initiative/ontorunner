@@ -68,7 +68,12 @@ def sentencify(input_df, output_df, output_fn):
                     if end_pos == len(text):
                         end_reached = True
                     if term_of_interest == "nan":
-                        term_of_interest = str(row2["preferred_form"]).lower()
+                        # get just the portion where 'matched_term' == 'preferred_form'
+                        # because in case of_SYNONYM, there will be extra metadata which
+                        # will not be present in the tokenized sentence.
+                        term_of_interest = str(
+                            row2["preferred_form"][: len(row2["matched_term"])]
+                        ).lower()
 
                     relevant_tok = [x for x in text_tok if term_of_interest in x]
                     single_tok = relevant_tok
