@@ -1,5 +1,6 @@
 from sys import path
 from typing import Tuple
+from nltk.corpus.reader.wordnet import NOUN, VERB
 
 import numpy as np
 import pandas as pd
@@ -14,9 +15,11 @@ import nltk
 
 from .util import *
 
-nltk.download("wordnet")
 import textdistance
 from pandas.core.arrays.categorical import contains
+
+if not nltk.find("corpora/wordnet"):
+    nltk.download("wordnet")
 
 
 def find_extensions(dr, ext):
@@ -124,11 +127,23 @@ def get_match_type(token1: str, token2: str) -> str:
     :return: Type of match [e.g.: 'exact_match' etc.]
     :rtype: str
     """
+
     match = ""
     lemma = WordNetLemmatizer()
+
     if token1.lower() == token2.lower():
         match = "exact_match"
     elif lemma.lemmatize(token1) == lemma.lemmatize(token2):
+        # pos = NOUN by default
+        match = "lemmatic_match"
+    elif lemma.lemmatize(token1, pos="v") == lemma.lemmatize(token2, pos="v"):
+        # testing pos = VERB
+        match = "lemmatic_match"
+    elif lemma.lemmatize(token1, pos="a") == lemma.lemmatize(token2, pos="a"):
+        # testing pos = ADJECTIVE
+        match = "lemmatic_match"
+    elif lemma.lemmatize(token1, pos="r") == lemma.lemmatize(token2, pos="r"):
+        # testing pos = ADVERB
         match = "lemmatic_match"
 
     return match
