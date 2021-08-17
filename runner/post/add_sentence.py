@@ -1,13 +1,21 @@
 from sys import path
-import pandas as pd
+from typing import Tuple
+
 import numpy as np
+import pandas as pd
+from nltk.stem.wordnet import WordNetLemmatizer
+from textdistance.algorithms.edit_based import Levenshtein
 
 pd.options.mode.chained_assignment = None  # default='warn'
-from .util import *
 import os
 from glob import glob
+
 import nltk
 
+from .util import *
+
+nltk.download("wordnet")
+import textdistance
 from pandas.core.arrays.categorical import contains
 
 
@@ -105,6 +113,27 @@ def sentencify(input_df, output_df, output_fn):
                 sub_df.to_csv(output_fn, mode="a", sep="\t", header=None, index=None)
 
 
+def get_match_type(token1: str, token2: str) -> str:
+    """
+    Return type of token match
+
+    :param token1: token from 'matched_term'
+    :type token1: str
+    :param token2: token from 'preferred_term'
+    :type token2: str
+    :return: Type of match [e.g.: 'exact_match' etc.]
+    :rtype: str
+    """
+    match = ""
+    lemma = WordNetLemmatizer()
+    if token1.lower() == token2.lower():
+        match = "exact_match"
+    elif lemma.lemmatize(token1) == lemma.lemmatize(token2):
+        match = "lemmatic_match"
+
+    return match
+
+
 def parse(input_directory, output_directory) -> None:
     """
     This parses the OGER output and adds sentences of relevant tokenized terms for context to the reviewer.
@@ -132,15 +161,48 @@ def parse(input_directory, output_directory) -> None:
     output_df.insert(
         6,
         "match_type",
-        np.where(
-            output_df["matched_term"].str.lower()
-            == output_df["preferred_form"].str.lower(),
-            "exact_match",
-            "",
+        output_df.apply(
+            lambda x: get_match_type(x.matched_term.lower(), x.preferred_form.lower()),
+            axis=1,
         ),
     )
 
-    # Add columns for Levenshtein and Damerau–Levenshtein distances
+    # Levenshtein distances
+    output_df.insert(
+        7,
+        "l_distance",
+        output_df.apply(
+            lambda x: textdistance.levenshtein.distance(
+                x.matched_term.lower(), x.preferred_form.lower()
+            ),
+            axis=1,
+        ),
+    )
+
+    # Jaccard Index
+
+    output_df.insert(
+        8,
+        "jaccard_index",
+        output_df.apply(
+            lambda x: textdistance.jaccard.distance(
+                x.matched_term.lower(), x.preferred_form.lower()
+            ),
+            axis=1,
+        ),
+    )
+
+    # Monge-Elkan
+    output_df.insert(
+        9,
+        "monge_elkan",
+        output_df.apply(
+            lambda x: textdistance.monge_elkan.distance(
+                x.matched_term.lower(), x.preferred_form.lower()
+            ),
+            axis=1,
+        ),
+    )
 
     output_df["sentence"] = ""
 
