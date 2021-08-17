@@ -92,9 +92,9 @@ def sentencify(input_df, output_df, output_fn):
                             break
                         # Reason for the break:
                         # In some instance the sentences are repeated. In such cases the expanding window
-                        # with start_pos and exd_pos goes expanding after 30 character match (arbitrarily)
+                        # with start_pos and end_pos goes expanding after 30 character match (arbitrarily)
                         # we take the first element out of the common terms and take that as the SENTENCE
-                        # and then 'break'-ing out of the 'while' loop. Else, it'll continue looing for
+                        # and then 'break'-ing out of the 'while' loop. Else, it'll continue looking for
                         # the unique sentence forever.
                         # It's a hack but for now it'll do until severe consequences detected.
 
