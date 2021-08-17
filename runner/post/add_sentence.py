@@ -1,5 +1,6 @@
 from sys import path
 import pandas as pd
+import numpy as np
 
 pd.options.mode.chained_assignment = None  # default='warn'
 from .util import *
@@ -126,6 +127,21 @@ def parse(input_directory, output_directory) -> None:
     output_df.columns = output_df.columns.str.replace(" ", "_").str.lower()
     # Consolidate rows where the entitys is the same and recognized from multiple origins
     output_df = consolidate_rows(output_df)
+
+    # Add column which indicates how close of a match is the recognized entity.
+    output_df.insert(
+        6,
+        "match_type",
+        np.where(
+            output_df["matched_term"].str.lower()
+            == output_df["preferred_form"].str.lower(),
+            "exact_match",
+            "",
+        ),
+    )
+
+    # Add columns for Levenshtein and Damerau–Levenshtein distances
+
     output_df["sentence"] = ""
 
     final_output_file = os.path.join(output_directory, "runNER_Output.tsv")
