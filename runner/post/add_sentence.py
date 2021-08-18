@@ -69,11 +69,9 @@ def sentencify(input_df, output_df, output_fn):
                         end_reached = True
                     if term_of_interest == "nan":
                         # get just the portion where 'matched_term' == 'preferred_form'
-                        # because in case of_SYNONYM, there will be extra metadata which
+                        # because in case of _SYNONYM, there will be extra metadata which
                         # will not be present in the tokenized sentence.
-                        term_of_interest = str(
-                            row2["preferred_form"][: len(row2["matched_term"])]
-                        ).lower()
+                        term_of_interest = str(row2["preferred_form"]).lower()
 
                     relevant_tok = [x for x in text_tok if term_of_interest in x]
                     single_tok = relevant_tok
@@ -177,6 +175,11 @@ def parse(input_directory, output_directory) -> None:
     # Consolidate rows where the entitys is the same and recognized from multiple origins
     output_df = consolidate_rows(output_df)
 
+    output_df[["preferred_form", "match_field"]] = output_df[
+        "preferred_form"
+    ].str.split("\[SYNONYM_OF:", expand=True)
+    output_df["match_field"] = output_df["match_field"].str.replace("]", "", regex=True)
+
     # Add column which indicates how close of a match is the recognized entity.
     output_df.insert(
         6,
@@ -190,7 +193,7 @@ def parse(input_directory, output_directory) -> None:
     # Levenshtein distances
     output_df.insert(
         7,
-        "l_distance",
+        "levenshtein_distance",
         output_df.apply(
             lambda x: textdistance.levenshtein.distance(
                 x.matched_term.lower(), x.preferred_form.lower()
@@ -225,6 +228,27 @@ def parse(input_directory, output_directory) -> None:
     )
 
     output_df["sentence"] = ""
+
+    output_df = output_df.reindex(
+        columns=[
+            "document_id",
+            "type",
+            "start_position",
+            "end_position",
+            "matched_term",
+            "preferred_form",
+            "match_field",
+            "match_type",
+            "levenshtein_distance",
+            "jaccard_index",
+            "monge_elkan",
+            "entity_id",
+            "sentence_id",
+            "umls_cui",
+            "origin",
+            "sentence",
+        ]
+    )
 
     final_output_file = os.path.join(output_directory, "runNER_Output.tsv")
 
