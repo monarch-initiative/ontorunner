@@ -62,6 +62,10 @@ def parse(input_filename, output_filename) -> None:
                     syn_record[3] = s
                     if syn_record[3].lower() != syn_record[4].lower():
                         syn_record[2] = syn_record[2] + "_SYNONYM"
+                        # Preferred form == Synonym matched
+                        syn_record[4] = (
+                            syn_record[3] + "[SYNONYM_OF:" + syn_record[4] + "]"
+                        )
                         write_line(syn_record, OUTSTREAM)
             write_line(parsed_record, OUTSTREAM)
 

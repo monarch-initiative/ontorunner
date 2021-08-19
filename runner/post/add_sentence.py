@@ -1,13 +1,25 @@
 from sys import path
+from typing import Tuple
+from nltk.corpus.reader.wordnet import NOUN, VERB
+
+import numpy as np
 import pandas as pd
+from nltk.stem.wordnet import WordNetLemmatizer
+from textdistance.algorithms.edit_based import Levenshtein
 
 pd.options.mode.chained_assignment = None  # default='warn'
-from .util import *
 import os
 from glob import glob
+
 import nltk
 
+from .util import *
+
+import textdistance
 from pandas.core.arrays.categorical import contains
+
+if not nltk.find("corpora/wordnet"):
+    nltk.download("wordnet")
 
 
 def find_extensions(dr, ext):
@@ -56,6 +68,9 @@ def sentencify(input_df, output_df, output_fn):
                     if end_pos == len(text):
                         end_reached = True
                     if term_of_interest == "nan":
+                        # get just the portion where 'matched_term' == 'preferred_form'
+                        # because in case of _SYNONYM, there will be extra metadata which
+                        # will not be present in the tokenized sentence.
                         term_of_interest = str(row2["preferred_form"]).lower()
 
                     relevant_tok = [x for x in text_tok if term_of_interest in x]
@@ -104,6 +119,39 @@ def sentencify(input_df, output_df, output_fn):
                 sub_df.to_csv(output_fn, mode="a", sep="\t", header=None, index=None)
 
 
+def get_match_type(token1: str, token2: str) -> str:
+    """
+    Return type of token match
+
+    :param token1: token from 'matched_term'
+    :type token1: str
+    :param token2: token from 'preferred_term'
+    :type token2: str
+    :return: Type of match [e.g.: 'exact_match' etc.]
+    :rtype: str
+    """
+
+    match = ""
+    lemma = WordNetLemmatizer()
+
+    if token1.lower() == token2.lower():
+        match = "exact_match"
+    elif lemma.lemmatize(token1) == lemma.lemmatize(token2):
+        # pos = NOUN by default
+        match = "lemmatic_match"
+    elif lemma.lemmatize(token1, pos="v") == lemma.lemmatize(token2, pos="v"):
+        # testing pos = VERB
+        match = "lemmatic_match"
+    elif lemma.lemmatize(token1, pos="a") == lemma.lemmatize(token2, pos="a"):
+        # testing pos = ADJECTIVE
+        match = "lemmatic_match"
+    elif lemma.lemmatize(token1, pos="r") == lemma.lemmatize(token2, pos="r"):
+        # testing pos = ADVERB
+        match = "lemmatic_match"
+
+    return match
+
+
 def parse(input_directory, output_directory) -> None:
     """
     This parses the OGER output and adds sentences of relevant tokenized terms for context to the reviewer.
@@ -126,7 +174,81 @@ def parse(input_directory, output_directory) -> None:
     output_df.columns = output_df.columns.str.replace(" ", "_").str.lower()
     # Consolidate rows where the entitys is the same and recognized from multiple origins
     output_df = consolidate_rows(output_df)
+
+    output_df[["preferred_form", "match_field"]] = output_df[
+        "preferred_form"
+    ].str.split("\[SYNONYM_OF:", expand=True)
+    output_df["match_field"] = output_df["match_field"].str.replace("]", "", regex=True)
+
+    # Add column which indicates how close of a match is the recognized entity.
+    output_df.insert(
+        6,
+        "match_type",
+        output_df.apply(
+            lambda x: get_match_type(x.matched_term.lower(), x.preferred_form.lower()),
+            axis=1,
+        ),
+    )
+
+    # Levenshtein distances
+    output_df.insert(
+        7,
+        "levenshtein_distance",
+        output_df.apply(
+            lambda x: textdistance.levenshtein.distance(
+                x.matched_term.lower(), x.preferred_form.lower()
+            ),
+            axis=1,
+        ),
+    )
+
+    # Jaccard Index
+
+    output_df.insert(
+        8,
+        "jaccard_index",
+        output_df.apply(
+            lambda x: textdistance.jaccard.distance(
+                x.matched_term.lower(), x.preferred_form.lower()
+            ),
+            axis=1,
+        ),
+    )
+
+    # Monge-Elkan
+    output_df.insert(
+        9,
+        "monge_elkan",
+        output_df.apply(
+            lambda x: textdistance.monge_elkan.distance(
+                x.matched_term.lower(), x.preferred_form.lower()
+            ),
+            axis=1,
+        ),
+    )
+
     output_df["sentence"] = ""
+
+    output_df = output_df.reindex(
+        columns=[
+            "document_id",
+            "type",
+            "start_position",
+            "end_position",
+            "matched_term",
+            "preferred_form",
+            "match_field",
+            "match_type",
+            "levenshtein_distance",
+            "jaccard_index",
+            "monge_elkan",
+            "entity_id",
+            "sentence_id",
+            "umls_cui",
+            "origin",
+            "sentence",
+        ]
+    )
 
     final_output_file = os.path.join(output_directory, "runNER_Output.tsv")
 
