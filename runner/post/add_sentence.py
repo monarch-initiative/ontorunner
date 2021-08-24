@@ -114,8 +114,15 @@ def sentencify(input_df, output_df, output_fn):
                         # It's a hack but for now it'll do until severe consequences detected.
 
                     sub_df.loc[i, "sentence"] = single_tok[0]
-
+            
             if not sub_df.empty:
+                sub_df["entity_sentence_%"] = sub_df.apply(
+                                lambda x: 1 - textdistance.jaccard.distance(
+                                    x.matched_term.lower(), x.sentence.lower()
+                                ),
+                                axis=1,
+                            )
+                           
                 sub_df.to_csv(output_fn, mode="a", sep="\t", header=None, index=None)
 
 
@@ -229,6 +236,8 @@ def parse(input_directory, output_directory) -> None:
 
     output_df["sentence"] = ""
 
+    output_df["entity_sentence_%"] = ""
+
     output_df = output_df.reindex(
         columns=[
             "document_id",
@@ -247,6 +256,7 @@ def parse(input_directory, output_directory) -> None:
             "umls_cui",
             "origin",
             "sentence",
+            "entity_sentence_%"
         ]
     )
 
