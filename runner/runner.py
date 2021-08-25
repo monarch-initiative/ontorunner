@@ -82,19 +82,18 @@ def run_oger(
         output = settings["output-directory"]
         input = settings["input-directory"]
         run(**settings)
-        add_sentence.parse(input, output)
+
     else:
         sniffer = csv.Sniffer()
         sample_bytes = 128
-        dialect = sniffer.sniff(open(content).read(sample_bytes))
+        dialect = sniffer.sniff(open(content).readline(sample_bytes))
         delim = ""
-        print(dialect.delimiter)
         if dialect.delimiter == "\t" or dialect.delimiter == ",":
             delim = "txt_tsv"
         else:
             delim = "txt"
 
-        conf = Router(termlist_path=termlist)
+        conf = Router(termlist_path=termlist, include_header=True)
         pl = PipelineServer(conf)
         doc = pl.load_one(content, delim)
         pl.process(doc)
@@ -102,6 +101,14 @@ def run_oger(
         print(f"Number of recognized entities: {n}")
         with open(output, "w", encoding="utf8") as f:
             pl.write(doc, output_format, f)
+        # Add sentence
+        if os.path.isdir(content):
+            input = content
+        elif os.path.isfile(content):
+            input = os.path.dirname(content)
+            output = os.path.dirname(output)
+
+    add_sentence.parse(input, output)
 
 
 @click.group()

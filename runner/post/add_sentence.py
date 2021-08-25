@@ -1,22 +1,22 @@
 from sys import path
 from typing import Tuple
-from nltk.corpus.reader.wordnet import NOUN, VERB
 
 import numpy as np
 import pandas as pd
+from nltk.corpus.reader.wordnet import NOUN, VERB
 from nltk.stem.wordnet import WordNetLemmatizer
 from textdistance.algorithms.edit_based import Levenshtein
 
 pd.options.mode.chained_assignment = None  # default='warn'
+import csv
 import os
 from glob import glob
 
 import nltk
-
-from .util import *
-
 import textdistance
 from pandas.core.arrays.categorical import contains
+
+from .util import *
 
 if not nltk.find("corpora/wordnet"):
     nltk.download("wordnet")
@@ -32,7 +32,6 @@ def sentencify(input_df, output_df, output_fn):
         :param df: (DataFrame) pandas DataFrame.
         :return: None
     """
-
     for j, row in input_df.iterrows():
         idx = row.id
         text = row.text
@@ -114,15 +113,16 @@ def sentencify(input_df, output_df, output_fn):
                         # It's a hack but for now it'll do until severe consequences detected.
 
                     sub_df.loc[i, "sentence"] = single_tok[0]
-            
+
             if not sub_df.empty:
                 sub_df["entity_sentence_%"] = sub_df.apply(
-                                lambda x: 1 - textdistance.jaccard.distance(
-                                    x.matched_term.lower(), x.sentence.lower()
-                                ),
-                                axis=1,
-                            )
-                           
+                    lambda x: 1
+                    - textdistance.jaccard.distance(
+                        x.matched_term.lower(), x.sentence.lower()
+                    ),
+                    axis=1,
+                )
+
                 sub_df.to_csv(output_fn, mode="a", sep="\t", header=None, index=None)
 
 
@@ -256,7 +256,7 @@ def parse(input_directory, output_directory) -> None:
             "umls_cui",
             "origin",
             "sentence",
-            "entity_sentence_%"
+            "entity_sentence_%",
         ]
     )
 
@@ -275,10 +275,16 @@ def parse(input_directory, output_directory) -> None:
         # Read each text file such that Id = filename and text = full text
         for f in input_list_txt:
             input_df = pd.DataFrame(columns=["id", "text"])
-            id = f.split("/")[-1].split(".txt")[0]
-            with open(f, "r") as fn:
-                text = fn.readlines()
-                text = "".join(text).replace("\n", " ")
-            input_df = input_df.append({"id": id, "text": text}, ignore_index=True)
+            sniffer = csv.Sniffer()
+            sample_bytes = 128
+            dialect = sniffer.sniff(open(f).readline(sample_bytes))
+            if dialect.delimiter == "\t" or dialect.delimiter == ",":
+                input_df = pd.read_csv(f, sep="\t", low_memory=False, index_col=None)
+            else:
+                id = f.split("/")[-1].split(".txt")[0]
+                with open(f, "r") as fn:
+                    text = fn.readlines()
+                    text = "".join(text).replace("\n", " ")
+                input_df = input_df.append({"id": id, "text": text}, ignore_index=True)
 
             sentencify(input_df, output_df, final_output_file)
