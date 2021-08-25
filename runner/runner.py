@@ -81,6 +81,7 @@ def run_oger(
         output = settings["output-directory"]
         input = settings["input-directory"]
         run(**settings)
+        add_sentence.parse(input, output)
     else:
         conf = Router(termlist_path=termlist)
         pl = PipelineServer(conf)
@@ -91,7 +92,7 @@ def run_oger(
         with open(output, "w", encoding="utf8") as f:
             pl.write(doc, output_format, f)
 
-    add_sentence.parse(input, output)
+    
 
 
 @click.group()
