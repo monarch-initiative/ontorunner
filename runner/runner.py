@@ -7,6 +7,7 @@ from oger.ctrl.run import run
 import configparser
 from kgx.cli.cli_utils import transform
 import os
+import csv
 
 
 def json2tsv(input, output) -> None:
@@ -83,9 +84,19 @@ def run_oger(
         run(**settings)
         add_sentence.parse(input, output)
     else:
+        sniffer = csv.Sniffer()
+        sample_bytes = 1024
+        dialect = sniffer.sniff(open(content).read(sample_bytes))
+        delim = ""
+        print(dialect.delimiter)
+        if dialect.delimiter == '\t' or dialect.delimiter == ',':
+            delim = "txt_tsv"
+        else:
+            delim = "txt"
+        
         conf = Router(termlist_path=termlist)
         pl = PipelineServer(conf)
-        doc = pl.load_one(content, "txt")
+        doc = pl.load_one(content, delim)
         pl.process(doc)
         n = len([x for x in doc.iter_entities()])
         print(f"Number of recognized entities: {n}")
