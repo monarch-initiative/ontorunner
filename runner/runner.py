@@ -85,15 +85,15 @@ def run_oger(
         add_sentence.parse(input, output)
     else:
         sniffer = csv.Sniffer()
-        sample_bytes = 1024
+        sample_bytes = 128
         dialect = sniffer.sniff(open(content).read(sample_bytes))
         delim = ""
         print(dialect.delimiter)
-        if dialect.delimiter == '\t' or dialect.delimiter == ',':
+        if dialect.delimiter == "\t" or dialect.delimiter == ",":
             delim = "txt_tsv"
         else:
             delim = "txt"
-        
+
         conf = Router(termlist_path=termlist)
         pl = PipelineServer(conf)
         doc = pl.load_one(content, delim)
@@ -102,8 +102,6 @@ def run_oger(
         print(f"Number of recognized entities: {n}")
         with open(output, "w", encoding="utf8") as f:
             pl.write(doc, output_format, f)
-
-    
 
 
 @click.group()
