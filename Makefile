@@ -1,6 +1,6 @@
 # Prepare termlist
 terms/%_termlist.tsv: data/output/%_nodes.tsv
-	python -m runner.runner prepare-termlist -i $@ -o @<
+	python -m runner.runner prepare-termlist -i $< -o $@
 
 # Run OGER
 data/output/runNER_Output.tsv: data/input/%.tsv
