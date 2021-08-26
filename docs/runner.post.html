@@ -187,9 +187,30 @@
 <dd></dd></dl>
 
 <dl class="py function">
+<dt id="runner.post.add_sentence.get_match_type">
+<code class="sig-prename descclassname">runner.post.add_sentence.</code><code class="sig-name descname">get_match_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token1</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">token2</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#runner.post.add_sentence.get_match_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return type of token match</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token1</strong> (<em>str</em>) – token from ‘matched_term’</p></li>
+<li><p><strong>token2</strong> (<em>str</em>) – token from ‘preferred_term’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Type of match [e.g.: ‘exact_match’ etc.]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="runner.post.add_sentence.parse">
 <code class="sig-prename descclassname">runner.post.add_sentence.</code><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_directory</span></em>, <em class="sig-param"><span class="n">output_directory</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#runner.post.add_sentence.parse" title="Permalink to this definition">¶</a></dt>
-<dd><p>This parses the OGER output and adds sentences of relevant tokenized terms for context to the reviewer.
+<dd><p>This parses the OGER output and adds sentences of relevant tokenized terms
+for context to the reviewer.
 :param input_directory: (str) Input directory path.
 :param output_directory: (str) Output directory path.
 :return: None.</p>
@@ -198,7 +219,8 @@
 <dl class="py function">
 <dt id="runner.post.add_sentence.sentencify">
 <code class="sig-prename descclassname">runner.post.add_sentence.</code><code class="sig-name descname">sentencify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_df</span></em>, <em class="sig-param"><span class="n">output_df</span></em>, <em class="sig-param"><span class="n">output_fn</span></em><span class="sig-paren">)</span><a class="headerlink" href="#runner.post.add_sentence.sentencify" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add relevant sentences to the tokenized term in every row of a pandas DataFrame
+<dd><p>Add relevant sentences to the tokenized term in every row of a
+pandas DataFrame
 :param df: (DataFrame) pandas DataFrame.
 :return: None</p>
 </dd></dl>
@@ -209,7 +231,7 @@
 <dl class="py function">
 <dt id="runner.post.util.consolidate_rows">
 <code class="sig-prename descclassname">runner.post.util.</code><code class="sig-name descname">consolidate_rows</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#runner.post.util.consolidate_rows" title="Permalink to this definition">¶</a></dt>
-<dd><p>Group rows by all columns except “origin” to remove redundancies 
+<dd><p>Group rows by all columns except “origin” to remove redundancies
 created by entity recognition from multiple sources/ontologies</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

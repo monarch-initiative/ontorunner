@@ -19,11 +19,14 @@ def json2tsv(input, output) -> None:
     :return: None.
     """
     if input:
-        if output == None:
+        if output is None:
             output = "data/output/output"
 
         transform(
-            inputs=[input], input_format="obojson", output=output, output_format="tsv"
+            inputs=[input],
+            input_format="obojson",
+            output=output,
+            output_format="tsv"
         )
     else:
         input_folder = "data/input/"
@@ -62,14 +65,16 @@ def run_oger(
     workers=1,
 ) -> None:
     """
-    Run Oger 
+    Run Oger
 
     :param content: Input file OR folder containing txt files.
     :param termlist: Path to the dictionary (TSV format).
     :param output: Path to save the output file.
     :param output_format: tsv (default).
-    :param settings: If this is provided, all other arguments are provided in this file and are hence optional. 
-    Make changes to this file according to project needs (default:'settings.ini').
+    :param settings: If this is provided, all other arguments
+    are provided in this file and are hence optional.
+    Make changes to this file according to project needs
+    s(default:'settings.ini').
     :param workers: Number of parallel threads (default = 5).
     :return: None.
     """
@@ -139,7 +144,8 @@ def prepare_termlist_click(input, output):
 )
 @click.option("--settings", "-s", type=click.Path(exists=True))
 @click.option("--workers", "-w", default=1)
-def run_oger_click(content, termlist, output, output_format, settings, workers):
+def run_oger_click(content, termlist, output,
+                   output_format, settings, workers):
     run_oger(content, termlist, output, output_format, settings, workers)
 
 
