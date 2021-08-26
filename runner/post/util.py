@@ -11,7 +11,8 @@ def filter_synonyms(df: pd.DataFrame) -> pd.DataFrame:
     :rtype: pd.DataFrame
     """
 
-    condition_1 = df["matched_term"].str.lower() == df["preferred_form"].str.lower()
+    condition_1 = df["matched_term"].str.lower() == \
+        df["preferred_form"].str.lower()
     condition_2 = df["entity_id"].str.contains("_SYNONYM")
     fullConditionStatement = ~(condition_1 & condition_2)
     return df[fullConditionStatement]
@@ -19,7 +20,7 @@ def filter_synonyms(df: pd.DataFrame) -> pd.DataFrame:
 
 def consolidate_rows(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Group rows by all columns except "origin" to remove redundancies 
+    Group rows by all columns except "origin" to remove redundancies
     created by entity recognition from multiple sources/ontologies
 
     :param df: Input DataFrame
@@ -27,7 +28,8 @@ def consolidate_rows(df: pd.DataFrame) -> pd.DataFrame:
     :return: Consolidated DataFrame
     :rtype: pd.DataFrame
     """
-    df.dropna(axis=1, how="all", inplace=True)  # drops columns where all rows are None
+    # drops columns where all rows are None
+    df.dropna(axis=1, how="all", inplace=True)
     grouping_columns = df.columns.tolist()
     grouping_columns.remove("origin")
 

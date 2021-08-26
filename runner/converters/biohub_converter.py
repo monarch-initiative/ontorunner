@@ -35,13 +35,15 @@ def parse(input_filename, output_filename) -> None:
             elements = [x.rstrip() for x in line.split("\t")]
             if any(x in elements[header_dict["category"]] for x in EXCLUDE):
                 # 'category' field is one of the ones in EXCLUDE list
-                logging.info(f"Skipping line as part of excludes: {line.rstrip()}")
+                logging.info(f"Skipping line as part \
+                               of excludes: {line.rstrip()}")
                 continue
 
             if not elements[header_dict["name"]]:
                 # no 'name' field for record
                 print(
-                    f"Skipping line as it does not have a name field: {line.rstrip()}"
+                    f"Skipping line as it does not \
+                      have a name field: {line.rstrip()}"
                 )
                 continue
 
@@ -64,7 +66,9 @@ def parse(input_filename, output_filename) -> None:
                         syn_record[2] = syn_record[2] + "_SYNONYM"
                         # Preferred form == Synonym matched
                         syn_record[4] = (
-                            syn_record[3] + "[SYNONYM_OF:" + syn_record[4] + "]"
+                            syn_record[3] +
+                            "[SYNONYM_OF:" +
+                            syn_record[4] + "]"
                         )
                         write_line(syn_record, OUTSTREAM)
             write_line(parsed_record, OUTSTREAM)
