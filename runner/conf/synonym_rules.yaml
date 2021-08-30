@@ -1,0 +1,106 @@
+prefixes:
+  molecular_function: GO:0003674
+  biological_process: GO:0008150
+  environmental_system: ENVO:01000254
+  environmental_material: ENVO:00010483
+rules:
+  - type: NewSynonym
+    description: adding X as synonym for X-activity in GO
+    see_also:
+      - https://github.com/geneontology/go-ontology/issues/21978
+    branches:
+      - molecular_function
+    match: "(.*) activity"
+    match_scope: *
+    replacement: "$1"
+  - type: NewSynonym
+    branches:
+      - molecular_function
+    match: "(.*) activity"
+    match_scope: *
+    replacement: "$1 enzyme"
+    replacement_scope: related
+  - type: NewSynonym
+    branches:
+      - biological_process
+    match: "(.*) ([metabol|catabol|biosynthet])ic process"
+    match_scope: *
+    replacement: "$1 $2is"
+    replacement_scope: exact
+    tests:
+      - input: lipid biosynthetic process
+        output: lipid biosynthesis
+        ontology: GO
+  - type: NewSynonym
+    match: "(.*) process"
+    match_scope: *
+    replacement: "$1"
+    replacement_scope: related
+    tests:
+      - input: carbon sequestration process
+        output: carbon sequestration
+        ontology: ENVO
+  - type: NewSynonym
+    branches:
+      - biological_process
+    match: "(.*) biosynthetic process"
+    match_scope: *
+    replacement: "$1 production"
+    replacement_scope: exact
+  - type: NewSynonym
+    branches:
+      - biological_process
+    match: "(.*) biosynthetic process"
+    match_scope: *
+    replacement: "$1 synthesis"
+    replacement_scope: exact
+  - type: NewSynonym
+    branches:
+      - molecular_function
+    match: "(.*) ([metabol|catabol|biosynthet])ic process"
+    match_scope: *
+    replacement: "$1ism"
+    replacement_scope: exact
+  - type: NewSynonym
+    branches:
+      - environmental_material
+      - environmental_system
+    match: "(.*) [ecosystem|biome]"
+    match_scope: label|exact
+    replacement: "$1 community"
+    replacement_scope: exact
+  - type: NewSynonym
+    branches:
+      - environmental_material
+      - environmental_system
+    match: "(.*) [ecosystem|biome]"
+    match_scope: label|exact
+    replacement: "$1 microbial community"
+    replacement_scope: exact
+  - type: NewSynonym
+    branches:
+      - environmental_material
+      - environmental_system
+    match: "(.*) [ecosystem|biome]"
+    match_scope: label|exact
+    replacement: "$1 system"
+    replacement_scope: exact
+  - type: NewSynonym
+    branches:
+      - environmental_material
+      - environmental_system
+    match: "(.*) [ecosystem|biome]"
+    match_scope: label|exact
+    replacement: "$1 microbiome"
+    replacement_scope: exact
+  - type: NewSynonym
+    branches:
+      - environmental_material
+      - environmental_system
+    match: "(.*)"
+    match_scope: label|exact
+    replacement: "$1 sample"
+    replacement_scope: related
+
+        
+      
