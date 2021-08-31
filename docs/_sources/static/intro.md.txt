@@ -23,6 +23,7 @@ kgx transform ontology.json --input-format obojson --output output --output-form
 ```
 ### Python
 ```
+from ontorunner import oger_module
 oger_module.json2tsv('ontology.json', 'output.tsv')
 ```
 
@@ -36,6 +37,7 @@ python -m ontorunner.oger_module prepare-termlist -i output_nodes.tsv -o termlis
 
 ### Python
 ```
+from ontorunner import oger_module
 oger_module.prepare_termlist('output_nodes.tsv', 'termlist.tsv')
 ```
 
@@ -63,6 +65,7 @@ python -m ontorunner.oger_module run-oger -s settings.ini
 
 ### Python
 ```
+from ontorunner import oger_module
 oger_module.run_oger(settings=settingsFile)
 ```
 > The [settings.ini](https://github.com/monarch-initiative/ontorunner/blob/master/ontorunner/settings.ini) file provides all relevant arguments to OGER. More information on the parameter list could be found at the [OGER GitHub](https://github.com/OntoGene/OGER/wiki/run#parameter-index)
