@@ -1,5 +1,5 @@
-runner package
-==============
+ontorunner package
+==================
 
 Subpackages
 -----------
@@ -7,16 +7,16 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   runner.converters
-   runner.post
+   ontorunner.converters
+   ontorunner.post
 
 Submodules
 ----------
 
-runner.runner module
---------------------
+ontorunner.oger\_module module
+------------------------------
 
-.. automodule:: runner.runner
+.. automodule:: ontorunner.oger_module
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,7 +24,7 @@ runner.runner module
 Module contents
 ---------------
 
-.. automodule:: runner
+.. automodule:: ontorunner
    :members:
    :undoc-members:
    :show-inheritance:

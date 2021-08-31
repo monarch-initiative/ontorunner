@@ -10,8 +10,8 @@ data/output/ontoRunNER_Output.tsv: data/input/%.tsv
 .PHONY: sphinx
 sphinx:
 	cd sphinx &&\
-	find ./ -name "*.rst" -not -name "index.rst" -exec rm {} \;
-	sphinx-apidoc --ext-autodoc -o . ..
+	find ./ -name "*.rst" -not -name "index.rst" -exec rm {} \; &&\
+	sphinx-apidoc --ext-autodoc -o . .. &&\
 	make clean html
 
 .PHONY: deploy-docs

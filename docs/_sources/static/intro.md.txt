@@ -65,4 +65,4 @@ python -m ontorunner.oger_module run-oger -s settings.ini
 ```
 oger_module.run_oger(settings=settingsFile)
 ```
-> The [settings.ini](https://github.com/monarch-initiative/runner/blob/master/ontorunner/settings.ini) file provides all relevant arguments to OGER. More information on the parameter list could be found at the [OGER GitHub](https://github.com/OntoGene/OGER/wiki/run#parameter-index)
+> The [settings.ini](https://github.com/monarch-initiative/ontorunner/blob/master/ontorunner/settings.ini) file provides all relevant arguments to OGER. More information on the parameter list could be found at the [OGER GitHub](https://github.com/OntoGene/OGER/wiki/run#parameter-index)

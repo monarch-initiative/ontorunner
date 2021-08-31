@@ -1,8 +1,8 @@
-runner
-======
+ontorunner
+==========
 
 .. toctree::
    :maxdepth: 4
 
-   runner
+   ontorunner
    setup
