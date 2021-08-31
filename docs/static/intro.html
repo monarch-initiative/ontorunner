@@ -203,7 +203,8 @@ NER tools in addition to OGER.</p>
 </div>
 <div class="section" id="python">
 <h3>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">oger_module</span><span class="o">.</span><span class="n">json2tsv</span><span class="p">(</span><span class="s1">&#39;ontology.json&#39;</span><span class="p">,</span> <span class="s1">&#39;output.tsv&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ontorunner</span> <span class="kn">import</span> <span class="n">oger_module</span>
+<span class="n">oger_module</span><span class="o">.</span><span class="n">json2tsv</span><span class="p">(</span><span class="s1">&#39;ontology.json&#39;</span><span class="p">,</span> <span class="s1">&#39;output.tsv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -219,7 +220,8 @@ NER tools in addition to OGER.</p>
 </div>
 <div class="section" id="id2">
 <h3>Python<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">oger_module</span><span class="o">.</span><span class="n">prepare_termlist</span><span class="p">(</span><span class="s1">&#39;output_nodes.tsv&#39;</span><span class="p">,</span> <span class="s1">&#39;termlist.tsv&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ontorunner</span> <span class="kn">import</span> <span class="n">oger_module</span>
+<span class="n">oger_module</span><span class="o">.</span><span class="n">prepare_termlist</span><span class="p">(</span><span class="s1">&#39;output_nodes.tsv&#39;</span><span class="p">,</span> <span class="s1">&#39;termlist.tsv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -250,7 +252,8 @@ as recommended <a class="reference external" href="https://github.com/OntoGene/O
 </div>
 <div class="section" id="id5">
 <h3>Python<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">oger_module</span><span class="o">.</span><span class="n">run_oger</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">settingsFile</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ontorunner</span> <span class="kn">import</span> <span class="n">oger_module</span>
+<span class="n">oger_module</span><span class="o">.</span><span class="n">run_oger</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">settingsFile</span><span class="p">)</span>
 </pre></div>
 </div>
 <blockquote>
