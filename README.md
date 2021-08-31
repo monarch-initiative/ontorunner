@@ -1,4 +1,4 @@
-# runNER
+# ontoRunNER
 
 This repository contains a few accessory scripts for
 parsing a KGX generated nodes TSV into a term list
@@ -9,4 +9,4 @@ NER tools in addition to OGER.
 
 ## Documentation
 
-[runNER on Sphinx](https://monarch-initiative.github.io/runner/index.html)
+[ontoRunNER on Sphinx](https://monarch-initiative.github.io/ontorunner/index.html)

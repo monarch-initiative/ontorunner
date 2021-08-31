@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
-NAME = "runner"
-URL = "https://github.com/monarch-initiative/runner"
-AUTHOR = "Deepak Unni"
-EMAIL = "deepak.unni3@gmail.com"
+NAME = "ontorunner"
+URL = "https://github.com/monarch-initiative/ontorunner"
+AUTHOR = "Harshad Hegde"
+EMAIL = "hhegde@lbl.gov"
 REQUIRES_PYTHON = ">=3.7.0"
 VERSION = "0.0.1"
 LICENSE = "BSD"
