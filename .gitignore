@@ -127,8 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-.vscode/settings.json
-data/
+
+# Misc
+.vscode/
+data/input/*
+data/output/*
+data/terms/*
 sphinx/_build
 **/.DS_Store
 
