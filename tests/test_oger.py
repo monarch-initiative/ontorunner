@@ -10,7 +10,8 @@ data_dir = os.path.join(cwd, "data")
 
 def cleanup(dir):
     for f in listdir(dir):
-        os.remove(os.path.join(dir, f))
+        if f != "README.txt":
+            os.remove(os.path.join(dir, f))
 
 
 class TestOger(unittest.TestCase):
