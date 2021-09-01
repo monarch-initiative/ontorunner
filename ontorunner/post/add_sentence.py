@@ -15,8 +15,8 @@ import textdistance
 
 # from pandas.core.arrays.categorical import contains
 
-if not nltk.find("corpora/wordnet"):
-    nltk.download("wordnet")
+# if not nltk.find("corpora/wordnet"):
+nltk.download("wordnet")
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -41,10 +41,7 @@ def sentencify(input_df, output_df, output_fn):
                 text.replace("\t", " ")
                 .replace("\u2028", " ")
                 .replace("\n", "")
-                .replace(
-                    "\r",
-                    "",
-                )
+                .replace("\r", "",)
             )
             text_tok = nltk.sent_tokenize(text)
             sub_df = output_df[output_df["document_id"] == idx]
