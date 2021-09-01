@@ -1,6 +1,6 @@
 import click
-from runner.converters import biohub_converter as bc
-from runner.post import add_sentence
+from ontorunner.converters import biohub_converter as bc
+from ontorunner.post import add_sentence
 from oger.ctrl.router import Router, PipelineServer
 from oger.doc import EXPORTERS
 from oger.ctrl.run import run
@@ -23,10 +23,7 @@ def json2tsv(input, output) -> None:
             output = "data/output/output"
 
         transform(
-            inputs=[input],
-            input_format="obojson",
-            output=output,
-            output_format="tsv"
+            inputs=[input], input_format="obojson", output=output, output_format="tsv"
         )
     else:
         input_folder = "data/input/"
@@ -144,8 +141,7 @@ def prepare_termlist_click(input, output):
 )
 @click.option("--settings", "-s", type=click.Path(exists=True))
 @click.option("--workers", "-w", default=1)
-def run_oger_click(content, termlist, output,
-                   output_format, settings, workers):
+def run_oger_click(content, termlist, output, output_format, settings, workers):
     run_oger(content, termlist, output, output_format, settings, workers)
 
 

@@ -1,7 +1,9 @@
-from runner.post.util import filter_synonyms, consolidate_rows
+from ontorunner.post.util import filter_synonyms, consolidate_rows
 import pandas as pd
+
 # from nltk.corpus.reader.wordnet import NOUN, VERB
 from nltk.stem.wordnet import WordNetLemmatizer
+
 # from textdistance.algorithms.edit_based import Levenshtein
 
 import csv
@@ -10,6 +12,7 @@ from glob import glob
 
 import nltk
 import textdistance
+
 # from pandas.core.arrays.categorical import contains
 
 if not nltk.find("corpora/wordnet"):
@@ -24,10 +27,10 @@ def find_extensions(dr, ext):
 
 def sentencify(input_df, output_df, output_fn):
     """
-        Add relevant sentences to the tokenized term in every row of a
-        pandas DataFrame
-        :param df: (DataFrame) pandas DataFrame.
-        :return: None
+    Add relevant sentences to the tokenized term in every row of a
+    pandas DataFrame
+    :param df: (DataFrame) pandas DataFrame.
+    :return: None
     """
     for j, row in input_df.iterrows():
         idx = row.id
@@ -38,7 +41,10 @@ def sentencify(input_df, output_df, output_fn):
                 text.replace("\t", " ")
                 .replace("\u2028", " ")
                 .replace("\n", "")
-                .replace("\r", "",)
+                .replace(
+                    "\r",
+                    "",
+                )
             )
             text_tok = nltk.sent_tokenize(text)
             sub_df = output_df[output_df["document_id"] == idx]
@@ -46,8 +52,7 @@ def sentencify(input_df, output_df, output_fn):
             # terms being the same, the term is registered as a synonym by KGX
             # and hence the biohub_converter codes this with a '_SYNONYM' tag.
             # In order to counter this, we need to filter these extra rows out.
-            if not sub_df.empty and any(sub_df["entity_id"]
-                                        .str.endswith("_SYNONYM")):
+            if not sub_df.empty and any(sub_df["entity_id"].str.endswith("_SYNONYM")):
                 sub_df = filter_synonyms(sub_df)
 
             if len(text_tok) == 1:
@@ -72,8 +77,7 @@ def sentencify(input_df, output_df, output_fn):
                         # will not be present in the tokenized sentence.
                         term_of_interest = str(row2["preferred_form"]).lower()
 
-                    relevant_tok = [x for x in text_tok
-                                    if term_of_interest in x]
+                    relevant_tok = [x for x in text_tok if term_of_interest in x]
                     single_tok = relevant_tok
                     count = 0
 
@@ -100,8 +104,7 @@ def sentencify(input_df, output_df, output_fn):
                         term_of_interest = text[start_pos:end_pos]
 
                         single_tok = [
-                            x for x in relevant_tok
-                            if term_of_interest.strip() in x
+                            x for x in relevant_tok if term_of_interest.strip() in x
                         ]
 
                         if count > 30 and 1 < len(single_tok):
@@ -130,8 +133,7 @@ def sentencify(input_df, output_df, output_fn):
                     axis=1,
                 )
 
-                sub_df.to_csv(output_fn, mode="a", sep="\t",
-                              header=None, index=None)
+                sub_df.to_csv(output_fn, mode="a", sep="\t", header=None, index=None)
 
 
 def get_match_type(token1: str, token2: str) -> str:
@@ -184,30 +186,25 @@ def parse(input_directory, output_directory) -> None:
         for x in output_files
         if "_node" not in x
         if "_edge" not in x
-        if "runNER" not in x
+        if "ontoRunNER" not in x
     ][0]
     output_df = pd.read_csv(output_file, sep="\t", low_memory=False)
     output_df.columns = output_df.columns.str.replace(" ", "_").str.lower()
     # Consolidate rows where the entitys is the same
     # and recognized from multiple origins
     output_df = consolidate_rows(output_df)
+    output_df[["preferred_form", "match_field"]] = output_df[
+        "preferred_form"
+    ].str.split("\\[SYNONYM_OF:", expand=True)
 
-    output_df[["preferred_form", "match_field"]] = \
-        output_df["preferred_form"].str.split("\\[SYNONYM_OF:", expand=True)
-
-    output_df["match_field"] = \
-        output_df["match_field"].str.replace("]", "", regex=True)
+    output_df["match_field"] = output_df["match_field"].str.replace("]", "", regex=True)
 
     # Add column which indicates how close of a match is the recognized entity.
     output_df.insert(
         6,
         "match_type",
         output_df.apply(
-            lambda x:
-                get_match_type(
-                                x.matched_term.lower(),
-                                x.preferred_form.lower()
-                            ),
+            lambda x: get_match_type(x.matched_term.lower(), x.preferred_form.lower()),
             axis=1,
         ),
     )
@@ -275,7 +272,7 @@ def parse(input_directory, output_directory) -> None:
         ]
     )
 
-    final_output_file = os.path.join(output_directory, "runNER_Output.tsv")
+    final_output_file = os.path.join(output_directory, "ontoRunNER_Output.tsv")
 
     pd.DataFrame(output_df.columns).T.to_csv(
         final_output_file, sep="\t", index=None, header=None
@@ -283,9 +280,7 @@ def parse(input_directory, output_directory) -> None:
 
     if len(input_list_tsv) > 0:
         for f in input_list_tsv:
-            input_df = pd.read_csv(f, sep="\t",
-                                   low_memory=False,
-                                   index_col=None)
+            input_df = pd.read_csv(f, sep="\t", low_memory=False, index_col=None)
             sentencify(input_df, output_df, final_output_file)
 
     if len(input_list_txt) > 0:
@@ -296,14 +291,12 @@ def parse(input_directory, output_directory) -> None:
             sample_bytes = 128
             dialect = sniffer.sniff(open(f).readline(sample_bytes))
             if dialect.delimiter == "\t" or dialect.delimiter == ",":
-                input_df = pd.read_csv(f, sep="\t", low_memory=False,
-                                       index_col=None)
+                input_df = pd.read_csv(f, sep="\t", low_memory=False, index_col=None)
             else:
                 id = f.split("/")[-1].split(".txt")[0]
                 with open(f, "r") as fn:
                     text = fn.readlines()
                     text = "".join(text).replace("\n", " ")
-                input_df = input_df.append({"id": id, "text": text},
-                                           ignore_index=True)
+                input_df = input_df.append({"id": id, "text": text}, ignore_index=True)
 
             sentencify(input_df, output_df, final_output_file)
