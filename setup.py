@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-NAME = "ontorunner"
+NAME = "ontoRunNER"
 URL = "https://github.com/monarch-initiative/ontorunner"
 AUTHOR = "Harshad Hegde"
 EMAIL = "hhegde@lbl.gov"
@@ -24,7 +24,6 @@ setup(
     long_description_content_type="text/markdown",
     license=LICENSE,
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
-    # install_requires=[r for r in REQUIREMENTS if not r.startswith("#")],
     extras_require=EXTRAS,
     include_package_data=True,
     # add package dependencies
