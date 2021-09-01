@@ -1,0 +1,130 @@
+import os
+from posix import listdir
+import unittest
+import subprocess
+import pandas as pd
+
+
+cwd = os.path.abspath(os.path.dirname(__file__))
+data_dir = os.path.join(cwd, "data")
+
+
+def cleanup(dir):
+    for f in listdir(dir):
+        if f != "README.txt":
+            os.remove(os.path.join(dir, f))
+
+
+class TestOgerCLI(unittest.TestCase):
+    def setUp(self) -> None:
+        self.input = f"{data_dir}/input/"
+        self.tsv = os.path.join(self.input, "test.tsv")
+        self.txt = os.path.join(self.input, "test.txt")
+        self.json = os.path.join(self.input, "envo.json")
+        self.output = f"{data_dir}/output/"
+        self.output_file = os.path.join(self.output, "ontoRunNER_Output.tsv")
+        self.terms = f"{data_dir}/terms/"
+        self.termlist = os.path.join(self.terms, "envo_termlist.tsv")
+        self.settings = f"{cwd}/settings.ini"
+        print("setup runs here")
+
+    def test_json2tsv(self) -> None:
+        ofilename = os.path.join(self.output, "envo")
+        ofiles = [ofilename + "_nodes.tsv", ofilename + "_edges.tsv"]
+        ofile_rows = [6405, 9643]
+        process = subprocess.Popen(
+            [
+                "python",
+                "-m",
+                "ontorunner.oger_module",
+                "json2tsv",
+                "-i",
+                self.json,
+                "-o",
+                ofilename,
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        stdout, stderr = process.communicate()
+        print(stderr)
+        print(stdout)
+
+        for i, file in enumerate(ofiles):
+            self.assertTrue(os.path.isfile(file))
+            self.assertEqual(len(pd.read_csv(file, sep="\t")), ofile_rows[i])
+
+    def test_prepare_termlist(self) -> None:
+        ifile = os.path.join(self.output, "envo_nodes.tsv")
+
+        process = subprocess.Popen(
+            [
+                "python",
+                "-m",
+                "ontorunner.oger_module",
+                "prepare-termlist",
+                "-i",
+                ifile,
+                "-o",
+                self.termlist,
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        stdout, stderr = process.communicate()
+        print(stderr)
+        print(stdout)
+
+        self.assertEqual(len(pd.read_csv(self.termlist, sep="\t")), 11726)
+
+    def test_run_oger_with_settings(self) -> None:
+        s = self.settings
+        process = subprocess.Popen(
+            ["python", "-m", "ontorunner.oger_module", "run-oger", "-s", s],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        stdout, stderr = process.communicate()
+        print(stderr)
+        print(stdout)
+
+        self.assertTrue(os.path.isfile(self.output_file))
+        self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 89)
+        cleanup(self.output)
+
+        # Clear output for next test
+
+    def test_run_oger_without_settings(self) -> None:
+        process = subprocess.Popen(
+            [
+                "python",
+                "-m",
+                "ontorunner.oger_module",
+                "run-oger",
+                "-c",
+                self.txt,
+                "-t",
+                self.termlist,
+                "-o",
+                os.path.join(self.output, "nlpOutput.tsv"),
+                "-f",
+                "tsv",
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        stdout, stderr = process.communicate()
+        print(stderr)
+        print(stdout)
+
+        self.assertTrue(os.path.isfile(self.output_file))
+        self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 53)
+
+        # Clean-up files for next test run
+        cleanup(self.output)
+        cleanup(self.terms)
+
