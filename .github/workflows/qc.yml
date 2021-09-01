@@ -16,11 +16,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
         run: pip install .
+
       - name: Test with pytest
         run: python -m pytest
+
+      # - name: Cache dependencies
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-dependencies
+      #   with:
+      #     # npm cache files are stored in `~/.npm` on Linux/macOS
+      #     path: ~/.dependencies
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-

@@ -89,6 +89,9 @@ class TestOgerCLI(unittest.TestCase):
         stdout, stderr = process.communicate()
         print(stderr)
         print(stdout)
+
+        self.assertTrue(os.path.isfile(self.output_file))
+        self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 89)
         cleanup(self.output)
 
         # Clear output for next test

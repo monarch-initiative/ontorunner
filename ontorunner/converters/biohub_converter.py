@@ -21,7 +21,7 @@ def parse(input_filename, output_filename) -> None:
     :return: None.
     """
     counter = 0
-    OUTSTREAM = open(output_filename, "w")
+    OUTSTREAM = open(output_filename, "w+")
     header_dict = None
 
     with open(input_filename) as FH:
@@ -35,8 +35,10 @@ def parse(input_filename, output_filename) -> None:
             elements = [x.rstrip() for x in line.split("\t")]
             if any(x in elements[header_dict["category"]] for x in EXCLUDE):
                 # 'category' field is one of the ones in EXCLUDE list
-                logging.info(f"Skipping line as part \
-                               of excludes: {line.rstrip()}")
+                logging.info(
+                    f"Skipping line as part \
+                               of excludes: {line.rstrip()}"
+                )
                 continue
 
             if not elements[header_dict["name"]]:
@@ -66,9 +68,7 @@ def parse(input_filename, output_filename) -> None:
                         syn_record[2] = syn_record[2] + "_SYNONYM"
                         # Preferred form == Synonym matched
                         syn_record[4] = (
-                            syn_record[3] +
-                            "[SYNONYM_OF:" +
-                            syn_record[4] + "]"
+                            syn_record[3] + "[SYNONYM_OF:" + syn_record[4] + "]"
                         )
                         write_line(syn_record, OUTSTREAM)
             write_line(parsed_record, OUTSTREAM)
