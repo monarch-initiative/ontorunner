@@ -1,4 +1,4 @@
-name: Publish ontoRunNER to TestPyPI and PyPI
+name: Publish ontoRunNER to TestPyPI
 
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-n-publish:
-    name: Build and publish ontoRunNER to TestPyPI and PyPI
+    name: Build and publish ontoRunNER to TestPyPI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -34,3 +34,9 @@ jobs:
           --wheel
           --outdir dist/
           .
+
+      - name: Publish distribution 📦 to Test PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
