@@ -8,8 +8,8 @@ REQUIRES_PYTHON = ">=3.7.0"
 VERSION = "0.0.1"
 LICENSE = "BSD"
 
-with open("requirements.txt", "r") as FH:
-    REQUIREMENTS = FH.readlines()
+# with open("requirements.txt", "r") as FH:
+#     REQUIREMENTS = FH.readlines()
 
 EXTRAS = {}
 
@@ -36,6 +36,6 @@ setup(
         "textdistance",
         "textdistance[extras]",  # With extra libraries for maximum speed
         "pytest",
-        [r for r in REQUIREMENTS if not r.startswith("#")],
+        "OGER@git+git://github.com/OntoGene/OGER@master#egg=OGER",
     ],
 )
