@@ -1,42 +1,42 @@
-# name: Publish ontoRunNER to TestPyPI
+name: Publish ontoRunNER to TestPyPI
 
-# on:
-#   # Triggers the workflow on push or pull request events but only for the master branch
-#   push:
-#     branches: [ master ]
-#   pull_request:
-#     branches: [ master ]
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
-# jobs:
-#   build-n-publish:
-#     name: Build and publish ontoRunNER to TestPyPI
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
+jobs:
+  build-n-publish:
+    name: Build and publish ontoRunNER to TestPyPI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-#       - name: Set up Python ${{ matrix.python-version }}
-#         uses: actions/setup-python@v2
-#         with:
-#           python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
           
-#       - name: Install pypa/build
-#         run: >-
-#           python -m
-#           pip install
-#           build
-#           --user
+      - name: Install pypa/build
+        run: >-
+          python -m
+          pip install
+          build
+          --user
 
-#       - name: Build a binary wheel and a source tarball
-#         run: >-
-#           python -m
-#           build
-#           --sdist
-#           --wheel
-#           --outdir dist/
-#           .
+      - name: Build a binary wheel and a source tarball
+        run: >-
+          python -m
+          build
+          --sdist
+          --wheel
+          --outdir dist/
+          .
 
-#       - name: Publish distribution 📦 to Test PyPI
-#         uses: pypa/gh-action-pypi-publish@master
-#         with:
-#           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-#           repository_url: https://test.pypi.org/legacy/
+      - name: Publish distribution 📦 to Test PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
