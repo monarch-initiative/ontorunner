@@ -11,11 +11,19 @@ def filter_synonyms(df: pd.DataFrame) -> pd.DataFrame:
     :rtype: pd.DataFrame
     """
 
-    condition_1 = df["matched_term"].str.lower() == \
-        df["preferred_form"].str.lower()
+    condition_1 = (
+        df["matched_term"].str.lower() == df["preferred_form"].str.lower()
+    )
     condition_2 = df["entity_id"].str.contains("_SYNONYM")
-    fullConditionStatement = ~(condition_1 & condition_2)
-    return df[fullConditionStatement]
+    same_yet_syn_condition = condition_1 & condition_2
+    new_df = df[~same_yet_syn_condition]
+    tmp_df = df[same_yet_syn_condition]
+    tmp_df["entity_id"] = (
+        tmp_df["entity_id"].str.strip("_SYNONYM").drop_duplicates()
+    )
+    new_df = pd.concat([new_df, tmp_df])
+
+    return new_df
 
 
 def consolidate_rows(df: pd.DataFrame) -> pd.DataFrame:
