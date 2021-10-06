@@ -83,12 +83,12 @@ def sentencify(input_df, output_df, output_fn):
 
                     # Sometimes the term we're looking for gets separated by
                     # sentence tokenizer from NLTK
-                    # for e.g. CHEBI identifies "J. A" but the tokenizer
+                    # for e.g. CHEBI identifies "J. A"
 
                     #           PREFERRED FORM            |    ENTITY_ID
                     # j?_a?[SYNONYM_OF:GlyTouCan G98058RD]|CHEBI:146303_SYNONYM
 
-                    # object is ['Downing, J.', 'A., Cole,].
+                    # but the tokenizer object is ['Downing, J.', 'A., Cole,].
                     # In such a case, let relevant_tok = "irrelevant token"
                     if relevant_tok == []:
                         relevant_tok = ["irrelevant token: can be ignored."]
