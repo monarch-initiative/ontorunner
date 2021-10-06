@@ -80,6 +80,19 @@ def sentencify(input_df, output_df, output_fn):
                     relevant_tok = [
                         x for x in text_tok if term_of_interest in x
                     ]
+
+                    # Sometimes the term we're looking for gets separated by
+                    # sentence tokenizer from NLTK
+                    # for e.g. CHEBI identifies "J. A" but the tokenizer
+
+                    #           PREFERRED FORM            |    ENTITY_ID
+                    # j?_a?[SYNONYM_OF:GlyTouCan G98058RD]|CHEBI:146303_SYNONYM
+
+                    # object is ['Downing, J.', 'A., Cole,].
+                    # In such a case, let relevant_tok = "irrelevant token"
+                    if relevant_tok == []:
+                        relevant_tok = ["irrelevant token: can be ignored."]
+
                     single_tok = relevant_tok
                     count = 0
 
@@ -140,6 +153,8 @@ def sentencify(input_df, output_df, output_fn):
                 sub_df.to_csv(
                     output_fn, mode="a", sep="\t", header=None, index=None
                 )
+
+    os.system('say "Ontorunner has completed its run!"')
 
 
 def get_match_type(token1: str, token2: str) -> str:
