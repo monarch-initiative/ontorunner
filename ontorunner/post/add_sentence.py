@@ -51,7 +51,7 @@ def sentencify(input_df, output_df, output_fn):
             # and hence the biohub_converter codes this with a '_SYNONYM' tag.
             # In order to counter this, we need to filter these extra rows out.
             if not sub_df.empty and any(
-                sub_df["entity_id"].str.endswith("_SYNONYM")
+                sub_df["object_id"].str.endswith("_SYNONYM")
             ):
                 sub_df = filter_synonyms(sub_df)
 
@@ -213,13 +213,21 @@ def parse(input_directory, output_directory) -> None:
     output_df.columns = output_df.columns.str.replace(" ", "_").str.lower()
     # Consolidate rows where the entitys is the same
     # and recognized from multiple origins
+    output_df = output_df.rename(
+        columns={"entity_id": "object_id", "type": "object_category"}
+    )
+
     output_df = consolidate_rows(output_df)
-    output_df[["preferred_form", "match_field"]] = output_df[
+
+    output_df[["preferred_form", "object_label"]] = output_df[
         "preferred_form"
     ].str.split("\\[SYNONYM_OF:", expand=True)
 
-    output_df["match_field"] = output_df["match_field"].str.replace(
+    output_df["object_label"] = output_df["object_label"].str.replace(
         "]", "", regex=True
+    )
+    output_df["object_label"] = output_df["object_label"].fillna(
+        output_df["preferred_form"]
     )
 
     # Add column which indicates how close of a match is the recognized entity.
@@ -273,7 +281,7 @@ def parse(input_directory, output_directory) -> None:
 
     output_df["sentence"] = ""
 
-    output_df["entity_sentence_%"] = ""
+    output_df["object_sentence_%"] = ""
 
     output_df = output_df.reindex(
         columns=[
@@ -283,17 +291,17 @@ def parse(input_directory, output_directory) -> None:
             "end_position",
             "matched_term",
             "preferred_form",
-            "match_field",
+            "object_label",
             "match_type",
             "levenshtein_distance",
             "jaccard_index",
             "monge_elkan",
-            "entity_id",
+            "object_id",
             "sentence_id",
             "umls_cui",
             "origin",
             "sentence",
-            "entity_sentence_%",
+            "object_sentence_%",
         ]
     )
 
