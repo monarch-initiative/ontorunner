@@ -85,7 +85,7 @@ def sentencify(input_df, output_df, output_fn):
                     # sentence tokenizer from NLTK
                     # for e.g. CHEBI identifies "J. A"
 
-                    #           PREFERRED FORM            |    ENTITY_ID
+                    #           PREFERRED FORM            |    object_id
                     # j?_a?[SYNONYM_OF:GlyTouCan G98058RD]|CHEBI:146303_SYNONYM
 
                     # but the tokenizer object is ['Downing, J.', 'A., Cole,].
@@ -286,7 +286,7 @@ def parse(input_directory, output_directory) -> None:
     output_df = output_df.reindex(
         columns=[
             "document_id",
-            "type",
+            "object_category",
             "start_position",
             "end_position",
             "matched_term",

@@ -3,7 +3,7 @@ import pandas as pd
 
 def filter_synonyms(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Consolidate entities where '_SYNONYM' entity_id is a duplicate
+    Consolidate entities where '_SYNONYM' object_id is a duplicate
 
     :param df: Input DataFrame
     :type df: pd.DataFrame
