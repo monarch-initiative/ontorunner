@@ -5,7 +5,6 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
 
    ontorunner.converters
    ontorunner.post
@@ -20,6 +19,7 @@ ontorunner.oger\_module module
    :members:
    :undoc-members:
    :show-inheritance:
+
 
 Module contents
 ---------------
