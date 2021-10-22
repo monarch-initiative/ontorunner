@@ -51,7 +51,7 @@ def sentencify(input_df, output_df, output_fn):
             # and hence the biohub_converter codes this with a '_SYNONYM' tag.
             # In order to counter this, we need to filter these extra rows out.
             if not sub_df.empty and any(
-                sub_df["entity_id"].str.endswith("_SYNONYM")
+                sub_df["object_id"].str.endswith("_SYNONYM")
             ):
                 sub_df = filter_synonyms(sub_df)
 
@@ -85,7 +85,7 @@ def sentencify(input_df, output_df, output_fn):
                     # sentence tokenizer from NLTK
                     # for e.g. CHEBI identifies "J. A"
 
-                    #           PREFERRED FORM            |    ENTITY_ID
+                    #           PREFERRED FORM            |    object_id
                     # j?_a?[SYNONYM_OF:GlyTouCan G98058RD]|CHEBI:146303_SYNONYM
 
                     # but the tokenizer object is ['Downing, J.', 'A., Cole,].
@@ -214,11 +214,11 @@ def parse(input_directory, output_directory) -> None:
     # Consolidate rows where the entitys is the same
     # and recognized from multiple origins
     output_df = consolidate_rows(output_df)
-    output_df[["preferred_form", "match_field"]] = output_df[
+    output_df[["preferred_form", "object_label"]] = output_df[
         "preferred_form"
     ].str.split("\\[SYNONYM_OF:", expand=True)
 
-    output_df["match_field"] = output_df["match_field"].str.replace(
+    output_df["object_label"] = output_df["object_label"].str.replace(
         "]", "", regex=True
     )
 
@@ -278,17 +278,17 @@ def parse(input_directory, output_directory) -> None:
     output_df = output_df.reindex(
         columns=[
             "document_id",
-            "type",
+            "object_category",
             "start_position",
             "end_position",
             "matched_term",
             "preferred_form",
-            "match_field",
+            "object_label",
             "match_type",
             "levenshtein_distance",
             "jaccard_index",
             "monge_elkan",
-            "entity_id",
+            "object_id",
             "sentence_id",
             "umls_cui",
             "origin",
