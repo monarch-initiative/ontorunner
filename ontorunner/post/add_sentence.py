@@ -50,7 +50,9 @@ def sentencify(input_df, output_df, output_fn):
             # terms being the same, the term is registered as a synonym by KGX
             # and hence the biohub_converter codes this with a '_SYNONYM' tag.
             # In order to counter this, we need to filter these extra rows out.
-            if not sub_df.empty and any(sub_df["entity_id"].str.endswith("_SYNONYM")):
+            if not sub_df.empty and any(
+                sub_df["object_id"].str.endswith("_SYNONYM")
+            ):
                 sub_df = filter_synonyms(sub_df)
 
             if len(text_tok) == 1:
@@ -75,7 +77,22 @@ def sentencify(input_df, output_df, output_fn):
                         # will not be present in the tokenized sentence.
                         term_of_interest = str(row2["preferred_form"]).lower()
 
-                    relevant_tok = [x for x in text_tok if term_of_interest in x]
+                    relevant_tok = [
+                        x for x in text_tok if term_of_interest in x
+                    ]
+
+                    # Sometimes the term we're looking for gets separated by
+                    # sentence tokenizer from NLTK
+                    # for e.g. CHEBI identifies "J. A"
+
+                    #           PREFERRED FORM            |    object_id
+                    # j?_a?[SYNONYM_OF:GlyTouCan G98058RD]|CHEBI:146303_SYNONYM
+
+                    # but the tokenizer object is ['Downing, J.', 'A., Cole,].
+                    # In such a case, let relevant_tok = "irrelevant token"
+                    if relevant_tok == []:
+                        relevant_tok = ["irrelevant token: can be ignored."]
+
                     single_tok = relevant_tok
                     count = 0
 
@@ -102,7 +119,9 @@ def sentencify(input_df, output_df, output_fn):
                         term_of_interest = text[start_pos:end_pos]
 
                         single_tok = [
-                            x for x in relevant_tok if term_of_interest.strip() in x
+                            x
+                            for x in relevant_tok
+                            if term_of_interest.strip() in x
                         ]
 
                         if count > 30 and 1 < len(single_tok):
@@ -131,7 +150,11 @@ def sentencify(input_df, output_df, output_fn):
                     axis=1,
                 )
 
-                sub_df.to_csv(output_fn, mode="a", sep="\t", header=None, index=None)
+                sub_df.to_csv(
+                    output_fn, mode="a", sep="\t", header=None, index=None
+                )
+
+    os.system('say "Ontorunner has completed its run!"')
 
 
 def get_match_type(token1: str, token2: str) -> str:
@@ -190,19 +213,31 @@ def parse(input_directory, output_directory) -> None:
     output_df.columns = output_df.columns.str.replace(" ", "_").str.lower()
     # Consolidate rows where the entitys is the same
     # and recognized from multiple origins
+    output_df = output_df.rename(
+        columns={"entity_id": "object_id", "type": "object_category"}
+    )
+
     output_df = consolidate_rows(output_df)
-    output_df[["preferred_form", "match_field"]] = output_df[
+
+    output_df[["preferred_form", "object_label"]] = output_df[
         "preferred_form"
     ].str.split("\\[SYNONYM_OF:", expand=True)
 
-    output_df["match_field"] = output_df["match_field"].str.replace("]", "", regex=True)
+    output_df["object_label"] = output_df["object_label"].str.replace(
+        "]", "", regex=True
+    )
+    output_df["object_label"] = output_df["object_label"].fillna(
+        output_df["preferred_form"]
+    )
 
     # Add column which indicates how close of a match is the recognized entity.
     output_df.insert(
         6,
         "match_type",
         output_df.apply(
-            lambda x: get_match_type(x.matched_term.lower(), x.preferred_form.lower()),
+            lambda x: get_match_type(
+                x.matched_term.lower(), x.preferred_form.lower()
+            ),
             axis=1,
         ),
     )
@@ -246,27 +281,27 @@ def parse(input_directory, output_directory) -> None:
 
     output_df["sentence"] = ""
 
-    output_df["entity_sentence_%"] = ""
+    output_df["object_sentence_%"] = ""
 
     output_df = output_df.reindex(
         columns=[
             "document_id",
-            "type",
+            "object_category",
             "start_position",
             "end_position",
             "matched_term",
             "preferred_form",
-            "match_field",
+            "object_label",
             "match_type",
             "levenshtein_distance",
             "jaccard_index",
             "monge_elkan",
-            "entity_id",
+            "object_id",
             "sentence_id",
             "umls_cui",
             "origin",
             "sentence",
-            "entity_sentence_%",
+            "object_sentence_%",
         ]
     )
 
@@ -278,7 +313,9 @@ def parse(input_directory, output_directory) -> None:
 
     if len(input_list_tsv) > 0:
         for f in input_list_tsv:
-            input_df = pd.read_csv(f, sep="\t", low_memory=False, index_col=None)
+            input_df = pd.read_csv(
+                f, sep="\t", low_memory=False, index_col=None
+            )
             sentencify(input_df, output_df, final_output_file)
 
     if len(input_list_txt) > 0:
@@ -289,12 +326,16 @@ def parse(input_directory, output_directory) -> None:
             sample_bytes = 128
             dialect = sniffer.sniff(open(f).readline(sample_bytes))
             if dialect.delimiter == "\t" or dialect.delimiter == ",":
-                input_df = pd.read_csv(f, sep="\t", low_memory=False, index_col=None)
+                input_df = pd.read_csv(
+                    f, sep="\t", low_memory=False, index_col=None
+                )
             else:
                 id = f.split("/")[-1].split(".txt")[0]
                 with open(f, "r") as fn:
                     text = fn.readlines()
                     text = "".join(text).replace("\n", " ")
-                input_df = input_df.append({"id": id, "text": text}, ignore_index=True)
+                input_df = input_df.append(
+                    {"id": id, "text": text}, ignore_index=True
+                )
 
             sentencify(input_df, output_df, final_output_file)

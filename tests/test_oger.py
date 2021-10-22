@@ -44,7 +44,7 @@ class TestOger(unittest.TestCase):
     def test_run_oger(self) -> None:
         run_oger(settings=self.settings)
         self.assertTrue(os.path.isfile(self.output_file))
-        self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 89)
+        self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 148)
 
         # Clean-up files for next test run
         cleanup(self.output)
