@@ -1,42 +1,38 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>ontorunner.post package &mdash; ontoRunNER 0.0.1 documentation</title>
   
 
   
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
+  
   
   
 
   
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="setup module" href="setup.html" />
@@ -77,7 +73,6 @@
           
         </div>
 
-        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -108,7 +103,6 @@
             
           
         </div>
-        
       </div>
     </nav>
 
@@ -143,13 +137,11 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
           <li><a href="modules.html">ontorunner</a> &raquo;</li>
         
@@ -160,7 +152,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="_sources/ontorunner.post.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -181,14 +173,14 @@
 </div>
 <div class="section" id="module-ontorunner.post.add_sentence">
 <span id="ontorunner-post-add-sentence-module"></span><h2>ontorunner.post.add_sentence module<a class="headerlink" href="#module-ontorunner.post.add_sentence" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.post.add_sentence.find_extensions">
-<code class="sig-prename descclassname">ontorunner.post.add_sentence.</code><code class="sig-name descname">find_extensions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dr</span></em>, <em class="sig-param"><span class="n">ext</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ontorunner.post.add_sentence.find_extensions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ontorunner.post.add_sentence.</code><code class="sig-name descname">find_extensions</code><span class="sig-paren">(</span><em class="sig-param">dr</em>, <em class="sig-param">ext</em><span class="sig-paren">)</span><a class="headerlink" href="#ontorunner.post.add_sentence.find_extensions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.post.add_sentence.get_match_type">
-<code class="sig-prename descclassname">ontorunner.post.add_sentence.</code><code class="sig-name descname">get_match_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token1</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">token2</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#ontorunner.post.add_sentence.get_match_type" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ontorunner.post.add_sentence.</code><code class="sig-name descname">get_match_type</code><span class="sig-paren">(</span><em class="sig-param">token1: str</em>, <em class="sig-param">token2: str</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#ontorunner.post.add_sentence.get_match_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return type of token match</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -206,9 +198,9 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.post.add_sentence.parse">
-<code class="sig-prename descclassname">ontorunner.post.add_sentence.</code><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_directory</span></em>, <em class="sig-param"><span class="n">output_directory</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.post.add_sentence.parse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ontorunner.post.add_sentence.</code><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param">input_directory</em>, <em class="sig-param">output_directory</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.post.add_sentence.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>This parses the OGER output and adds sentences of relevant tokenized terms
 for context to the reviewer.
 :param input_directory: (str) Input directory path.
@@ -216,9 +208,9 @@ for context to the reviewer.
 :return: None.</p>
 </dd></dl>
 
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.post.add_sentence.sentencify">
-<code class="sig-prename descclassname">ontorunner.post.add_sentence.</code><code class="sig-name descname">sentencify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_df</span></em>, <em class="sig-param"><span class="n">output_df</span></em>, <em class="sig-param"><span class="n">output_fn</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ontorunner.post.add_sentence.sentencify" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ontorunner.post.add_sentence.</code><code class="sig-name descname">sentencify</code><span class="sig-paren">(</span><em class="sig-param">input_df</em>, <em class="sig-param">output_df</em>, <em class="sig-param">output_fn</em><span class="sig-paren">)</span><a class="headerlink" href="#ontorunner.post.add_sentence.sentencify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add relevant sentences to the tokenized term in every row of a
 pandas DataFrame
 :param df: (DataFrame) pandas DataFrame.
@@ -228,9 +220,9 @@ pandas DataFrame
 </div>
 <div class="section" id="module-ontorunner.post.util">
 <span id="ontorunner-post-util-module"></span><h2>ontorunner.post.util module<a class="headerlink" href="#module-ontorunner.post.util" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.post.util.consolidate_rows">
-<code class="sig-prename descclassname">ontorunner.post.util.</code><code class="sig-name descname">consolidate_rows</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#ontorunner.post.util.consolidate_rows" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ontorunner.post.util.</code><code class="sig-name descname">consolidate_rows</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#ontorunner.post.util.consolidate_rows" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group rows by all columns except “origin” to remove redundancies
 created by entity recognition from multiple sources/ontologies</p>
 <dl class="field-list simple">
@@ -246,10 +238,10 @@ created by entity recognition from multiple sources/ontologies</p>
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.post.util.filter_synonyms">
-<code class="sig-prename descclassname">ontorunner.post.util.</code><code class="sig-name descname">filter_synonyms</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#ontorunner.post.util.filter_synonyms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Consolidate entities where ‘_SYNONYM’ entity_id is a duplicate</p>
+<code class="sig-prename descclassname">ontorunner.post.util.</code><code class="sig-name descname">filter_synonyms</code><span class="sig-paren">(</span><em class="sig-param">df: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#ontorunner.post.util.filter_synonyms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Consolidate entities where ‘_SYNONYM’ object_id is a duplicate</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>df</strong> (<em>pd.DataFrame</em>) – Input DataFrame</p>
@@ -274,29 +266,29 @@ created by entity recognition from multiple sources/ontologies</p>
            
           </div>
           <footer>
+  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="setup.html" class="btn btn-neutral float-right" title="setup module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ontorunner.converters.html" class="btn btn-neutral float-left" title="ontorunner.converters package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+        <a href="setup.html" class="btn btn-neutral float-right" title="setup module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ontorunner.converters.html" class="btn btn-neutral float-left" title="ontorunner.converters package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Harshad Hegde.
+        &copy; Copyright 2021, Harshad Hegde
 
     </p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 
@@ -304,6 +296,7 @@ created by entity recognition from multiple sources/ontologies</p>
 
   </div>
   
+
 
   <script type="text/javascript">
       jQuery(function () {

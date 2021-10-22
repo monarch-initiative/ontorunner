@@ -1,42 +1,38 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>ontorunner.converters package &mdash; ontoRunNER 0.0.1 documentation</title>
   
 
   
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
+  
   
   
 
   
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="ontorunner.post package" href="ontorunner.post.html" />
@@ -77,7 +73,6 @@
           
         </div>
 
-        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -108,7 +103,6 @@
             
           
         </div>
-        
       </div>
     </nav>
 
@@ -143,13 +137,11 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
           <li><a href="modules.html">ontorunner</a> &raquo;</li>
         
@@ -160,7 +152,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="_sources/ontorunner.converters.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -181,9 +173,9 @@
 </div>
 <div class="section" id="module-ontorunner.converters.biohub_converter">
 <span id="ontorunner-converters-biohub-converter-module"></span><h2>ontorunner.converters.biohub_converter module<a class="headerlink" href="#module-ontorunner.converters.biohub_converter" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.converters.biohub_converter.parse">
-<code class="sig-prename descclassname">ontorunner.converters.biohub_converter.</code><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_filename</span></em>, <em class="sig-param"><span class="n">output_filename</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.converters.biohub_converter.parse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ontorunner.converters.biohub_converter.</code><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param">input_filename</em>, <em class="sig-param">output_filename</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.converters.biohub_converter.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the typical KGX compatible nodes TSV into Bio Term Hub format
 for compatibility with OGER.
 Mapping of columns from KGX format to Bio Term Hub format,
@@ -206,9 +198,9 @@ Mapping of columns from KGX format to Bio Term Hub format,
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.converters.biohub_converter.parse_header">
-<code class="sig-prename descclassname">ontorunner.converters.biohub_converter.</code><code class="sig-name descname">parse_header</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">elements</span></em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#ontorunner.converters.biohub_converter.parse_header" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ontorunner.converters.biohub_converter.</code><code class="sig-name descname">parse_header</code><span class="sig-paren">(</span><em class="sig-param">elements</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#ontorunner.converters.biohub_converter.parse_header" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse headers from nodes TSV.</p>
 <p>:param elements:The header record.
 :type elements:List
@@ -216,9 +208,9 @@ Mapping of columns from KGX format to Bio Term Hub format,
 :rtype:Dict</p>
 </dd></dl>
 
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.converters.biohub_converter.write_line">
-<code class="sig-prename descclassname">ontorunner.converters.biohub_converter.</code><code class="sig-name descname">write_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">elements</span></em>, <em class="sig-param"><span class="n">OUTSTREAM</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.converters.biohub_converter.write_line" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ontorunner.converters.biohub_converter.</code><code class="sig-name descname">write_line</code><span class="sig-paren">(</span><em class="sig-param">elements</em>, <em class="sig-param">OUTSTREAM</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.converters.biohub_converter.write_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write line to OUTSTREAM.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -244,29 +236,29 @@ Mapping of columns from KGX format to Bio Term Hub format,
            
           </div>
           <footer>
+  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="ontorunner.post.html" class="btn btn-neutral float-right" title="ontorunner.post package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="ontorunner.html" class="btn btn-neutral float-left" title="ontorunner package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+        <a href="ontorunner.post.html" class="btn btn-neutral float-right" title="ontorunner.post package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ontorunner.html" class="btn btn-neutral float-left" title="ontorunner package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Harshad Hegde.
+        &copy; Copyright 2021, Harshad Hegde
 
     </p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 
@@ -274,6 +266,7 @@ Mapping of columns from KGX format to Bio Term Hub format,
 
   </div>
   
+
 
   <script type="text/javascript">
       jQuery(function () {

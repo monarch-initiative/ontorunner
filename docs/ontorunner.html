@@ -1,42 +1,38 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>ontorunner package &mdash; ontoRunNER 0.0.1 documentation</title>
   
 
   
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
+  
   
   
 
   
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="ontorunner.converters package" href="ontorunner.converters.html" />
@@ -77,7 +73,6 @@
           
         </div>
 
-        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -108,7 +103,6 @@
             
           
         </div>
-        
       </div>
     </nav>
 
@@ -143,13 +137,11 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
           <li><a href="modules.html">ontorunner</a> &raquo;</li>
         
@@ -158,7 +150,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="_sources/ontorunner.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -199,9 +191,9 @@
 </div>
 <div class="section" id="module-ontorunner.oger_module">
 <span id="ontorunner-oger-module-module"></span><h2>ontorunner.oger_module module<a class="headerlink" href="#module-ontorunner.oger_module" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.oger_module.json2tsv">
-<code class="sig-prename descclassname">ontorunner.oger_module.</code><code class="sig-name descname">json2tsv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.oger_module.json2tsv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ontorunner.oger_module.</code><code class="sig-name descname">json2tsv</code><span class="sig-paren">(</span><em class="sig-param">input</em>, <em class="sig-param">output</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.oger_module.json2tsv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts an JSON file into ‘nodes’ and ‘edges’ TSV.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -216,9 +208,9 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.oger_module.prepare_termlist">
-<code class="sig-prename descclassname">ontorunner.oger_module.</code><code class="sig-name descname">prepare_termlist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="n">output</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.oger_module.prepare_termlist" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ontorunner.oger_module.</code><code class="sig-name descname">prepare_termlist</code><span class="sig-paren">(</span><em class="sig-param">input</em>, <em class="sig-param">output</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.oger_module.prepare_termlist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a Bio Term Hub formatted term list for use with OGER.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -233,9 +225,9 @@
 </dl>
 </dd></dl>
 
-<dl class="py function">
+<dl class="function">
 <dt id="ontorunner.oger_module.run_oger">
-<code class="sig-prename descclassname">ontorunner.oger_module.</code><code class="sig-name descname">run_oger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">content</span><span class="o">=</span><span class="default_value">'data/input'</span></em>, <em class="sig-param"><span class="n">termlist</span><span class="o">=</span><span class="default_value">'data/terms/DICT.tsv'</span></em>, <em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">'data/output/'</span></em>, <em class="sig-param"><span class="n">output_format</span><span class="o">=</span><span class="default_value">'tsv'</span></em>, <em class="sig-param"><span class="n">settings</span><span class="o">=</span><span class="default_value">'settings.ini'</span></em>, <em class="sig-param"><span class="n">workers</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.oger_module.run_oger" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ontorunner.oger_module.</code><code class="sig-name descname">run_oger</code><span class="sig-paren">(</span><em class="sig-param">content='data/input'</em>, <em class="sig-param">termlist='data/terms/DICT.tsv'</em>, <em class="sig-param">output='data/output/'</em>, <em class="sig-param">output_format='tsv'</em>, <em class="sig-param">settings='settings.ini'</em>, <em class="sig-param">workers=1</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#ontorunner.oger_module.run_oger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run Oger</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -266,29 +258,29 @@ s(default:’settings.ini’).
            
           </div>
           <footer>
+  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="ontorunner.converters.html" class="btn btn-neutral float-right" title="ontorunner.converters package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="modules.html" class="btn btn-neutral float-left" title="ontorunner" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+        <a href="ontorunner.converters.html" class="btn btn-neutral float-right" title="ontorunner.converters package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral float-left" title="ontorunner" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Harshad Hegde.
+        &copy; Copyright 2021, Harshad Hegde
 
     </p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 
@@ -296,6 +288,7 @@ s(default:’settings.ini’).
 
   </div>
   
+
 
   <script type="text/javascript">
       jQuery(function () {
