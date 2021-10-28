@@ -18,11 +18,8 @@ def filter_synonyms(df: pd.DataFrame) -> pd.DataFrame:
     same_yet_syn_condition = condition_1 & condition_2
     new_df = df[~same_yet_syn_condition]
     tmp_df = df[same_yet_syn_condition]
-    tmp_df["object_id"] = (
-        tmp_df["object_id"].str.strip("_SYNONYM").drop_duplicates()
-    )
+    tmp_df["object_id"] = tmp_df["object_id"].str.rstrip("_SYNONYM")
     new_df = pd.concat([new_df, tmp_df])
-
     return new_df
 
 
