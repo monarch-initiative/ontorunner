@@ -305,7 +305,7 @@ def parse(input_directory, output_directory) -> None:
         ]
     )
 
-    final_output_file = os.path.join(output_directory, "ontoRunNER_Output.tsv")
+    final_output_file = output_file.replace(".tsv", "_ontoRunNER.tsv")
 
     pd.DataFrame(output_df.columns).T.to_csv(
         final_output_file, sep="\t", index=None, header=None
