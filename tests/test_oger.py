@@ -21,7 +21,7 @@ class TestOger(unittest.TestCase):
         self.txt = os.path.join(self.input, "test.txt")
         self.json = os.path.join(self.input, "envo.json")
         self.output = f"{data_dir}/output/"
-        self.output_file = os.path.join(self.output, "ontoRunNER_Output.tsv")
+        self.output_file = os.path.join(self.output, "test_ontoRunNER.tsv")
         self.terms = f"{data_dir}/terms/"
         self.termlist = os.path.join(self.terms, "envo_termlist.tsv")
         self.settings = f"{cwd}/settings.ini"
