@@ -100,7 +100,8 @@ def sentencify(input_df, output_df, output_fn):
 
                     # if len(ngram) == 1:
                     #     if ngram[0] in word_tok_freq.keys():
-                    #         sub_df.loc[i, "matched_term_freq"] = word_tok_freq[
+                    #         sub_df.loc[i, "matched_term_freq"]
+                    #               = word_tok_freq[
                     #             term_of_interest.strip()
                     #         ]
                     #     else:
@@ -113,7 +114,8 @@ def sentencify(input_df, output_df, output_fn):
                     #         freq = 0
 
                     #         for key in key_match:
-                    #             # ** Check how similar the tokens are to decide frequency
+                    #             # * Check how similar the
+                    #             # * tokens are to decide frequency
                     #             similarity = textdistance.jaccard.distance(
                     #                 key, ngram[0]
                     #             )
