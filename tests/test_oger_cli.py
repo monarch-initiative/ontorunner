@@ -22,16 +22,16 @@ class TestOgerCLI(unittest.TestCase):
         self.txt = os.path.join(self.input, "test.txt")
         self.json = os.path.join(self.input, "envo.json")
         self.output = f"{data_dir}/output/"
-        self.output_file = os.path.join(self.output, "ontoRunNER_Output.tsv")
+        self.output_file = os.path.join(self.output, "test_ontoRunNER.tsv")
         self.terms = f"{data_dir}/terms/"
         self.termlist = os.path.join(self.terms, "envo_termlist.tsv")
         self.settings = f"{cwd}/settings.ini"
         print("setup runs here")
 
-    def test_json2tsv(self) -> None:
+    def test_cli_json2tsv(self) -> None:
         ofilename = os.path.join(self.output, "envo")
         ofiles = [ofilename + "_nodes.tsv", ofilename + "_edges.tsv"]
-        ofile_rows = [6405, 9643]
+        cli_ofile_rows = [6405, 9645]
         process = subprocess.Popen(
             [
                 "python",
@@ -53,9 +53,11 @@ class TestOgerCLI(unittest.TestCase):
 
         for i, file in enumerate(ofiles):
             self.assertTrue(os.path.isfile(file))
-            self.assertEqual(len(pd.read_csv(file, sep="\t")), ofile_rows[i])
+            self.assertEqual(
+                len(pd.read_csv(file, sep="\t")), cli_ofile_rows[i]
+            )
 
-    def test_prepare_termlist(self) -> None:
+    def test_cli_prepare_termlist(self) -> None:
         ifile = os.path.join(self.output, "envo_nodes.tsv")
 
         process = subprocess.Popen(
@@ -79,7 +81,7 @@ class TestOgerCLI(unittest.TestCase):
 
         self.assertEqual(len(pd.read_csv(self.termlist, sep="\t")), 11726)
 
-    def test_run_oger_with_settings(self) -> None:
+    def test_cli_run_oger_with_settings(self) -> None:
         s = self.settings
         process = subprocess.Popen(
             ["python", "-m", "ontorunner.oger_module", "run-oger", "-s", s],
@@ -93,11 +95,11 @@ class TestOgerCLI(unittest.TestCase):
 
         self.assertTrue(os.path.isfile(self.output_file))
         self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 148)
-        cleanup(self.output)
+        # cleanup(self.output)
 
         # Clear output for next test
 
-    def test_run_oger_without_settings(self) -> None:
+    def test_cli_run_oger_without_settings(self) -> None:
         process = subprocess.Popen(
             [
                 "python",
@@ -109,7 +111,7 @@ class TestOgerCLI(unittest.TestCase):
                 "-t",
                 self.termlist,
                 "-o",
-                os.path.join(self.output, "nlpOutput.tsv"),
+                self.output_file,
                 "-f",
                 "tsv",
             ],
@@ -122,7 +124,7 @@ class TestOgerCLI(unittest.TestCase):
         print(stdout)
 
         self.assertTrue(os.path.isfile(self.output_file))
-        self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 97)
+        self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 148)
 
         # Clean-up files for next test run
         cleanup(self.output)

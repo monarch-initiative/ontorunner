@@ -136,5 +136,4 @@ data/terms/*
 sphinx/_build
 **/.DS_Store
 
-tests/data/output/*
-tests/data/terms/envo_termlist.tsv
+ontorunner/settings.ini

@@ -4,6 +4,7 @@ import pandas as pd
 # from nltk.corpus.reader.wordnet import NOUN, VERB
 from nltk.stem.wordnet import WordNetLemmatizer
 
+# from nltk import ngrams, FreqDist
 # from textdistance.algorithms.edit_based import Levenshtein
 
 import csv
@@ -12,6 +13,8 @@ from glob import glob
 
 import nltk
 import textdistance
+
+# import logging
 
 # from pandas.core.arrays.categorical import contains
 
@@ -45,6 +48,16 @@ def sentencify(input_df, output_df, output_fn):
                 .replace("\r", "",)
             )
             text_tok = nltk.sent_tokenize(text)
+            # ** This block is for freq count of term in text
+            # # Calcualte frquencies of words and phrases
+            # word_tok = nltk.word_tokenize(text.lower())
+            # # This gets freq count for each word
+            # word_tok_freq = FreqDist(word_tok)
+            # # This will capture phrases and corresponding frequencies
+            # phrases = dict()
+            # for size in 2, 3, 4, 5:
+            #     phrases[size] = FreqDist(ngrams(word_tok, size))
+
             sub_df = output_df[output_df["document_id"] == idx]
             # In certain instances, in spite of the 'matched' and 'preferred'
             # terms being the same, the term is registered as a synonym by KGX
@@ -80,6 +93,50 @@ def sentencify(input_df, output_df, output_fn):
                     relevant_tok = [
                         x for x in text_tok if term_of_interest in x
                     ]
+
+                    # ** This block is for freq count of term in text ****
+                    # # Add frequency count for the `term_of_interest`
+                    # ngram = term_of_interest.split()
+
+                    # if len(ngram) == 1:
+                    #     if ngram[0] in word_tok_freq.keys():
+                    #         sub_df.loc[i, "matched_term_freq"]
+                    #               = word_tok_freq[
+                    #             term_of_interest.strip()
+                    #         ]
+                    #     else:
+                    #         key_match = [
+                    #             key
+                    #             for key in word_tok_freq.keys()
+                    #             if ngram[0] in key and "-" in key
+                    #         ]
+
+                    #         freq = 0
+
+                    #         for key in key_match:
+                    #             # * Check how similar the
+                    #             # * tokens are to decide frequency
+                    #             similarity = textdistance.jaccard.distance(
+                    #                 key, ngram[0]
+                    #             )
+                    #             if similarity <= 0.40:
+                    #                 freq += word_tok_freq[key]
+                    #             import pdb
+
+                    #             pdb.set_trace()
+
+                    #         if freq > 0:
+                    #             sub_df.loc[i, "matched_term_freq"] = freq
+
+                    # elif len(ngram) > 1:
+                    #     sub_df.loc[i, "matched_term_freq"] = phrases[
+                    #         len(ngram)
+                    #     ][tuple(ngram)]
+                    # else:
+                    #     logging.warning(
+                    #         f"Term: {term_of_interest} => no frequency count"
+                    #     )
+                    # **********************************************************
 
                     # Sometimes the term we're looking for gets separated by
                     # sentence tokenizer from NLTK
@@ -154,8 +211,6 @@ def sentencify(input_df, output_df, output_fn):
                     output_fn, mode="a", sep="\t", header=None, index=None
                 )
 
-    os.system('say "Ontorunner has completed its run!"')
-
 
 def get_match_type(token1: str, token2: str) -> str:
     """
@@ -202,140 +257,175 @@ def parse(input_directory, output_directory) -> None:
     input_list_tsv = find_extensions(input_directory, "tsv")
     input_list_txt = find_extensions(input_directory, "txt")
     output_files = find_extensions(output_directory, "tsv")
-    output_file = [
+    output_file_list = [
         x
         for x in output_files
         if "_node" not in x
         if "_edge" not in x
         if "ontoRunNER" not in x
-    ][0]
-    output_df = pd.read_csv(output_file, sep="\t", low_memory=False)
-    output_df.columns = output_df.columns.str.replace(" ", "_").str.lower()
-    # Consolidate rows where the entitys is the same
-    # and recognized from multiple origins
-    output_df = output_df.rename(
-        columns={"entity_id": "object_id", "type": "object_category"}
-    )
+    ]
+    for output_file in output_file_list:
+        output_df = pd.read_csv(output_file, sep="\t", low_memory=False)
+        output_df.columns = output_df.columns.str.replace(" ", "_").str.lower()
+        # Consolidate rows where the entitys is the same
+        # and recognized from multiple origins
+        output_df = output_df.rename(
+            columns={"entity_id": "object_id", "type": "object_category"}
+        )
 
-    output_df = consolidate_rows(output_df)
+        output_df = consolidate_rows(output_df)
 
-    output_df[["preferred_form", "object_label"]] = output_df[
-        "preferred_form"
-    ].str.split("\\[SYNONYM_OF:", expand=True)
+        output_df[["preferred_form", "object_label"]] = output_df[
+            "preferred_form"
+        ].str.split("\\[SYNONYM_OF:", expand=True)
 
-    output_df["object_label"] = output_df["object_label"].str.replace(
-        "]", "", regex=True
-    )
-    output_df["object_label"] = output_df["object_label"].fillna(
-        output_df["preferred_form"]
-    )
+        output_df["object_label"] = output_df["object_label"].str.replace(
+            "]", "", regex=True
+        )
+        output_df["object_label"] = output_df["object_label"].fillna(
+            output_df["preferred_form"]
+        )
 
-    # Add column which indicates how close of a match is the recognized entity.
-    output_df.insert(
-        6,
-        "match_type",
-        output_df.apply(
-            lambda x: get_match_type(
-                x.matched_term.lower(), x.preferred_form.lower()
-            ),
-            axis=1,
-        ),
-    )
+        doc_label_df = output_df[
+            ["document_id", "object_label"]
+        ].drop_duplicates()
 
-    # Levenshtein distances
-    output_df.insert(
-        7,
-        "levenshtein_distance",
-        output_df.apply(
-            lambda x: textdistance.levenshtein.distance(
-                x.matched_term.lower(), x.preferred_form.lower()
-            ),
-            axis=1,
-        ),
-    )
+        total_docs = len(output_df["document_id"].drop_duplicates())
 
-    # Jaccard Index
+        doc_count_df = (
+            doc_label_df.groupby("object_label")
+            .size()
+            .sort_values(ascending=False)
+            .reset_index(name="doc_count")
+        )
+        # This new column calculates the ratio:
+        # (# of documents where the object_label appears) / (Total # of docs)
+        doc_count_df["object_label_doc_ratio"] = (
+            doc_count_df["doc_count"] / total_docs
+        )
 
-    output_df.insert(
-        8,
-        "jaccard_index",
-        output_df.apply(
-            lambda x: textdistance.jaccard.distance(
-                x.matched_term.lower(), x.preferred_form.lower()
-            ),
-            axis=1,
-        ),
-    )
+        output_df = output_df.merge(
+            doc_count_df, how="left", on="object_label"
+        )
 
-    # Monge-Elkan
-    output_df.insert(
-        9,
-        "monge_elkan",
-        output_df.apply(
-            lambda x: textdistance.monge_elkan.distance(
-                x.matched_term.lower(), x.preferred_form.lower()
-            ),
-            axis=1,
-        ),
-    )
+        # label_count_df = (
+        #     doc_label_df.groupby(["document_id", "object_label"])
+        #     .size()
+        #     .sort_values(ascending=False)
+        #     .reset_index(name="doc_label_count")
+        # )
 
-    output_df["sentence"] = ""
-
-    output_df["object_sentence_%"] = ""
-
-    output_df = output_df.reindex(
-        columns=[
-            "document_id",
-            "object_category",
-            "start_position",
-            "end_position",
-            "matched_term",
-            "preferred_form",
-            "object_label",
+        # Add column which indicates how close
+        # of a match is the recognized entity.
+        output_df.insert(
+            6,
             "match_type",
+            output_df.apply(
+                lambda x: get_match_type(
+                    x.matched_term.lower(), x.preferred_form.lower()
+                ),
+                axis=1,
+            ),
+        )
+
+        # Levenshtein distances
+        output_df.insert(
+            7,
             "levenshtein_distance",
+            output_df.apply(
+                lambda x: textdistance.levenshtein.distance(
+                    x.matched_term.lower(), x.preferred_form.lower()
+                ),
+                axis=1,
+            ),
+        )
+
+        # Jaccard Index
+
+        output_df.insert(
+            8,
             "jaccard_index",
+            output_df.apply(
+                lambda x: textdistance.jaccard.distance(
+                    x.matched_term.lower(), x.preferred_form.lower()
+                ),
+                axis=1,
+            ),
+        )
+
+        # Monge-Elkan
+        output_df.insert(
+            9,
             "monge_elkan",
-            "object_id",
-            "sentence_id",
-            "umls_cui",
-            "origin",
-            "sentence",
-            "object_sentence_%",
-        ]
-    )
+            output_df.apply(
+                lambda x: textdistance.monge_elkan.distance(
+                    x.matched_term.lower(), x.preferred_form.lower()
+                ),
+                axis=1,
+            ),
+        )
 
-    final_output_file = os.path.join(output_directory, "ontoRunNER_Output.tsv")
+        output_df["sentence"] = ""
 
-    pd.DataFrame(output_df.columns).T.to_csv(
-        final_output_file, sep="\t", index=None, header=None
-    )
+        output_df["object_sentence_%"] = ""
 
-    if len(input_list_tsv) > 0:
-        for f in input_list_tsv:
-            input_df = pd.read_csv(
-                f, sep="\t", low_memory=False, index_col=None
-            )
-            sentencify(input_df, output_df, final_output_file)
+        output_df = output_df.reindex(
+            columns=[
+                "document_id",
+                "object_category",
+                "start_position",
+                "end_position",
+                "matched_term",
+                "preferred_form",
+                "object_label",
+                "doc_count",
+                "object_label_doc_ratio",
+                "match_type",
+                "levenshtein_distance",
+                "jaccard_index",
+                "monge_elkan",
+                "object_id",
+                "sentence_id",
+                "umls_cui",
+                "origin",
+                "sentence",
+                "object_sentence_%",
+            ]
+        )
 
-    if len(input_list_txt) > 0:
-        # Read each text file such that Id = filename and text = full text
-        for f in input_list_txt:
-            input_df = pd.DataFrame(columns=["id", "text"])
-            sniffer = csv.Sniffer()
-            sample_bytes = 128
-            dialect = sniffer.sniff(open(f).readline(sample_bytes))
-            if dialect.delimiter == "\t" or dialect.delimiter == ",":
+        final_output_file = output_file.replace(".tsv", "_ontoRunNER.tsv")
+
+        pd.DataFrame(output_df.columns).T.to_csv(
+            final_output_file, sep="\t", index=None, header=None
+        )
+
+        if len(input_list_tsv) > 0:
+            for f in input_list_tsv:
                 input_df = pd.read_csv(
                     f, sep="\t", low_memory=False, index_col=None
                 )
-            else:
-                id = f.split("/")[-1].split(".txt")[0]
-                with open(f, "r") as fn:
-                    text = fn.readlines()
-                    text = "".join(text).replace("\n", " ")
-                input_df = input_df.append(
-                    {"id": id, "text": text}, ignore_index=True
-                )
+                sentencify(input_df, output_df, final_output_file)
 
-            sentencify(input_df, output_df, final_output_file)
+        if len(input_list_txt) > 0:
+            # Read each text file such that Id = filename and text = full text
+            for f in input_list_txt:
+                input_df = pd.DataFrame(columns=["id", "text"])
+                sniffer = csv.Sniffer()
+                sample_bytes = 128
+                dialect = sniffer.sniff(open(f).readline(sample_bytes))
+                if dialect.delimiter == "\t" or dialect.delimiter == ",":
+                    input_df = pd.read_csv(
+                        f, sep="\t", low_memory=False, index_col=None
+                    )
+                else:
+                    id = f.split("/")[-1].split(".txt")[0]
+                    with open(f, "r") as fn:
+                        text = fn.readlines()
+                        text = "".join(text).replace("\n", " ")
+                    input_df = input_df.append(
+                        {"id": id, "text": text}, ignore_index=True
+                    )
+
+                sentencify(input_df, output_df, final_output_file)
+
+    os.system('say "Ontorunner has completed its run!"')

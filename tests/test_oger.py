@@ -21,7 +21,7 @@ class TestOger(unittest.TestCase):
         self.txt = os.path.join(self.input, "test.txt")
         self.json = os.path.join(self.input, "envo.json")
         self.output = f"{data_dir}/output/"
-        self.output_file = os.path.join(self.output, "ontoRunNER_Output.tsv")
+        self.output_file = os.path.join(self.output, "test_ontoRunNER.tsv")
         self.terms = f"{data_dir}/terms/"
         self.termlist = os.path.join(self.terms, "envo_termlist.tsv")
         self.settings = f"{cwd}/settings.ini"
@@ -31,7 +31,7 @@ class TestOger(unittest.TestCase):
         ofilename = os.path.join(self.output, "envo")
         json2tsv(self.json, ofilename)
         ofiles = [ofilename + "_nodes.tsv", ofilename + "_edges.tsv"]
-        ofile_rows = [6405, 9643]
+        ofile_rows = [6405, 9645]
         for i, file in enumerate(ofiles):
             self.assertTrue(os.path.isfile(file))
             self.assertEqual(len(pd.read_csv(file, sep="\t")), ofile_rows[i])
