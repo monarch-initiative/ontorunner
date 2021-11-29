@@ -1,8 +1,10 @@
+from ctypes import pydll
 from ontorunner.post.util import filter_synonyms, consolidate_rows
 import pandas as pd
 
 # from nltk.corpus.reader.wordnet import NOUN, VERB
 from nltk.stem.wordnet import WordNetLemmatizer
+from nltk import ngrams, FreqDist
 
 # from textdistance.algorithms.edit_based import Levenshtein
 
@@ -12,6 +14,7 @@ from glob import glob
 
 import nltk
 import textdistance
+import logging
 
 # from pandas.core.arrays.categorical import contains
 
@@ -45,6 +48,16 @@ def sentencify(input_df, output_df, output_fn):
                 .replace("\r", "",)
             )
             text_tok = nltk.sent_tokenize(text)
+            # ** This block is for freq count of term in text
+            # # Calcualte frquencies of words and phrases
+            # word_tok = nltk.word_tokenize(text.lower())
+            # # This gets freq count for each word
+            # word_tok_freq = FreqDist(word_tok)
+            # # This will capture phrases and corresponding frequencies
+            # phrases = dict()
+            # for size in 2, 3, 4, 5:
+            #     phrases[size] = FreqDist(ngrams(word_tok, size))
+
             sub_df = output_df[output_df["document_id"] == idx]
             # In certain instances, in spite of the 'matched' and 'preferred'
             # terms being the same, the term is registered as a synonym by KGX
@@ -80,6 +93,48 @@ def sentencify(input_df, output_df, output_fn):
                     relevant_tok = [
                         x for x in text_tok if term_of_interest in x
                     ]
+
+                    # ** This block is for freq count of term in text ****
+                    # # Add frequency count for the `term_of_interest`
+                    # ngram = term_of_interest.split()
+
+                    # if len(ngram) == 1:
+                    #     if ngram[0] in word_tok_freq.keys():
+                    #         sub_df.loc[i, "matched_term_freq"] = word_tok_freq[
+                    #             term_of_interest.strip()
+                    #         ]
+                    #     else:
+                    #         key_match = [
+                    #             key
+                    #             for key in word_tok_freq.keys()
+                    #             if ngram[0] in key and "-" in key
+                    #         ]
+
+                    #         freq = 0
+
+                    #         for key in key_match:
+                    #             # ** Check how similar the tokens are to decide frequency
+                    #             similarity = textdistance.jaccard.distance(
+                    #                 key, ngram[0]
+                    #             )
+                    #             if similarity <= 0.40:
+                    #                 freq += word_tok_freq[key]
+                    #             import pdb
+
+                    #             pdb.set_trace()
+
+                    #         if freq > 0:
+                    #             sub_df.loc[i, "matched_term_freq"] = freq
+
+                    # elif len(ngram) > 1:
+                    #     sub_df.loc[i, "matched_term_freq"] = phrases[
+                    #         len(ngram)
+                    #     ][tuple(ngram)]
+                    # else:
+                    #     logging.warning(
+                    #         f"Term: {term_of_interest} => no frequency count"
+                    #     )
+                    # **********************************************************
 
                     # Sometimes the term we're looking for gets separated by
                     # sentence tokenizer from NLTK
@@ -229,7 +284,37 @@ def parse(input_directory, output_directory) -> None:
             output_df["preferred_form"]
         )
 
-        # Add column which indicates how close of a match is the recognized entity.
+        doc_label_df = output_df[
+            ["document_id", "object_label"]
+        ].drop_duplicates()
+
+        total_docs = len(output_df["document_id"].drop_duplicates())
+
+        doc_count_df = (
+            doc_label_df.groupby("object_label")
+            .size()
+            .sort_values(ascending=False)
+            .reset_index(name="doc_count")
+        )
+        # This new column calculates the ratio:
+        # (# of documents where the object_label appears) / (Total # of docs)
+        doc_count_df["object_label_doc_ratio"] = (
+            doc_count_df["doc_count"] / total_docs
+        )
+
+        output_df = output_df.merge(
+            doc_count_df, how="left", on="object_label"
+        )
+
+        # label_count_df = (
+        #     doc_label_df.groupby(["document_id", "object_label"])
+        #     .size()
+        #     .sort_values(ascending=False)
+        #     .reset_index(name="doc_label_count")
+        # )
+
+        # Add column which indicates how close
+        # of a match is the recognized entity.
         output_df.insert(
             6,
             "match_type",
@@ -291,6 +376,8 @@ def parse(input_directory, output_directory) -> None:
                 "matched_term",
                 "preferred_form",
                 "object_label",
+                "doc_count",
+                "object_label_doc_ratio",
                 "match_type",
                 "levenshtein_distance",
                 "jaccard_index",
