@@ -1,11 +1,10 @@
-from ctypes import pydll
 from ontorunner.post.util import filter_synonyms, consolidate_rows
 import pandas as pd
 
 # from nltk.corpus.reader.wordnet import NOUN, VERB
 from nltk.stem.wordnet import WordNetLemmatizer
-from nltk import ngrams, FreqDist
 
+# from nltk import ngrams, FreqDist
 # from textdistance.algorithms.edit_based import Levenshtein
 
 import csv
