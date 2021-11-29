@@ -93,7 +93,7 @@ class TestOgerCLI(unittest.TestCase):
 
         self.assertTrue(os.path.isfile(self.output_file))
         self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 148)
-        cleanup(self.output)
+        # cleanup(self.output)
 
         # Clear output for next test
 
@@ -122,7 +122,7 @@ class TestOgerCLI(unittest.TestCase):
         print(stdout)
 
         self.assertTrue(os.path.isfile(self.output_file))
-        self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 97)
+        self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 148)
 
         # Clean-up files for next test run
         cleanup(self.output)
