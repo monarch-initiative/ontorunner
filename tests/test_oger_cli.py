@@ -28,7 +28,7 @@ class TestOgerCLI(unittest.TestCase):
         self.settings = f"{cwd}/settings.ini"
         print("setup runs here")
 
-    def test_json2tsv(self) -> None:
+    def test_cli_json2tsv(self) -> None:
         ofilename = os.path.join(self.output, "envo")
         ofiles = [ofilename + "_nodes.tsv", ofilename + "_edges.tsv"]
         ofile_rows = [6405, 9643]
@@ -55,7 +55,7 @@ class TestOgerCLI(unittest.TestCase):
             self.assertTrue(os.path.isfile(file))
             self.assertEqual(len(pd.read_csv(file, sep="\t")), ofile_rows[i])
 
-    def test_prepare_termlist(self) -> None:
+    def test_cli_prepare_termlist(self) -> None:
         ifile = os.path.join(self.output, "envo_nodes.tsv")
 
         process = subprocess.Popen(
@@ -79,7 +79,7 @@ class TestOgerCLI(unittest.TestCase):
 
         self.assertEqual(len(pd.read_csv(self.termlist, sep="\t")), 11726)
 
-    def test_run_oger_with_settings(self) -> None:
+    def test_cli_run_oger_with_settings(self) -> None:
         s = self.settings
         process = subprocess.Popen(
             ["python", "-m", "ontorunner.oger_module", "run-oger", "-s", s],
@@ -97,7 +97,7 @@ class TestOgerCLI(unittest.TestCase):
 
         # Clear output for next test
 
-    def test_run_oger_without_settings(self) -> None:
+    def test_cli_run_oger_without_settings(self) -> None:
         process = subprocess.Popen(
             [
                 "python",
