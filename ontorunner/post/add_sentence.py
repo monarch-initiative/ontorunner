@@ -13,7 +13,8 @@ from glob import glob
 
 import nltk
 import textdistance
-import logging
+
+# import logging
 
 # from pandas.core.arrays.categorical import contains
 
