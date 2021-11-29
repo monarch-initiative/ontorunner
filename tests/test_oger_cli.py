@@ -31,7 +31,7 @@ class TestOgerCLI(unittest.TestCase):
     def test_cli_json2tsv(self) -> None:
         ofilename = os.path.join(self.output, "envo")
         ofiles = [ofilename + "_nodes.tsv", ofilename + "_edges.tsv"]
-        ofile_rows = [6405, 9643]
+        cli_ofile_rows = [6405, 9643]
         process = subprocess.Popen(
             [
                 "python",
@@ -53,7 +53,9 @@ class TestOgerCLI(unittest.TestCase):
 
         for i, file in enumerate(ofiles):
             self.assertTrue(os.path.isfile(file))
-            self.assertEqual(len(pd.read_csv(file, sep="\t")), ofile_rows[i])
+            self.assertEqual(
+                len(pd.read_csv(file, sep="\t")), cli_ofile_rows[i]
+            )
 
     def test_cli_prepare_termlist(self) -> None:
         ifile = os.path.join(self.output, "envo_nodes.tsv")
