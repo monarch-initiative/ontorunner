@@ -23,13 +23,17 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license=LICENSE,
-    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+    packages=find_packages(
+        exclude=["*.tests", "*.tests.*", "tests.*", "tests"]
+    ),
     extras_require=EXTRAS,
     include_package_data=True,
     # add package dependencies
     install_requires=[
         "kgx",
         "click",
+        "pytz",  # required by pandas
+        "python-dateutil",  # required by pandas
         "pandas",
         "sphinx",
         "sphinx_rtd_theme",
@@ -37,7 +41,7 @@ setup(
         "textdistance",
         "textdistance[extras]",  # With extra libraries for maximum speed
         "pytest",
-        "OGER@git+git://github.com/OntoGene/OGER@master#egg=OGER",
+        "OGER@https://github.com/OntoGene/OGER@master",
         "six",  # Needed by python_dateutil-2.8.2-py3.9.egg/dateutil/tz/tz.py
         "requests",  # Needed by KGX
         "pyyaml",  # Needed by KGX
@@ -54,5 +58,22 @@ setup(
         "pyjsg",  # Needed by ShExJSG-0.7.1-py3.9.egg/ShExJSG/ShExJ.py
         "frozendict",  # Needed by pyld
         "cachetools",  # Needed by pyld
+        "spacy>=3.0.0,<3.1.0",  # dictated by scispacy
+        "scispacy",
+        "scipy",  # required by scispacy
+        "conllu",  # required by scispacy
+        "nmslib>=1.7.3.6",  # required by scispacy
+        "pysbd",  # required by scispacy
+        "dframcy"
+        # "en_core_sci_scibert"
+        # "en_ner_jnlpba_md",  # Joint wkshp for NLP in Biomedicine & application
+        # "en_ner_bc5cdr_md",  # Biocreative V Chemical induce Disease NER
+    ],
+    dependency_links=[
+        # From https://allenai.github.io/scispacy/
+        # 1. NER CRAFT corpus
+        # 2. SciBERT
+        "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_ner_craft_md-0.4.0.tar.gz",
+        "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_core_sci_scibert-0.4.0.tar.gz",
     ],
 )
