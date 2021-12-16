@@ -77,10 +77,17 @@ def onto_extractor(doc):
 def get_knowledgeBase_enitities(doc):
     linker = nlp.get_pipe("scispacy_linker")
     ent_list = []
+
     for entity in doc.ents:
         for kb_ent in entity._.kb_ents:
+            ent_dict = {}
             ent_object = linker.kb.cui_to_entity[kb_ent[0]]
-            ent_list.append(ent_object)
+            ent_dict["cui"] = ent_object.concept_id
+            ent_dict["name"] = ent_object.canonical_name
+            ent_dict["aliases"] = ent_object.aliases
+            ent_dict["definition"] = ent_object.definition
+            ent_dict["types"] = ent_object.types
+            ent_list.append(ent_dict)
     return ent_list
 
 
