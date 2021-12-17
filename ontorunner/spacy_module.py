@@ -1,4 +1,5 @@
 import os
+from pandas.core.frame import DataFrame
 import spacy
 from spacy.language import Language
 from spacy.tokens import Span
@@ -8,6 +9,9 @@ from . import PARENT_DIR, OntoExtractor
 from .ss_module import TEXT, input_df
 import scispacy
 from scispacy.linking import EntityLinker
+from dframcy import DframCy
+import pandas as pd
+from multiprocessing import freeze_support
 
 # python -m spacy download en_core_web_sm
 # nlp = spacy.load("en_core_web_sm")
@@ -86,7 +90,7 @@ def get_knowledgeBase_enitities(doc):
             ent_dict["name"] = ent_object.canonical_name
             ent_dict["aliases"] = ent_object.aliases
             ent_dict["definition"] = ent_object.definition
-            ent_dict["types"] = ent_object.types
+            ent_dict["tui"] = ent_object.types
             ent_list.append(ent_dict)
     return ent_list
 
@@ -109,6 +113,33 @@ def get_token_info(doc):
     return onto_dict
 
 
+def doc_to_df(dframcy: DframCy, df: pd.DataFrame) -> pd.DataFrame:
+    # dframcy_df = pd.DataFrame()
+    # for idx, row in df.iterrows():
+    #     tmp_df = dframcy.to_dataframe(row.spacy_doc)
+    #     tmp_df.insert(0, "id", row.id)
+    #     dframcy_df = pd.concat([dframcy_df, tmp_df])
+    # return dframcy_df
+    df_of_df = pd.DataFrame()
+    dframcy_df = pd.DataFrame()
+    df_of_df["id"] = df["id"]
+    df_of_df["spacy_doc"] = (
+        df["spacy_doc"].apply(lambda row: dframcy.to_dataframe(row)).to_frame()
+    )
+
+    for _, doc_obj_row in df_of_df.iterrows():
+        tmp_df = doc_obj_row.spacy_doc
+        tmp_df.insert(0, "id", doc_obj_row.id)
+        dframcy_df = pd.concat([dframcy_df, tmp_df], ignore_index=True)
+
+    return dframcy_df
+
+
+def export_tsv(df: pd.DataFrame, fn: str) -> None:
+    path = os.path.join(PARENT_DIR, "data/output/" + fn + ".tsv")
+    df.to_csv(fn, sep="\t", index=None)
+
+
 def main():
     nlp.add_pipe("onto_extractor", after="ner")
 
@@ -117,9 +148,12 @@ def main():
         config={"resolve_abbreviations": True, "linker_name": "umls"},
     )  # Must be one of 'umls' or 'mesh'.
 
-    # doc = nlp(TEXT)
+    dframcy = DframCy(nlp)
 
-    input_df["spacy_doc"] = list(nlp.pipe(input_df["text"]))
+    input_df["spacy_doc"] = list(
+        nlp.pipe(input_df["text"].values, batch_size=100)
+    )
+
     input_df["spacy_kb_ent"] = input_df["spacy_doc"].apply(
         lambda row: get_knowledgeBase_enitities(row)
     )
@@ -127,9 +161,13 @@ def main():
         lambda row: get_token_info(row)
     )
 
-    input_df.to_csv(
-        os.path.join(PARENT_DIR, "ner_result.tsv"), sep="\t", index=None
-    )
+    kb_df = input_df[["id", "spacy_kb_ent"]]
+    onto_df = input_df[["id", "spacy_tokens"]]
+    nlp_df = doc_to_df(dframcy, input_df[["id", "spacy_doc"]])
+
+    export_tsv(kb_df, "kb_entities_output")
+    export_tsv(onto_df, "onto_tokens_output")
+    export_tsv(nlp_df, "nlp_object_output")
 
 
 if __name__ == "__main__":

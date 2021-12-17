@@ -1,4 +1,5 @@
 # Sourced from : https://linuskohl.medium.com/extracting-and-linking-ontology-terms-from-text-7806ae8d8189
+from multiprocessing.spawn import freeze_support
 import re
 from spacy.tokens import Doc, Span, Token
 from spacy.matcher import PhraseMatcher
@@ -6,6 +7,8 @@ import pandas as pd
 from . import PARENT_DIR
 import os
 import configparser
+import concurrent.futures
+import psutil
 
 # ENVO = "../data/terms/envo_syn_termlist.tsv"
 TERMS_DIR = os.path.join(PARENT_DIR, "data/terms")
@@ -20,8 +23,14 @@ class OntoExtractor(object):
         self.label = "onto"
         self.terms = {}
         self.patterns = []
+        self.nlp = nlp
 
         df = self.get_ont_terms_df()
+
+        # * Multiprocessing attempt
+        # with concurrent.futures.ProcessPoolExecutor(max_workers=2) as executor:
+        #     executor.map(self.get_patterns, df.to_records(index=False))
+        # ************************
 
         # iterate over terms in ontology
         for source, curie, name, description, category in df.to_records(
@@ -72,6 +81,23 @@ class OntoExtractor(object):
             self.has_id_extension, getter=self.has_curies, force=True
         )
         Doc.set_extension(self.label.lower(), default=[], force=True)
+
+    # * Multiprocessing attempt
+    # def get_patterns(self, source, curie, name, description, category):
+    #     if "[SYNONYM_OF:" in description:
+    #         synonym = description.split("[SYNONYM_OF:")[-1].rstrip("]")
+    #     else:
+    #         synonym = None
+
+    #     if name is not None:
+    #         self.terms[name.lower()] = {
+    #             "id": curie,
+    #             "category": category,
+    #             "synonym_of": synonym,
+    #             "source": source,
+    #         }
+    #         self.patterns.append(self.nlp(name))
+    # ************************************************
 
     # getter function for doc level
     def has_curies(self, tokens):
@@ -127,4 +153,3 @@ class OntoExtractor(object):
         match_id, start, end = matches[i]
         entity = Span(doc, start, end, label="DUPLICATE")
         doc.ents += (entity,)
-
