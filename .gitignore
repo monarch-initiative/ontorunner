@@ -137,3 +137,4 @@ sphinx/_build
 **/.DS_Store
 
 ontorunner/settings.ini
+data/serialized/*
