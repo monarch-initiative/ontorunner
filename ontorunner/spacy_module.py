@@ -1,13 +1,12 @@
 import os
-from pandas.core.frame import DataFrame
 import spacy
 from spacy.language import Language
 from spacy.tokens import Span
 
 # from spacy.util import filter_spans
-from . import PARENT_DIR, OntoExtractor
-from .ss_module import TEXT, input_df
-import scispacy
+from ontorunner import PARENT_DIR
+from ontorunner import OntoExtractor
+from ontorunner.ss_module import TEXT, input_df
 from scispacy.linking import EntityLinker
 from dframcy import DframCy
 import pandas as pd
@@ -16,7 +15,7 @@ from multiprocessing import freeze_support
 # python -m spacy download en_core_web_sm
 # nlp = spacy.load("en_core_web_sm")
 nlp = spacy.load("en_ner_craft_md")
-# onto = OntoExtractor.OntoExtractor(nlp)
+
 
 output_columns = [
     "document_id",
@@ -134,7 +133,7 @@ def get_token_info(doc):
 def explode_df(df: pd.DataFrame):
     new_df = pd.DataFrame()
     for _, doc_obj_row in df.iterrows():
-        tmp_df = doc_obj_row.spacy_kb_ent
+        tmp_df = doc_obj_row[1]
         tmp_df.insert(0, "id", doc_obj_row.id)
         new_df = pd.concat([new_df, tmp_df], ignore_index=True)
     return new_df
@@ -172,7 +171,7 @@ def main():
     dframcy = DframCy(nlp)
 
     input_df["spacy_doc"] = list(
-        nlp.pipe(input_df["text"].values, batch_size=100)
+        nlp.pipe(input_df["text"].values, batch_size=1000)
     )
 
     input_df["spacy_kb_ent"] = input_df["spacy_doc"].apply(
@@ -194,4 +193,5 @@ def main():
 if __name__ == "__main__":
     freeze_support()
     onto = OntoExtractor.OntoExtractor(nlp)
+    # cProfile.run("main()", filename="profile.out")
     main()

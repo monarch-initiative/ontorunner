@@ -4,16 +4,17 @@ import re
 from spacy.tokens import Doc, Span, Token
 from spacy.matcher import PhraseMatcher
 import pandas as pd
-from . import PARENT_DIR
+from ontorunner import (
+    PARENT_DIR,
+    SETTINGS_FILE,
+    SETTINGS_FILE,
+    COMBINED_ONTO_PICKLED_FILE,
+    COMBINED_ONTO_FILE,
+)
 import os
 import configparser
-import concurrent.futures
-import psutil
 
-# ENVO = "../data/terms/envo_syn_termlist.tsv"
-TERMS_DIR = os.path.join(PARENT_DIR, "data/terms")
-SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.ini")
-COMBINED_ONTO_FILE = os.path.join(TERMS_DIR, "onto_termlist.tsv")
+import multiprocessing
 
 
 class OntoExtractor(object):
@@ -28,27 +29,37 @@ class OntoExtractor(object):
         df = self.get_ont_terms_df()
 
         # * Multiprocessing attempt
-        # with concurrent.futures.ProcessPoolExecutor(max_workers=2) as executor:
-        #     executor.map(self.get_patterns, df.to_records(index=False))
+        with multiprocessing.Pool(processes=5) as pool:
+            results = pool.map(
+                self.get_terms_patterns, df.to_records(index=False)
+            )
+
+        self.terms = {
+            k: v
+            for d in [result[0] for result in results]
+            for k, v in d.items()
+        }
+        self.patterns = [result[1] for result in results]
+
         # ************************
 
-        # iterate over terms in ontology
-        for source, curie, name, description, category in df.to_records(
-            index=False
-        ):
-            if "[SYNONYM_OF:" in description:
-                synonym = description.split("[SYNONYM_OF:")[-1].rstrip("]")
-            else:
-                synonym = None
+        # # iterate over terms in ontology
+        # for source, curie, name, description, category in df.to_records(
+        #     index=False
+        # ):
+        #     if "[SYNONYM_OF:" in description:
+        #         synonym = description.split("[SYNONYM_OF:")[-1].rstrip("]")
+        #     else:
+        #         synonym = None
 
-            if name is not None:
-                self.terms[name.lower()] = {
-                    "id": curie,
-                    "category": category,
-                    "synonym_of": synonym,
-                    "source": source,
-                }
-                self.patterns.append(nlp(name))
+        #     if name is not None and name == name:
+        #         self.terms[name.lower()] = {
+        #             "id": curie,
+        #             "category": category,
+        #             "synonym_of": synonym,
+        #             "source": source,
+        #         }
+        #         self.patterns.append(nlp(name))
 
         # initialize matcher and add patterns
         self.matcher = PhraseMatcher(nlp.vocab, attr="LOWER")
@@ -82,22 +93,27 @@ class OntoExtractor(object):
         )
         Doc.set_extension(self.label.lower(), default=[], force=True)
 
-    # * Multiprocessing attempt
-    # def get_patterns(self, source, curie, name, description, category):
-    #     if "[SYNONYM_OF:" in description:
-    #         synonym = description.split("[SYNONYM_OF:")[-1].rstrip("]")
-    #     else:
-    #         synonym = None
+    # * Multiprocessing attempt ****************************************
+    def get_terms_patterns(self, *args):
+        source, curie, name, description, category = args[0]
+        terms = {}
 
-    #     if name is not None:
-    #         self.terms[name.lower()] = {
-    #             "id": curie,
-    #             "category": category,
-    #             "synonym_of": synonym,
-    #             "source": source,
-    #         }
-    #         self.patterns.append(self.nlp(name))
-    # ************************************************
+        if "[SYNONYM_OF:" in description:
+            synonym = description.split("[SYNONYM_OF:")[-1].rstrip("]")
+        else:
+            synonym = None
+
+        if name is not None:
+            terms[name.lower()] = {
+                "id": curie,
+                "category": category,
+                "synonym_of": synonym,
+                "source": source,
+            }
+
+        return terms, self.nlp(name)
+
+    # ********************************************************************
 
     # getter function for doc level
     def has_curies(self, tokens):
@@ -123,7 +139,7 @@ class OntoExtractor(object):
             "category",
         ]
 
-        if not os.path.isfile(COMBINED_ONTO_FILE):
+        if not os.path.isfile(COMBINED_ONTO_PICKLED_FILE):
             termlist = self.get_termlist()
             df = pd.concat(
                 [
@@ -138,8 +154,10 @@ class OntoExtractor(object):
             )
             df = df.drop_duplicates()
             df.to_csv(COMBINED_ONTO_FILE, sep="\t", index=None, header=False)
+            df.to_pickle(COMBINED_ONTO_PICKLED_FILE)
         else:
-            df = pd.read_csv(COMBINED_ONTO_FILE, sep="\t", low_memory=False)
+            # df = pd.read_csv(COMBINED_ONTO_FILE, sep="\t", low_memory=False)
+            df = pd.read_pickle(COMBINED_ONTO_PICKLED_FILE)
         df.columns = cols
         df = df.drop(["CUI"], axis=1)
         return df
