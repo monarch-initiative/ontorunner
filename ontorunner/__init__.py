@@ -8,8 +8,9 @@ import os
 PARENT_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.pardir)
 )
-TERMS_DIR = os.path.join(PARENT_DIR, "data/terms")
-SERIAL_DIR = os.path.join(PARENT_DIR, "data/serialized")
+DATA_DIR = os.path.join(PARENT_DIR, "data")
+TERMS_DIR = os.path.join(DATA_DIR, "terms")
+SERIAL_DIR = os.path.join(DATA_DIR, "serialized")
 ONTO_TERMS_FILENAME = "onto_termlist.tsv"
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.ini")
 COMBINED_ONTO_FILE = os.path.join(TERMS_DIR, ONTO_TERMS_FILENAME)
