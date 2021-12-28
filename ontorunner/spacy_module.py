@@ -1,20 +1,14 @@
 import os
+import glob
 import spacy
 from spacy.language import Language
 from spacy.tokens import Span
-
-# from spacy.util import filter_spans
 from ontorunner import PARENT_DIR
 from ontorunner import OntoExtractor
-from ontorunner.ss_module import TEXT, input_df
 from scispacy.linking import EntityLinker
 from dframcy import DframCy
 import pandas as pd
 from multiprocessing import freeze_support
-
-# python -m spacy download en_core_web_sm
-# nlp = spacy.load("en_core_web_sm")
-nlp = spacy.load("en_ner_craft_md")
 
 
 output_columns = [
@@ -56,16 +50,19 @@ def onto_extractor(doc):
         span._.set("has_curies", True)
 
         for token in span:
-            token._.set("is_an_onto_term", True)
-            token._.set("curie", onto.terms[span.text.lower()]["id"])
-            token._.set("category", onto.terms[span.text.lower()]["category"])
-            token._.set(
-                "synonym_of", onto.terms[span.text.lower()]["synonym_of"]
-            )
-            token._.set("source", onto.terms[span.text.lower()]["source"])
-            token._.set("sentence", span.sent)
-            token._.set("start", span.start_char)
-            token._.set("end", span.end_char)
+            if span.text.lower() in onto.terms.keys():
+                token._.set("is_an_onto_term", True)
+                token._.set("entity_id", onto.terms[span.text.lower()]["id"])
+                token._.set(
+                    "category", onto.terms[span.text.lower()]["category"]
+                )
+                token._.set(
+                    "synonym_of", onto.terms[span.text.lower()]["synonym_of"]
+                )
+                token._.set("source", onto.terms[span.text.lower()]["source"])
+                token._.set("sentence", span.sent)
+                token._.set("start", span.start_char)
+                token._.set("end", span.end_char)
 
     # * This code below causes the following error:
     # * ValueError: [E1010] Unable to set entity information
@@ -102,7 +99,7 @@ def get_token_info(doc):
         "name",
         "POS",
         "tag",
-        "curie",
+        "entity_id",
         "category",
         "synonym_of",
         "source",
@@ -119,7 +116,7 @@ def get_token_info(doc):
             onto_dict["name"].append(token.text)
             onto_dict["POS"].append(token.pos_)
             onto_dict["tag"].append(token.tag_)
-            onto_dict["curie"].append(token._.curie)
+            onto_dict["entity_id"].append(token._.entity_id)
             onto_dict["category"].append(token._.category)
             onto_dict["synonym_of"].append(token._.synonym_of)
             onto_dict["source"].append(token._.source)
@@ -140,12 +137,6 @@ def explode_df(df: pd.DataFrame):
 
 
 def doc_to_df(dframcy: DframCy, df: pd.DataFrame) -> pd.DataFrame:
-    # dframcy_df = pd.DataFrame()
-    # for idx, row in df.iterrows():
-    #     tmp_df = dframcy.to_dataframe(row.spacy_doc)
-    #     tmp_df.insert(0, "id", row.id)
-    #     dframcy_df = pd.concat([dframcy_df, tmp_df])
-    # return dframcy_df
     df_of_df = pd.DataFrame()
     df_of_df["id"] = df["id"]
     df_of_df["spacy_doc"] = (
@@ -161,6 +152,7 @@ def export_tsv(df: pd.DataFrame, fn: str) -> None:
 
 
 def main():
+
     nlp.add_pipe("onto_extractor", after="ner")
 
     nlp.add_pipe(
@@ -169,6 +161,17 @@ def main():
     )  # Must be one of 'umls' or 'mesh'.
 
     dframcy = DframCy(nlp)
+
+    input_dir_path = (
+        os.path.join(PARENT_DIR, onto.get_config("input-directory")[0])
+        + "/*.tsv"
+    )
+    input_file_list = glob.glob(input_dir_path)
+    list_of_input_dfs = []
+    for fn in input_file_list:
+        in_df = pd.read_csv(fn, sep="\t", low_memory=False)
+        list_of_input_dfs.append(in_df)
+    input_df = pd.concat(list_of_input_dfs, axis=0, ignore_index=True)
 
     input_df["spacy_doc"] = list(
         nlp.pipe(input_df["text"].values, batch_size=1000)
@@ -185,13 +188,59 @@ def main():
     onto_df = explode_df(input_df[["id", "spacy_tokens"]])
     nlp_df = doc_to_df(dframcy, input_df[["id", "spacy_doc"]])
 
+    # Filter df to remove certain POS'
+    """
+    List of POS codes
+    POS | DESCRIPTION | EXAMPLES
+    ADJ | adjective | *big, old, green, incomprehensible, first*
+    ADP | adposition | *in, to, during*
+    ADV | adverb | *very, tomorrow, down, where, there*
+    AUX | auxiliary | *is, has (done), will (do), should (do)*
+    CONJ | conjunction | *and, or, but*
+    CCONJ | coordinating conjunction | *and, or, but*
+    DET | determiner | *a, an, the*
+    INTJ | interjection | *psst, ouch, bravo, hello*
+    NOUN | noun | *girl, cat, tree, air, beauty*
+    NUM | numeral | *1, 2017, one, seventy-seven, IV, MMXIV*
+    PART | particle | *’s, not,*
+    PRON | pronoun | *I, you, he, she, myself, themselves, somebody*
+    PROPN | proper noun | *Mary, John, London, NATO, HBO*
+    PUNCT | punctuation | *., (, ), ?*
+    SCONJ | subordinating conjunction | *if, while, that*
+    SYM | symbol | *$, %, §, ©, +, −, ×, ÷, =, :), 😝*
+    VERB | verb | *run, runs, running, eat, ate, eating*
+    X | other | *sfpksdpsxmsa*
+    SPACE | space
+
+    """
+    ignore_pos = [
+        "ADP",
+        "CCONJ",
+        "CONJ",
+        "DET",
+        "INTJ",
+        "SCONJ",
+        "PART",
+        "PUNCT",
+    ]
+    stopwords_file_path = os.path.join(
+        PARENT_DIR, onto.get_config("termlist_stopwords")[0]
+    )
+    stopwords_file = open(stopwords_file_path, "r")
+    stopwords = stopwords_file.read().splitlines()
+
+    onto_df = onto_df.loc[~onto_df["POS"].isin(ignore_pos)]
+    onto_df = onto_df.loc[~onto_df["name"].isin(stopwords)]
+
     export_tsv(kb_df, "kb_entities_output")
     export_tsv(onto_df, "onto_tokens_output")
     export_tsv(nlp_df, "nlp_object_output")
 
 
 if __name__ == "__main__":
+    # python -m spacy download en_core_web_sm
+    # nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.load("en_ner_craft_md")
     freeze_support()
     onto = OntoExtractor.OntoExtractor(nlp)
-    # cProfile.run("main()", filename="profile.out")
     main()

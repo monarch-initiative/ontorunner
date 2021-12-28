@@ -13,7 +13,6 @@ from ontorunner import (
 )
 import os
 import configparser
-
 import multiprocessing
 
 
@@ -24,42 +23,54 @@ class OntoExtractor(object):
         self.label = "onto"
         self.terms = {}
         self.patterns = []
+        self.multiprocessing = False  # False -> Use single processor; True -> Use multiple processors
+        self.processing_threshold = 100_000
         self.nlp = nlp
 
         df = self.get_ont_terms_df()
 
-        # * Multiprocessing attempt
-        with multiprocessing.Pool(processes=5) as pool:
-            results = pool.map(
-                self.get_terms_patterns, df.to_records(index=False)
-            )
+        if len(df) > self.processing_threshold:
+            number_of_processes = 3  # OR multiprocessing.cpu_count() - 1
+            self.multiprocessing = True
 
-        self.terms = {
-            k: v
-            for d in [result[0] for result in results]
-            for k, v in d.items()
-        }
-        self.patterns = [result[1] for result in results]
+        if self.multiprocessing:
 
-        # ************************
+            # * Multiprocessing attempt
+            with multiprocessing.Pool(processes=number_of_processes) as pool:
+                results = pool.map(
+                    self.get_terms_patterns, df.to_records(index=False)
+                )
 
-        # # iterate over terms in ontology
-        # for source, curie, name, description, category in df.to_records(
-        #     index=False
-        # ):
-        #     if "[SYNONYM_OF:" in description:
-        #         synonym = description.split("[SYNONYM_OF:")[-1].rstrip("]")
-        #     else:
-        #         synonym = None
+            self.terms = {
+                k: v
+                for d in [result[0] for result in results]
+                for k, v in d.items()
+            }
+            self.patterns = [result[1] for result in results]
 
-        #     if name is not None and name == name:
-        #         self.terms[name.lower()] = {
-        #             "id": curie,
-        #             "category": category,
-        #             "synonym_of": synonym,
-        #             "source": source,
-        #         }
-        #         self.patterns.append(nlp(name))
+            # ************************
+        else:
+            # iterate over terms in ontology
+            for (
+                source,
+                entity_id,
+                name,
+                description,
+                category,
+            ) in df.to_records(index=False):
+                if "[SYNONYM_OF:" in description:
+                    synonym = description.split("[SYNONYM_OF:")[-1].rstrip("]")
+                else:
+                    synonym = None
+
+                if name is not None and name == name:
+                    self.terms[name.lower()] = {
+                        "id": entity_id,
+                        "category": category,
+                        "synonym_of": synonym,
+                        "source": source,
+                    }
+                    self.patterns.append(nlp(name))
 
         # initialize matcher and add patterns
         self.matcher = PhraseMatcher(nlp.vocab, attr="LOWER")
@@ -69,7 +80,7 @@ class OntoExtractor(object):
 
         # variables for tokens, spans and docs extensions
         self.token_term_extension = "is_an_" + self.label.lower() + "_term"
-        self.token_id_extension = "curie"
+        self.token_id_extension = "entity_id"
         self.has_id_extension = "has_curies"
 
         # set extensions to tokens, spans and docs
@@ -93,9 +104,9 @@ class OntoExtractor(object):
         )
         Doc.set_extension(self.label.lower(), default=[], force=True)
 
-    # * Multiprocessing attempt ****************************************
+    # * Multiprocessing relevant ****************************************
     def get_terms_patterns(self, *args):
-        source, curie, name, description, category = args[0]
+        source, entity_id, name, description, category = args[0]
         terms = {}
 
         if "[SYNONYM_OF:" in description:
@@ -103,9 +114,9 @@ class OntoExtractor(object):
         else:
             synonym = None
 
-        if name is not None:
+        if name is not None and name == name:
             terms[name.lower()] = {
-                "id": curie,
+                "id": entity_id,
                 "category": category,
                 "synonym_of": synonym,
                 "source": source,
@@ -119,15 +130,18 @@ class OntoExtractor(object):
     def has_curies(self, tokens):
         return any([t._.get(self.token_term_extension) for t in tokens])
 
-    def get_termlist(self):
+    def get_config(self, param):
         read_config = configparser.ConfigParser()
         read_config.read(SETTINGS_FILE)
         main_section = dict(read_config.items("Main"))
-        return [
-            v
-            for k, v in main_section.items()
-            if "termlist" in k and re.search(r"\d", k)
-        ]
+        if param == "termlist":
+            return [
+                v
+                for k, v in main_section.items()
+                if param in k and re.search(r"\d", k)
+            ]
+        else:
+            return [v for k, v in main_section.items() if param in k]
 
     def get_ont_terms_df(self):
         cols = [
@@ -140,26 +154,35 @@ class OntoExtractor(object):
         ]
 
         if not os.path.isfile(COMBINED_ONTO_PICKLED_FILE):
-            termlist = self.get_termlist()
-            df = pd.concat(
-                [
-                    pd.read_csv(
-                        os.path.join(PARENT_DIR, f),
-                        sep="\t",
-                        low_memory=False,
-                        header=None,
-                    )
-                    for f in termlist
-                ]
-            )
-            df = df.drop_duplicates()
-            df.to_csv(COMBINED_ONTO_FILE, sep="\t", index=None, header=False)
-            df.to_pickle(COMBINED_ONTO_PICKLED_FILE)
+            if not os.path.isfile(COMBINED_ONTO_FILE):
+                termlist = self.get_config("termlist")
+                df = pd.concat(
+                    [
+                        pd.read_csv(
+                            os.path.join(PARENT_DIR, f),
+                            sep="\t",
+                            low_memory=False,
+                            header=None,
+                        )
+                        for f in termlist
+                    ]
+                )
+                df = df.drop_duplicates()
+                df.to_csv(
+                    COMBINED_ONTO_FILE, sep="\t", index=None, header=False
+                )
+                df.to_pickle(COMBINED_ONTO_PICKLED_FILE)
+            else:
+                df = pd.read_csv(
+                    COMBINED_ONTO_FILE, sep="\t", low_memory=False
+                )
+                df.to_pickle(COMBINED_ONTO_PICKLED_FILE)
         else:
             # df = pd.read_csv(COMBINED_ONTO_FILE, sep="\t", low_memory=False)
             df = pd.read_pickle(COMBINED_ONTO_PICKLED_FILE)
         df.columns = cols
         df = df.drop(["CUI"], axis=1)
+        df = df.fillna("")
         return df
 
     def resolve_substrings(matcher, doc, i, matches):
