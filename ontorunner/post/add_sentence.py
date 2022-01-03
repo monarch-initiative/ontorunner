@@ -1,4 +1,8 @@
-from ontorunner.post.util import filter_synonyms, consolidate_rows
+from ontorunner.post.util import (
+    filter_synonyms,
+    consolidate_rows,
+    get_object_doc_ratio,
+)
 import pandas as pd
 
 # from nltk.corpus.reader.wordnet import NOUN, VERB
@@ -286,34 +290,7 @@ def parse(input_directory, output_directory) -> None:
             output_df["preferred_form"]
         )
 
-        doc_label_df = output_df[
-            ["document_id", "object_label"]
-        ].drop_duplicates()
-
-        total_docs = len(output_df["document_id"].drop_duplicates())
-
-        doc_count_df = (
-            doc_label_df.groupby("object_label")
-            .size()
-            .sort_values(ascending=False)
-            .reset_index(name="doc_count")
-        )
-        # This new column calculates the ratio:
-        # (# of documents where the object_label appears) / (Total # of docs)
-        doc_count_df["object_label_doc_ratio"] = (
-            doc_count_df["doc_count"] / total_docs
-        )
-
-        output_df = output_df.merge(
-            doc_count_df, how="left", on="object_label"
-        )
-
-        # label_count_df = (
-        #     doc_label_df.groupby(["document_id", "object_label"])
-        #     .size()
-        #     .sort_values(ascending=False)
-        #     .reset_index(name="doc_label_count")
-        # )
+        output_df = get_object_doc_ratio(output_df)
 
         # Add column which indicates how close
         # of a match is the recognized entity.
