@@ -201,9 +201,8 @@ def sentencify(input_df, output_df, output_fn):
                         # do until severe consequences detected.
 
                     sub_df.loc[i, "sentence"] = single_tok[0]
-
             if not sub_df.empty:
-                sub_df["entity_sentence_%"] = sub_df.apply(
+                sub_df["object_sentence_%"] = sub_df.apply(
                     lambda x: 1
                     - textdistance.jaccard.distance(
                         x.matched_term.lower(), x.sentence.lower()
