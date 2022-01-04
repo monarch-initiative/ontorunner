@@ -1,5 +1,6 @@
 import os
 import glob
+from typing import Collection
 import spacy
 from spacy.language import Language
 from spacy.tokens import Span
@@ -10,29 +11,6 @@ from dframcy import DframCy
 import pandas as pd
 from multiprocessing import freeze_support
 from ontorunner.post import util
-
-
-output_columns = [
-    "document_id",
-    "object_category",
-    "start_position",
-    "end_position",
-    "matched_term",
-    "preferred_form",
-    "object_label",
-    "doc_count",
-    "object_label_doc_ratio",
-    "match_type",
-    "levenshtein_distance",
-    "jaccard_index",
-    "monge_elkan",
-    "object_id",
-    "sentence_id",
-    "umls_cui",
-    "origin",
-    "sentence",
-    "object_sentence_%",
-]
 
 
 @Language.component("onto_extractor")
@@ -137,17 +115,19 @@ def explode_df(df: pd.DataFrame):
         tmp_df = doc_obj_row[1]
         tmp_df.insert(0, "id", doc_obj_row.id)
         new_df = pd.concat([new_df, tmp_df], ignore_index=True)
+
+    new_df = new_df.rename(columns={"id": "document_id"})
     return new_df
 
 
-def doc_to_df(dframcy: DframCy, df: pd.DataFrame) -> pd.DataFrame:
-    df_of_df = pd.DataFrame()
-    df_of_df["id"] = df["id"]
-    df_of_df["spacy_doc"] = (
-        df["spacy_doc"].apply(lambda row: dframcy.to_dataframe(row)).to_frame()
-    )
+# def doc_to_df(dframcy: DframCy, df: pd.DataFrame) -> pd.DataFrame:
+#     df_of_df = pd.DataFrame()
+#     df_of_df["id"] = df["id"]
+#     df_of_df["spacy_doc"] = (
+#         df["spacy_doc"].apply(lambda row: dframcy.to_dataframe(row)).to_frame()
+#     )
 
-    return explode_df(df_of_df)
+#     return explode_df(df_of_df)
 
 
 def export_tsv(df: pd.DataFrame, fn: str) -> None:
@@ -164,7 +144,7 @@ def main():
         config={"resolve_abbreviations": True, "linker_name": "umls"},
     )  # Must be one of 'umls' or 'mesh'.
 
-    dframcy = DframCy(nlp)
+    # dframcy = DframCy(nlp)
 
     input_dir_path = (
         os.path.join(PARENT_DIR, onto.get_config("input-directory")[0])
@@ -190,7 +170,7 @@ def main():
 
     kb_df = explode_df(input_df[["id", "spacy_kb_ent"]])
     onto_df = explode_df(input_df[["id", "spacy_tokens"]])
-    nlp_df = doc_to_df(dframcy, input_df[["id", "spacy_doc"]])
+    # nlp_df = doc_to_df(dframcy, input_df[["id", "spacy_doc"]])
 
     # Filter df to remove certain POS'
     """
@@ -237,10 +217,11 @@ def main():
     onto_df = onto_df.loc[~onto_df["object_label"].isin(stopwords)]
 
     onto_df = util.consolidate_rows(onto_df)
+    onto_df = util.get_object_doc_ratio(onto_df)
 
-    export_tsv(kb_df, "kb_entities_output")
-    export_tsv(onto_df, "onto_tokens_output")
-    export_tsv(nlp_df, "nlp_object_output")
+    export_tsv(kb_df, "umls_ontoRunNER")
+    export_tsv(onto_df, "ontology_ontoRunNER")
+    # export_tsv(nlp_df, "nlp_object_output")
 
 
 if __name__ == "__main__":
