@@ -206,6 +206,7 @@ def main():
         "SCONJ",
         "PART",
         "PUNCT",
+        "PRON",
     ]
     stopwords_file_path = os.path.join(
         PARENT_DIR, onto.get_config("termlist_stopwords")[0]
