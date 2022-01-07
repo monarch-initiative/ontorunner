@@ -1,6 +1,8 @@
 """Constants."""
 
 import os
+import configparser
+import re
 
 # import pathlib
 
@@ -17,4 +19,19 @@ COMBINED_ONTO_FILE = os.path.join(TERMS_DIR, ONTO_TERMS_FILENAME)
 COMBINED_ONTO_PICKLED_FILE = os.path.join(
     SERIAL_DIR, ONTO_TERMS_FILENAME + ".pickle"
 )
-# PATTERN_FILE = os.path.join(SERIAL_DIR, "onto_patterns.tsv")
+CUSTOM_PIPE_DIR = os.path.join(SERIAL_DIR, "OntoExtractor")
+TERMS_PICKLED = os.path.join(SERIAL_DIR, "terms.pickle")
+
+
+def get_config(param):
+    read_config = configparser.ConfigParser()
+    read_config.read(SETTINGS_FILE)
+    main_section = dict(read_config.items("Main"))
+    if param == "termlist":
+        return [
+            v
+            for k, v in main_section.items()
+            if param in k and re.search(r"\d", k)
+        ]
+    else:
+        return [v for k, v in main_section.items() if param in k]

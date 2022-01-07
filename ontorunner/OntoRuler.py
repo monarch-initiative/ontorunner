@@ -1,31 +1,53 @@
-# Sourced from : https://linuskohl.medium.com/extracting-and-linking-ontology-terms-from-text-7806ae8d8189
-from multiprocessing.spawn import freeze_support
-import re
-from spacy.tokens import Doc, Span, Token
-from spacy.matcher import PhraseMatcher
-import pandas as pd
-from ontorunner import (
-    PARENT_DIR,
-    SETTINGS_FILE,
-    SETTINGS_FILE,
-    COMBINED_ONTO_PICKLED_FILE,
-    COMBINED_ONTO_FILE,
-)
-import os
-import configparser
 import multiprocessing
+import pickle
+from spacy.language import Language
+from spacy.pipeline import EntityRuler, entityruler
+from ontorunner import (
+    COMBINED_ONTO_FILE,
+    COMBINED_ONTO_PICKLED_FILE,
+    CUSTOM_PIPE_DIR,
+    PARENT_DIR,
+    SERIAL_DIR,
+    TERMS_PICKLED,
+    get_config,
+)
+import pandas as pd
+import os
+import spacy
+from collections import defaultdict
+from scispacy.linking import EntityLinker
+from spacy.tokens import Doc, Span, Token
+from spacy.matcher import PhraseMatcher, Matcher
 
 
-class OntoExtractor(object):
-    name = "Ontology Extractor"
-
-    def __init__(self, nlp):
-        self.label = "onto"
-        self.terms = {}
-        self.patterns = []
+class OntoRuler(object):
+    def __init__(self):
+        self.label = "ontology"
+        self.phrase_matcher_attr = "LOWER"
         self.multiprocessing = False  # False -> Use single processor; True -> Use multiple processors
         self.processing_threshold = 100_000
-        self.nlp = nlp
+        self.terms = {}
+        self.list_of_pattern_dicts = []
+        self.list_of_obj_docs = []
+        self.nlp = spacy.load("en_ner_craft_md")
+
+        self.phrase_matcher = PhraseMatcher(
+            self.nlp.vocab, attr=self.phrase_matcher_attr
+        )
+
+        # if os.path.isdir(CUSTOM_PIPE_DIR):
+        #     pattern_json = os.path.join(
+        #         CUSTOM_PIPE_DIR, "entity_ruler/patterns.jsonl"
+        #     )
+        #     ruler = self.nlp.add_pipe("entity_ruler", after="ner")
+        #     ruler.from_disk(pattern_json)
+        #     # self.list_of_obj_docs = [
+        #     #     self.nlp(p_dict["pattern"]) for p_dict in ruler.patterns
+        #     # ]
+        #     self.phrase_matcher.add(self.label, None, *self.list_of_obj_docs)
+        #     with open(TERMS_PICKLED, "rb") as tp:
+        #         self.terms = pickle.load(tp)
+        # else:
 
         df = self.get_ont_terms_df()
 
@@ -35,7 +57,7 @@ class OntoExtractor(object):
 
         # iterate over terms in ontology
         if self.multiprocessing:
-            # * Multiprocessing attempt
+            # * Multiprocessing
             with multiprocessing.Pool(processes=number_of_processes) as pool:
                 results = pool.map(
                     self.get_terms_patterns, df.to_records(index=False)
@@ -46,7 +68,8 @@ class OntoExtractor(object):
                 for d in [result[0] for result in results]
                 for k, v in d.items()
             }
-            self.patterns = [result[1] for result in results]
+            self.list_of_pattern_dicts = [result[1] for result in results]
+            self.list_of_obj_docs = [result[2] for result in results]
 
         else:
             # * Single process
@@ -57,7 +80,7 @@ class OntoExtractor(object):
                 description,
                 object_category,
             ) in df.to_records(index=False):
-                terms, patterns = self.get_terms_patterns(
+                terms, patterns, object_doc = self.get_terms_patterns(
                     (
                         origin,
                         object_id,
@@ -67,16 +90,21 @@ class OntoExtractor(object):
                     )
                 )
                 self.terms.update(terms)
-                self.patterns.append(patterns)
+                self.list_of_pattern_dicts.append(patterns)
+                self.list_of_obj_docs.append(object_doc)
 
-        # initialize matcher and add patterns
-        self.matcher = PhraseMatcher(nlp.vocab, attr="LOWER")
-        self.matcher.add(
-            self.label, None, *self.patterns, on_match=self.resolve_substrings
-        )
+        ruler = self.nlp.add_pipe("entity_ruler", after="ner")
+        ruler.add_patterns(self.list_of_pattern_dicts)
+
+        self.phrase_matcher.add(self.label, None, *self.list_of_obj_docs)
+        # Dump serialized files
+        self.nlp.to_disk(CUSTOM_PIPE_DIR)
+        with open(TERMS_PICKLED, "wb") as tp:
+            pickle.dump(self.terms, tp)
+        print("Serialized files dumped!")
 
         # variables for tokens, spans and docs extensions
-        self.token_term_extension = "is_an_" + self.label.lower() + "_term"
+        self.token_term_extension = "is_an_ontology_term"
         self.token_id_extension = "object_id"
         self.has_id_extension = "has_curies"
 
@@ -101,44 +129,14 @@ class OntoExtractor(object):
         )
         Doc.set_extension(self.label.lower(), default=[], force=True)
 
-    # * Multiprocessing relevant ****************************************
-    def get_terms_patterns(self, *args):
-        origin, object_id, object_label, description, object_category = args[0]
-        terms = {}
-
-        if "[SYNONYM_OF:" in description:
-            synonym = description.split("[SYNONYM_OF:")[-1].rstrip("]")
-        else:
-            synonym = None
-
-        if object_label is not None and object_label == object_label:
-            terms[object_label.lower()] = {
-                "object_id": object_id,
-                "object_category": object_category,
-                "synonym_of": synonym,
-                "origin": origin,
-            }
-
-        return terms, self.nlp(object_label)
-
-    # ********************************************************************
+        self.nlp.add_pipe(
+            "scispacy_linker",
+            config={"resolve_abbreviations": True, "linker_name": "umls"},
+        )  # Must be one of 'umls' or 'mesh'.
 
     # getter function for doc level
     def has_curies(self, tokens):
         return any([t._.get(self.token_term_extension) for t in tokens])
-
-    def get_config(self, param):
-        read_config = configparser.ConfigParser()
-        read_config.read(SETTINGS_FILE)
-        main_section = dict(read_config.items("Main"))
-        if param == "termlist":
-            return [
-                v
-                for k, v in main_section.items()
-                if param in k and re.search(r"\d", k)
-            ]
-        else:
-            return [v for k, v in main_section.items() if param in k]
 
     def get_ont_terms_df(self):
         cols = [
@@ -152,7 +150,7 @@ class OntoExtractor(object):
 
         if not os.path.isfile(COMBINED_ONTO_PICKLED_FILE):
             if not os.path.isfile(COMBINED_ONTO_FILE):
-                termlist = self.get_config("termlist")
+                termlist = get_config("termlist")
                 df = pd.concat(
                     [
                         pd.read_csv(
@@ -175,19 +173,31 @@ class OntoExtractor(object):
                 )
                 df.to_pickle(COMBINED_ONTO_PICKLED_FILE)
         else:
-            # df = pd.read_csv(COMBINED_ONTO_FILE, sep="\t", low_memory=False)
             df = pd.read_pickle(COMBINED_ONTO_PICKLED_FILE)
         df.columns = cols
         df = df.drop(["CUI"], axis=1)
         df = df.fillna("")
         return df
 
-    def resolve_substrings(matcher, doc, i, matches):
-        # Get the current match and create
-        # tuple of entity label, start and end.
-        # Append entity to the doc's entity.
-        # (Don't overwrite doc.ents!)
+    def get_terms_patterns(self, *args):
+        origin, object_id, object_label, description, object_category = args[0]
+        terms_dict = {}
+        pattern_dict = {}
 
-        match_id, start, end = matches[i]
-        entity = Span(doc, start, end, label="DUPLICATE")
-        doc.ents += (entity,)
+        if "[SYNONYM_OF:" in description:
+            synonym = description.split("[SYNONYM_OF:")[-1].rstrip("]")
+        else:
+            synonym = None
+
+        if object_label is not None and object_label == object_label:
+            terms_dict[object_label.lower()] = {
+                "object_id": object_id,
+                "object_category": object_category,
+                "synonym_of": synonym,
+                "origin": origin,
+            }
+            pattern_dict["id"] = object_id
+            pattern_dict["label"] = origin.split(".")[0]
+            pattern_dict["pattern"] = object_label
+
+        return terms_dict, pattern_dict, self.nlp(object_label)

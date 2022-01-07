@@ -1,79 +1,11 @@
 import os
-import glob
-from typing import Collection
-import spacy
-from spacy.language import Language
-from spacy.tokens import Span
-from ontorunner import PARENT_DIR
-from ontorunner import OntoExtractor
-from scispacy.linking import EntityLinker
-from dframcy import DframCy
+from ontorunner import PARENT_DIR, SETTINGS_FILE, get_config
+from ontorunner.OntoRuler import OntoRuler
+from glob import glob
 import pandas as pd
+from spacy.tokens import Span
 from multiprocessing import freeze_support
 from ontorunner.post import util
-
-
-@Language.component("onto_extractor")
-def onto_extractor(doc):
-
-    matches = onto.matcher(doc)
-
-    spans = [
-        Span(doc, start, end, label="ONTOLOGY")
-        for matchId, start, end in matches
-    ]
-
-    doc.spans["ONTOLOGY"] = spans
-
-    for i, span in enumerate(spans):
-        span._.set("has_curies", True)
-
-        for token in span:
-            if span.text.lower() in onto.terms.keys():
-                token._.set("is_an_onto_term", True)
-                token._.set(
-                    "object_id", onto.terms[span.text.lower()]["object_id"]
-                )
-                token._.set(
-                    "object_category",
-                    onto.terms[span.text.lower()]["object_category"],
-                )
-                token._.set(
-                    "synonym_of", onto.terms[span.text.lower()]["synonym_of"]
-                )
-                token._.set("origin", onto.terms[span.text.lower()]["origin"])
-                token._.set("sentence", span.sent)
-                token._.set("start", span.start_char)
-                token._.set("end", span.end_char)
-
-    # * This code below causes the following error:
-    # * ValueError: [E1010] Unable to set entity information
-    # * for token 41 which is included in more than one span
-    # * in entities, blocked, missing or outside.
-    # Add ENVO labelled spans along with built-in ones
-    # doc.ents += tuple(filter_spans(doc.spans["ENVO"]))
-
-    return doc
-
-
-def get_knowledgeBase_enitities(doc):
-    linker = nlp.get_pipe("scispacy_linker")
-    ent_dict = {}
-    key_list = ["cui", "object_label", "aliases", "definition", "tui"]
-    for k in key_list:
-        ent_dict[k] = []
-    df = pd.DataFrame()
-
-    for entity in doc.ents:
-        for kb_ent in entity._.kb_ents:
-            ent_object = linker.kb.cui_to_entity[kb_ent[0]]
-            ent_dict["cui"].append(ent_object.concept_id)
-            ent_dict["object_label"].append(ent_object.canonical_name)
-            ent_dict["aliases"].append(ent_object.aliases)
-            ent_dict["definition"].append(ent_object.definition)
-            ent_dict["tui"].append(ent_object.types)
-
-    return pd.DataFrame.from_dict(ent_dict)
 
 
 def get_token_info(doc):
@@ -92,9 +24,9 @@ def get_token_info(doc):
     onto_dict = {}
     for k in key_list:
         onto_dict[k] = []
-    df = pd.DataFrame()
+
     for token in doc:
-        if token._.is_an_onto_term:
+        if token._.is_an_ontology_term:
             onto_dict["object_label"].append(token.text)
             onto_dict["POS"].append(token.pos_)
             onto_dict["tag"].append(token.tag_)
@@ -120,14 +52,61 @@ def explode_df(df: pd.DataFrame):
     return new_df
 
 
-# def doc_to_df(dframcy: DframCy, df: pd.DataFrame) -> pd.DataFrame:
-#     df_of_df = pd.DataFrame()
-#     df_of_df["id"] = df["id"]
-#     df_of_df["spacy_doc"] = (
-#         df["spacy_doc"].apply(lambda row: dframcy.to_dataframe(row)).to_frame()
-#     )
+def onto_tokenize(doc):
+    # matches = onto_ruler_obj.match(doc)
+    matches = onto_ruler_obj.phrase_matcher(doc)
 
-#     return explode_df(df_of_df)
+    spans = [
+        Span(doc, start, end, label=onto_ruler_obj.label)
+        for matchId, start, end in matches
+    ]
+    doc.spans[onto_ruler_obj.label] = spans
+
+    for i, span in enumerate(spans):
+        span._.set("has_curies", True)
+
+        for token in span:
+            if span.text.lower() in onto_ruler_obj.terms.keys():
+                token._.set(onto_ruler_obj.token_term_extension, True)
+                token._.set(
+                    "object_id",
+                    onto_ruler_obj.terms[span.text.lower()]["object_id"],
+                )
+                token._.set(
+                    "object_category",
+                    onto_ruler_obj.terms[span.text.lower()]["object_category"],
+                )
+                token._.set(
+                    "synonym_of",
+                    onto_ruler_obj.terms[span.text.lower()]["synonym_of"],
+                )
+                token._.set(
+                    "origin", onto_ruler_obj.terms[span.text.lower()]["origin"]
+                )
+                token._.set("sentence", span.sent)
+                token._.set("start", span.start_char)
+                token._.set("end", span.end_char)
+    return doc
+
+
+def get_knowledgeBase_enitities(doc):
+    linker = onto_ruler_obj.nlp.get_pipe("scispacy_linker")
+    ent_dict = {}
+    key_list = ["cui", "object_label", "aliases", "definition", "tui"]
+    for k in key_list:
+        ent_dict[k] = []
+    df = pd.DataFrame()
+
+    for entity in doc.ents:
+        for kb_ent in entity._.kb_ents:
+            ent_object = linker.kb.cui_to_entity[kb_ent[0]]
+            ent_dict["cui"].append(ent_object.concept_id)
+            ent_dict["object_label"].append(ent_object.canonical_name)
+            ent_dict["aliases"].append(ent_object.aliases)
+            ent_dict["definition"].append(ent_object.definition)
+            ent_dict["tui"].append(ent_object.types)
+
+    return pd.DataFrame.from_dict(ent_dict)
 
 
 def export_tsv(df: pd.DataFrame, fn: str) -> None:
@@ -136,21 +115,10 @@ def export_tsv(df: pd.DataFrame, fn: str) -> None:
 
 
 def main():
-
-    nlp.add_pipe("onto_extractor", after="ner")
-
-    nlp.add_pipe(
-        "scispacy_linker",
-        config={"resolve_abbreviations": True, "linker_name": "umls"},
-    )  # Must be one of 'umls' or 'mesh'.
-
-    # dframcy = DframCy(nlp)
-
     input_dir_path = (
-        os.path.join(PARENT_DIR, onto.get_config("input-directory")[0])
-        + "/*.tsv"
+        os.path.join(PARENT_DIR, get_config("input-directory")[0]) + "/*.tsv"
     )
-    input_file_list = glob.glob(input_dir_path)
+    input_file_list = glob(input_dir_path)
     list_of_input_dfs = []
     for fn in input_file_list:
         in_df = pd.read_csv(fn, sep="\t", low_memory=False)
@@ -158,14 +126,19 @@ def main():
     input_df = pd.concat(list_of_input_dfs, axis=0, ignore_index=True)
 
     input_df["spacy_doc"] = list(
-        nlp.pipe(input_df["text"].values, batch_size=1000)
+        onto_ruler_obj.nlp.pipe(input_df["text"].values, batch_size=1000)
     )
 
-    input_df["spacy_kb_ent"] = input_df["spacy_doc"].apply(
-        lambda row: get_knowledgeBase_enitities(row)
+    input_df["spacy_doc_tok"] = input_df["spacy_doc"].apply(
+        lambda row: onto_tokenize(row)
     )
-    input_df["spacy_tokens"] = input_df["spacy_doc"].apply(
+
+    input_df["spacy_tokens"] = input_df["spacy_doc_tok"].apply(
         lambda row: get_token_info(row)
+    )
+
+    input_df["spacy_kb_ent"] = input_df["spacy_doc_tok"].apply(
+        lambda row: get_knowledgeBase_enitities(row)
     )
 
     kb_df = explode_df(input_df[["id", "spacy_kb_ent"]])
@@ -209,7 +182,7 @@ def main():
         "PRON",
     ]
     stopwords_file_path = os.path.join(
-        PARENT_DIR, onto.get_config("termlist_stopwords")[0]
+        PARENT_DIR, get_config("termlist_stopwords")[0]
     )
     stopwords_file = open(stopwords_file_path, "r")
     stopwords = stopwords_file.read().splitlines()
@@ -226,9 +199,7 @@ def main():
 
 
 if __name__ == "__main__":
-    # python -m spacy download en_core_web_sm
-    # nlp = spacy.load("en_core_web_sm")
-    nlp = spacy.load("en_ner_craft_md")
     freeze_support()
-    onto = OntoExtractor.OntoExtractor(nlp)
+    onto_ruler_obj = OntoRuler()
     main()
+
