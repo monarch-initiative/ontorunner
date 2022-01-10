@@ -39,9 +39,11 @@ def consolidate_rows(df: pd.DataFrame) -> pd.DataFrame:
     grouping_columns.remove("origin")
 
     new_df = (
-        df.groupby(grouping_columns)
+        df.fillna("tmp")
+        .groupby(grouping_columns)
         .agg({"origin": lambda o: " | ".join(o)})
         .reset_index()
+        .replace({"object_match_field": {"tmp": ""}})
     )
     return new_df
 
@@ -59,9 +61,7 @@ def get_object_doc_ratio(df: pd.DataFrame) -> pd.DataFrame:
     )
     # This new column calculates the ratio:
     # (# of documents where the object_label appears) / (Total # of docs)
-    doc_count_df["object_label_doc_ratio"] = (
-        doc_count_df["doc_count"] / total_docs
-    )
+    doc_count_df["term_to_doc_ratio"] = doc_count_df["doc_count"] / total_docs
 
     df = df.merge(doc_count_df, how="left", on="object_label")
     df = df.drop_duplicates()
