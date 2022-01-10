@@ -10,12 +10,13 @@ from ontorunner.post import util
 
 def get_token_info(doc):
     key_list = [
-        "object_label",
+        "matched_term",
         "POS",
         "tag",
         "object_id",
         "object_category",
-        "synonym_of",
+        "object_label",
+        "object_match_field",
         "origin",
         "sentence",
         "start",
@@ -27,12 +28,13 @@ def get_token_info(doc):
 
     for token in doc:
         if token._.is_an_ontology_term:
-            onto_dict["object_label"].append(token.text)
+            onto_dict["matched_term"].append(token.text)
             onto_dict["POS"].append(token.pos_)
             onto_dict["tag"].append(token.tag_)
             onto_dict["object_id"].append(token._.object_id)
             onto_dict["object_category"].append(token._.object_category)
-            onto_dict["synonym_of"].append(token._.synonym_of)
+            onto_dict["object_label"].append(token._.object_label)
+            onto_dict["object_match_field"].append(token._.object_match_field)
             onto_dict["origin"].append(token._.origin)
             onto_dict["sentence"].append(token._.sentence)
             onto_dict["start"].append(token._.start)
@@ -77,8 +79,14 @@ def onto_tokenize(doc):
                     onto_ruler_obj.terms[span.text.lower()]["object_category"],
                 )
                 token._.set(
-                    "synonym_of",
-                    onto_ruler_obj.terms[span.text.lower()]["synonym_of"],
+                    "object_label",
+                    onto_ruler_obj.terms[span.text.lower()]["object_label"],
+                )
+                token._.set(
+                    "object_match_field",
+                    onto_ruler_obj.terms[span.text.lower()][
+                        "object_match_field"
+                    ],
                 )
                 token._.set(
                     "origin", onto_ruler_obj.terms[span.text.lower()]["origin"]
@@ -92,7 +100,7 @@ def onto_tokenize(doc):
 def get_knowledgeBase_enitities(doc):
     linker = onto_ruler_obj.nlp.get_pipe("scispacy_linker")
     ent_dict = {}
-    key_list = ["cui", "object_label", "aliases", "definition", "tui"]
+    key_list = ["cui", "matched_term", "aliases", "definition", "tui"]
     for k in key_list:
         ent_dict[k] = []
     df = pd.DataFrame()
@@ -101,7 +109,7 @@ def get_knowledgeBase_enitities(doc):
         for kb_ent in entity._.kb_ents:
             ent_object = linker.kb.cui_to_entity[kb_ent[0]]
             ent_dict["cui"].append(ent_object.concept_id)
-            ent_dict["object_label"].append(ent_object.canonical_name)
+            ent_dict["matched_term"].append(ent_object.canonical_name)
             ent_dict["aliases"].append(ent_object.aliases)
             ent_dict["definition"].append(ent_object.definition)
             ent_dict["tui"].append(ent_object.types)
@@ -188,7 +196,7 @@ def main():
     stopwords = stopwords_file.read().splitlines()
 
     onto_df = onto_df.loc[~onto_df["POS"].isin(ignore_pos)]
-    onto_df = onto_df.loc[~onto_df["object_label"].isin(stopwords)]
+    onto_df = onto_df.loc[~onto_df["matched_term"].isin(stopwords)]
 
     onto_df = util.consolidate_rows(onto_df)
     onto_df = util.get_object_doc_ratio(onto_df)

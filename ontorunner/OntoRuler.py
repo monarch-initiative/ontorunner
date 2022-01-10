@@ -17,7 +17,7 @@ import spacy
 from collections import defaultdict
 from scispacy.linking import EntityLinker
 from spacy.tokens import Doc, Span, Token
-from spacy.matcher import PhraseMatcher, Matcher
+from spacy.matcher import PhraseMatcher
 
 
 class OntoRuler(object):
@@ -44,6 +44,8 @@ class OntoRuler(object):
         #     # self.list_of_obj_docs = [
         #     #     self.nlp(p_dict["pattern"]) for p_dict in ruler.patterns
         #     # ]
+        #     with open(DOCS_PICKLED, "rb") as dp:
+        #         self.list_of_obj_docs = pickle.load(dp)
         #     self.phrase_matcher.add(self.label, None, *self.list_of_obj_docs)
         #     with open(TERMS_PICKLED, "rb") as tp:
         #         self.terms = pickle.load(tp)
@@ -76,7 +78,7 @@ class OntoRuler(object):
             for (
                 origin,
                 object_id,
-                object_label,
+                matched_term,
                 description,
                 object_category,
             ) in df.to_records(index=False):
@@ -84,7 +86,7 @@ class OntoRuler(object):
                     (
                         origin,
                         object_id,
-                        object_label,
+                        matched_term,
                         description,
                         object_category,
                     )
@@ -93,15 +95,15 @@ class OntoRuler(object):
                 self.list_of_pattern_dicts.append(patterns)
                 self.list_of_obj_docs.append(object_doc)
 
-        ruler = self.nlp.add_pipe("entity_ruler", after="ner")
-        ruler.add_patterns(self.list_of_pattern_dicts)
+            ruler = self.nlp.add_pipe("entity_ruler", after="ner")
+            ruler.add_patterns(self.list_of_pattern_dicts)
 
-        self.phrase_matcher.add(self.label, None, *self.list_of_obj_docs)
-        # Dump serialized files
-        self.nlp.to_disk(CUSTOM_PIPE_DIR)
-        with open(TERMS_PICKLED, "wb") as tp:
-            pickle.dump(self.terms, tp)
-        print("Serialized files dumped!")
+            self.phrase_matcher.add(self.label, None, *self.list_of_obj_docs)
+            # Dump serialized files
+            self.nlp.to_disk(CUSTOM_PIPE_DIR)
+            with open(TERMS_PICKLED, "wb") as tp:
+                pickle.dump(self.terms, tp)
+            print("Serialized files dumped!")
 
         # variables for tokens, spans and docs extensions
         self.token_term_extension = "is_an_ontology_term"
@@ -114,7 +116,8 @@ class OntoRuler(object):
         )
         Token.set_extension(self.token_id_extension, default=False, force=True)
         Token.set_extension("object_category", default=False, force=True)
-        Token.set_extension("synonym_of", default=False, force=True)
+        Token.set_extension("object_label", default=False, force=True)
+        Token.set_extension("object_match_field", default=False, force=True)
         Token.set_extension("origin", default=False, force=True)
         Token.set_extension("sentence", default=False, force=True)
         Token.set_extension("start", default=False, force=True)
@@ -143,7 +146,7 @@ class OntoRuler(object):
             "CUI",
             "origin",
             "CURIE",
-            "object_label",
+            "matched_term",
             "description",
             "object_category",
         ]
@@ -180,24 +183,28 @@ class OntoRuler(object):
         return df
 
     def get_terms_patterns(self, *args):
-        origin, object_id, object_label, description, object_category = args[0]
+        origin, object_id, matched_term, description, object_category = args[0]
         terms_dict = {}
         pattern_dict = {}
+        object_match_field = ""
 
         if "[SYNONYM_OF:" in description:
-            synonym = description.split("[SYNONYM_OF:")[-1].rstrip("]")
+            object_label = description.split("[SYNONYM_OF:")[-1].rstrip("]")
+            object_match_field = "hasRelatedSynonym"
         else:
-            synonym = None
+            object_label = matched_term
+            # object_match_field = "isExactMatch"
 
-        if object_label is not None and object_label == object_label:
-            terms_dict[object_label.lower()] = {
+        if matched_term is not None and matched_term == matched_term:
+            terms_dict[matched_term.lower()] = {
                 "object_id": object_id,
                 "object_category": object_category,
-                "synonym_of": synonym,
+                "object_label": object_label,
+                "object_match_field": object_match_field,
                 "origin": origin,
             }
             pattern_dict["id"] = object_id
             pattern_dict["label"] = origin.split(".")[0]
-            pattern_dict["pattern"] = object_label
+            pattern_dict["pattern"] = matched_term
 
-        return terms_dict, pattern_dict, self.nlp(object_label)
+        return terms_dict, pattern_dict, self.nlp(matched_term)
