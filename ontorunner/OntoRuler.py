@@ -54,12 +54,12 @@ class OntoRuler(object):
         df = self.get_ont_terms_df()
 
         if len(df) > self.processing_threshold:
-            number_of_processes = 3  # OR multiprocessing.cpu_count() - 1
+            number_of_processes = multiprocessing.cpu_count() // 2 - 1
             self.multiprocessing = True
 
         # iterate over terms in ontology
         if self.multiprocessing:
-            # * Multiprocessing
+            # * Multiprocessing ***********************************************
             with multiprocessing.Pool(processes=number_of_processes) as pool:
                 results = pool.map(
                     self.get_terms_patterns, df.to_records(index=False)
@@ -74,7 +74,7 @@ class OntoRuler(object):
             self.list_of_obj_docs = [result[2] for result in results]
 
         else:
-            # * Single process
+            # * Single process **************************************************
             for (
                 origin,
                 object_id,
@@ -94,16 +94,17 @@ class OntoRuler(object):
                 self.terms.update(terms)
                 self.list_of_pattern_dicts.append(patterns)
                 self.list_of_obj_docs.append(object_doc)
+            # ********************************************************************
 
-            ruler = self.nlp.add_pipe("entity_ruler", after="ner")
-            ruler.add_patterns(self.list_of_pattern_dicts)
+        ruler = self.nlp.add_pipe("entity_ruler", after="ner")
+        ruler.add_patterns(self.list_of_pattern_dicts)
 
-            self.phrase_matcher.add(self.label, None, *self.list_of_obj_docs)
-            # Dump serialized files
-            self.nlp.to_disk(CUSTOM_PIPE_DIR)
-            with open(TERMS_PICKLED, "wb") as tp:
-                pickle.dump(self.terms, tp)
-            print("Serialized files dumped!")
+        self.phrase_matcher.add(self.label, None, *self.list_of_obj_docs)
+        # Dump serialized files
+        self.nlp.to_disk(CUSTOM_PIPE_DIR)
+        with open(TERMS_PICKLED, "wb") as tp:
+            pickle.dump(self.terms, tp)
+        print("Serialized files dumped!")
 
         # variables for tokens, spans and docs extensions
         self.token_term_extension = "is_an_ontology_term"

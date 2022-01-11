@@ -123,6 +123,7 @@ def export_tsv(df: pd.DataFrame, fn: str) -> None:
 
 
 def main():
+    batch_size = 10000
     input_dir_path = (
         os.path.join(PARENT_DIR, get_config("input-directory")[0]) + "/*.tsv"
     )
@@ -134,7 +135,7 @@ def main():
     input_df = pd.concat(list_of_input_dfs, axis=0, ignore_index=True)
 
     input_df["spacy_doc"] = list(
-        onto_ruler_obj.nlp.pipe(input_df["text"].values, batch_size=1000)
+        onto_ruler_obj.nlp.pipe(input_df["text"].values, batch_size=batch_size)
     )
 
     input_df["spacy_doc_tok"] = input_df["spacy_doc"].apply(
