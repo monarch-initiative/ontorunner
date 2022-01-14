@@ -1,4 +1,7 @@
+from asyncio.base_tasks import _task_get_stack
 import os
+import pdb
+from turtle import pos
 from ontorunner import PARENT_DIR, SETTINGS_FILE, get_config
 from ontorunner.OntoRuler import OntoRuler
 from glob import glob
@@ -13,6 +16,7 @@ def get_token_info(doc):
         "matched_term",
         "POS",
         "tag",
+        "label",
         "object_id",
         "object_category",
         "object_label",
@@ -22,25 +26,113 @@ def get_token_info(doc):
         "start",
         "end",
     ]
+
+    # # Filter df to remove certain POS'
+    # """
+    # List of POS codes
+    # POS | DESCRIPTION | EXAMPLES
+    # ADJ | adjective | *big, old, green, incomprehensible, first*
+    # ADP | adposition | *in, to, during*
+    # ADV | adverb | *very, tomorrow, down, where, there*
+    # AUX | auxiliary | *is, has (done), will (do), should (do)*
+    # CONJ | conjunction | *and, or, but*
+    # CCONJ | coordinating conjunction | *and, or, but*
+    # DET | determiner | *a, an, the*
+    # INTJ | interjection | *psst, ouch, bravo, hello*
+    # NOUN | noun | *girl, cat, tree, air, beauty*
+    # NUM | numeral | *1, 2017, one, seventy-seven, IV, MMXIV*
+    # PART | particle | *’s, not,*
+    # PRON | pronoun | *I, you, he, she, myself, themselves, somebody*
+    # PROPN | proper noun | *Mary, John, London, NATO, HBO*
+    # PUNCT | punctuation | *., (, ), ?*
+    # SCONJ | subordinating conjunction | *if, while, that*
+    # SYM | symbol | *$, %, §, ©, +, −, ×, ÷, =, :), 😝*
+    # VERB | verb | *run, runs, running, eat, ate, eating*
+    # X | other | *sfpksdpsxmsa*
+    # SPACE | space
+
+    # """
+    ignore_pos = [
+        "ADP",
+        "CCONJ",
+        "CONJ",
+        "DET",
+        "INTJ",
+        "SCONJ",
+        "PART",
+        "PUNCT",
+        "PRON",
+        "AUX",
+        "NUM",
+        "ADV",
+    ]
     onto_dict = {}
     for k in key_list:
         onto_dict[k] = []
 
-    for token in doc:
-        if token._.is_an_ontology_term:
-            onto_dict["matched_term"].append(token.text)
-            onto_dict["POS"].append(token.pos_)
-            onto_dict["tag"].append(token.tag_)
-            onto_dict["object_id"].append(token._.object_id)
-            onto_dict["object_category"].append(token._.object_category)
-            onto_dict["object_label"].append(token._.object_label)
-            onto_dict["object_match_field"].append(token._.object_match_field)
-            onto_dict["origin"].append(token._.origin)
-            onto_dict["sentence"].append(token._.sentence)
-            onto_dict["start"].append(token._.start)
-            onto_dict["end"].append(token._.end)
+    # for token in doc:
+    #     import pdb
 
-    return pd.DataFrame.from_dict(onto_dict)
+    #     pdb.set_trace()
+    #     if token._.is_an_ontology_term:
+    #         onto_dict["matched_term"].append(token.text)
+    #         onto_dict["POS"].append(token.pos_)
+    #         onto_dict["tag"].append(token.tag_)
+    #         onto_dict["object_id"].append(token._.object_id)
+    #         onto_dict["object_category"].append(token._.object_category)
+    #         onto_dict["object_label"].append(token._.object_label)
+    #         onto_dict["object_match_field"].append(token._.object_match_field)
+    #         onto_dict["origin"].append(token._.origin)
+    #         onto_dict["sentence"].append(token._.sentence)
+    #         onto_dict["start"].append(token._.start)
+    #         onto_dict["end"].append(token._.end)
+    unwanted_labels = [
+        "ORG",
+        "GPE",
+        "LOC",
+    ]
+    unwanted_span_list = []
+    valid_span = True
+    df = pd.DataFrame()
+
+    for span in doc.ents:
+        # Filter out spans with labels that are irrelevant
+        if span.label_ in unwanted_labels:
+            unwanted_span_list.append(span.text)
+        else:
+            if (
+                span._.is_an_ontology_term
+                and span.text not in unwanted_span_list
+            ):
+                valid_span = any(
+                    [token.pos_ not in ignore_pos for token in span]
+                )
+
+                # for token in span:
+                #     if token.pos_ in ignore_pos:
+                #         valid_span = False
+
+                if valid_span:
+                    pos_list = ", ".join([token.pos_ for token in span])
+                    tag_list = ", ".join([token.tag_ for token in span])
+                    onto_dict["matched_term"].append(span.text)
+                    onto_dict["POS"].append(pos_list)
+                    onto_dict["tag"].append(tag_list)
+                    onto_dict["label"].append(span.label_)
+                    onto_dict["object_id"].append(span._.object_id)
+                    onto_dict["object_category"].append(span._.object_category)
+                    onto_dict["object_label"].append(span._.object_label)
+                    onto_dict["object_match_field"].append(
+                        span._.object_match_field
+                    )
+                    onto_dict["origin"].append(span._.origin)
+                    onto_dict["sentence"].append(span.sent)
+                    onto_dict["start"].append(span.start_char)
+                    onto_dict["end"].append(span.end_char)
+                df = pd.DataFrame.from_dict(onto_dict)
+                df = df[~df["matched_term"].isin(unwanted_span_list)]
+
+    return df
 
 
 def explode_df(df: pd.DataFrame):
@@ -62,38 +154,60 @@ def onto_tokenize(doc):
         Span(doc, start, end, label=onto_ruler_obj.label)
         for matchId, start, end in matches
     ]
-    doc.spans[onto_ruler_obj.label] = spans
+    # doc.spans[onto_ruler_obj.label] = spans
 
     for i, span in enumerate(spans):
         span._.set("has_curies", True)
 
-        for token in span:
-            if span.text.lower() in onto_ruler_obj.terms.keys():
-                token._.set(onto_ruler_obj.token_term_extension, True)
-                token._.set(
-                    "object_id",
-                    onto_ruler_obj.terms[span.text.lower()]["object_id"],
-                )
-                token._.set(
-                    "object_category",
-                    onto_ruler_obj.terms[span.text.lower()]["object_category"],
-                )
-                token._.set(
-                    "object_label",
-                    onto_ruler_obj.terms[span.text.lower()]["object_label"],
-                )
-                token._.set(
-                    "object_match_field",
-                    onto_ruler_obj.terms[span.text.lower()][
-                        "object_match_field"
-                    ],
-                )
-                token._.set(
-                    "origin", onto_ruler_obj.terms[span.text.lower()]["origin"]
-                )
-                token._.set("sentence", span.sent)
-                token._.set("start", span.start_char)
-                token._.set("end", span.end_char)
+        if span.text.lower() in onto_ruler_obj.terms.keys():
+            span._.set(onto_ruler_obj.span_term_extension, True)
+            span._.set(
+                "object_id",
+                onto_ruler_obj.terms[span.text.lower()]["object_id"],
+            )
+            span._.set(
+                "object_category",
+                onto_ruler_obj.terms[span.text.lower()]["object_category"],
+            )
+            span._.set(
+                "object_label",
+                onto_ruler_obj.terms[span.text.lower()]["object_label"],
+            )
+            span._.set(
+                "object_match_field",
+                onto_ruler_obj.terms[span.text.lower()]["object_match_field"],
+            )
+            span._.set(
+                "origin", onto_ruler_obj.terms[span.text.lower()]["origin"]
+            )
+
+        # for token in span:
+        #     if span.text.lower() in onto_ruler_obj.terms.keys():
+        #         token._.set(onto_ruler_obj.token_term_extension, True)
+        #         token._.set(
+        #             "object_id",
+        #             onto_ruler_obj.terms[span.text.lower()]["object_id"],
+        #         )
+        #         token._.set(
+        #             "object_category",
+        #             onto_ruler_obj.terms[span.text.lower()]["object_category"],
+        #         )
+        #         token._.set(
+        #             "object_label",
+        #             onto_ruler_obj.terms[span.text.lower()]["object_label"],
+        #         )
+        #         token._.set(
+        #             "object_match_field",
+        #             onto_ruler_obj.terms[span.text.lower()][
+        #                 "object_match_field"
+        #             ],
+        #         )
+        #         token._.set(
+        #             "origin", onto_ruler_obj.terms[span.text.lower()]["origin"]
+        #         )
+        #         token._.set("sentence", span.sent)
+        #         token._.set("start", span.start_char)
+        #         token._.set("end", span.end_char)
     return doc
 
 
@@ -154,53 +268,61 @@ def main():
     onto_df = explode_df(input_df[["id", "spacy_tokens"]])
     # nlp_df = doc_to_df(dframcy, input_df[["id", "spacy_doc"]])
 
-    # Filter df to remove certain POS'
-    """
-    List of POS codes
-    POS | DESCRIPTION | EXAMPLES
-    ADJ | adjective | *big, old, green, incomprehensible, first*
-    ADP | adposition | *in, to, during*
-    ADV | adverb | *very, tomorrow, down, where, there*
-    AUX | auxiliary | *is, has (done), will (do), should (do)*
-    CONJ | conjunction | *and, or, but*
-    CCONJ | coordinating conjunction | *and, or, but*
-    DET | determiner | *a, an, the*
-    INTJ | interjection | *psst, ouch, bravo, hello*
-    NOUN | noun | *girl, cat, tree, air, beauty*
-    NUM | numeral | *1, 2017, one, seventy-seven, IV, MMXIV*
-    PART | particle | *’s, not,*
-    PRON | pronoun | *I, you, he, she, myself, themselves, somebody*
-    PROPN | proper noun | *Mary, John, London, NATO, HBO*
-    PUNCT | punctuation | *., (, ), ?*
-    SCONJ | subordinating conjunction | *if, while, that*
-    SYM | symbol | *$, %, §, ©, +, −, ×, ÷, =, :), 😝*
-    VERB | verb | *run, runs, running, eat, ate, eating*
-    X | other | *sfpksdpsxmsa*
-    SPACE | space
+    # # Filter df to remove certain POS'
+    # """
+    # List of POS codes
+    # POS | DESCRIPTION | EXAMPLES
+    # ADJ | adjective | *big, old, green, incomprehensible, first*
+    # ADP | adposition | *in, to, during*
+    # ADV | adverb | *very, tomorrow, down, where, there*
+    # AUX | auxiliary | *is, has (done), will (do), should (do)*
+    # CONJ | conjunction | *and, or, but*
+    # CCONJ | coordinating conjunction | *and, or, but*
+    # DET | determiner | *a, an, the*
+    # INTJ | interjection | *psst, ouch, bravo, hello*
+    # NOUN | noun | *girl, cat, tree, air, beauty*
+    # NUM | numeral | *1, 2017, one, seventy-seven, IV, MMXIV*
+    # PART | particle | *’s, not,*
+    # PRON | pronoun | *I, you, he, she, myself, themselves, somebody*
+    # PROPN | proper noun | *Mary, John, London, NATO, HBO*
+    # PUNCT | punctuation | *., (, ), ?*
+    # SCONJ | subordinating conjunction | *if, while, that*
+    # SYM | symbol | *$, %, §, ©, +, −, ×, ÷, =, :), 😝*
+    # VERB | verb | *run, runs, running, eat, ate, eating*
+    # X | other | *sfpksdpsxmsa*
+    # SPACE | space
 
-    """
-    ignore_pos = [
-        "ADP",
-        "CCONJ",
-        "CONJ",
-        "DET",
-        "INTJ",
-        "SCONJ",
-        "PART",
-        "PUNCT",
-        "PRON",
-    ]
+    # """
+    # ignore_pos = [
+    #     "ADP",
+    #     "CCONJ",
+    #     "CONJ",
+    #     "DET",
+    #     "INTJ",
+    #     "SCONJ",
+    #     "PART",
+    #     "PUNCT",
+    #     "PRON",
+    #     "AUX",
+    #     "NUM",
+    #     "ADV",
+    # ]
     stopwords_file_path = os.path.join(
         PARENT_DIR, get_config("termlist_stopwords")[0]
     )
     stopwords_file = open(stopwords_file_path, "r")
     stopwords = stopwords_file.read().splitlines()
 
-    onto_df = onto_df.loc[~onto_df["POS"].isin(ignore_pos)]
+    # onto_df = onto_df.loc[~onto_df["POS"].isin(ignore_pos)]
     onto_df = onto_df.loc[~onto_df["matched_term"].isin(stopwords)]
 
     onto_df = util.consolidate_rows(onto_df)
-    onto_df = util.get_object_doc_ratio(onto_df)
+    # onto_df = util.get_object_doc_ratio(onto_df)
+    onto_df = util.get_column_doc_ratio(onto_df, "object_label")
+    onto_df = util.get_column_doc_ratio(onto_df, "matched_term")
+
+    onto_df = onto_df.drop_duplicates()
+    kb_df = kb_df.astype(str).drop_duplicates()
 
     export_tsv(kb_df, "umls_ontoRunNER")
     export_tsv(onto_df, "ontology_ontoRunNER")

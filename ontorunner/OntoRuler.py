@@ -1,5 +1,6 @@
 import multiprocessing
 import pickle
+from py_compile import PycInvalidationMode
 from spacy.language import Language
 from spacy.pipeline import EntityRuler, entityruler
 from ontorunner import (
@@ -30,6 +31,11 @@ class OntoRuler(object):
         self.list_of_pattern_dicts = []
         self.list_of_obj_docs = []
         self.nlp = spacy.load("en_ner_craft_md")
+        self.nlp.rename_pipe("ner", "craft_ner")  # To avoid conflict
+        # Source for below: https://spacy.io/usage/processing-pipelines
+        self.nlp.add_pipe(
+            "ner", source=spacy.load("en_core_web_sm"), after="lemmatizer"
+        )
 
         self.phrase_matcher = PhraseMatcher(
             self.nlp.vocab, attr=self.phrase_matcher_attr
@@ -96,7 +102,7 @@ class OntoRuler(object):
                 self.list_of_obj_docs.append(object_doc)
             # ********************************************************************
 
-        ruler = self.nlp.add_pipe("entity_ruler", after="ner")
+        ruler = self.nlp.add_pipe("entity_ruler", after="craft_ner")
         ruler.add_patterns(self.list_of_pattern_dicts)
 
         self.phrase_matcher.add(self.label, None, *self.list_of_obj_docs)
@@ -106,23 +112,37 @@ class OntoRuler(object):
             pickle.dump(self.terms, tp)
         print("Serialized files dumped!")
 
-        # variables for tokens, spans and docs extensions
-        self.token_term_extension = "is_an_ontology_term"
-        self.token_id_extension = "object_id"
-        self.has_id_extension = "has_curies"
+        # # variables for tokens, spans and docs extensions
+        # self.token_term_extension = "is_an_ontology_term"
+        # self.token_id_extension = "object_id"
+        # self.has_id_extension = "has_curies"
 
         # set extensions to tokens, spans and docs
-        Token.set_extension(
-            self.token_term_extension, default=False, force=True
-        )
-        Token.set_extension(self.token_id_extension, default=False, force=True)
-        Token.set_extension("object_category", default=False, force=True)
-        Token.set_extension("object_label", default=False, force=True)
-        Token.set_extension("object_match_field", default=False, force=True)
-        Token.set_extension("origin", default=False, force=True)
-        Token.set_extension("sentence", default=False, force=True)
-        Token.set_extension("start", default=False, force=True)
-        Token.set_extension("end", default=False, force=True)
+        # Token.set_extension(
+        #     self.token_term_extension, default=False, force=True
+        # )
+        # Token.set_extension(self.token_id_extension, default=False, force=True)
+        # Token.set_extension("object_category", default=False, force=True)
+        # Token.set_extension("object_label", default=False, force=True)
+        # Token.set_extension("object_match_field", default=False, force=True)
+        # Token.set_extension("origin", default=False, force=True)
+        # Token.set_extension("sentence", default=False, force=True)
+        # Token.set_extension("start", default=False, force=True)
+        # Token.set_extension("end", default=False, force=True)
+
+        # variables for spans and docs extensions
+        self.span_term_extension = "is_an_ontology_term"
+        self.span_id_extension = "object_id"
+        self.has_id_extension = "has_curies"
+
+        Span.set_extension(self.span_term_extension, default=False, force=True)
+        Span.set_extension(self.span_id_extension, default=False, force=True)
+        Span.set_extension("object_category", default=False, force=True)
+        Span.set_extension("object_label", default=False, force=True)
+        Span.set_extension("object_match_field", default=False, force=True)
+        Span.set_extension("origin", default=False, force=True)
+        Span.set_extension("start", default=False, force=True)
+        Span.set_extension("end", default=False, force=True)
 
         Span.set_extension(
             self.has_id_extension, getter=self.has_curies, force=True
@@ -140,7 +160,7 @@ class OntoRuler(object):
 
     # getter function for doc level
     def has_curies(self, tokens):
-        return any([t._.get(self.token_term_extension) for t in tokens])
+        return any([t._.get(self.span_term_extension) for t in tokens])
 
     def get_ont_terms_df(self):
         cols = [
@@ -209,3 +229,4 @@ class OntoRuler(object):
             pattern_dict["pattern"] = matched_term
 
         return terms_dict, pattern_dict, self.nlp(matched_term)
+

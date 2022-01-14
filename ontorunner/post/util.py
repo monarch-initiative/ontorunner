@@ -48,21 +48,47 @@ def consolidate_rows(df: pd.DataFrame) -> pd.DataFrame:
     return new_df
 
 
-def get_object_doc_ratio(df: pd.DataFrame) -> pd.DataFrame:
-    doc_label_df = df[["document_id", "object_label"]].drop_duplicates()
+# def get_object_doc_ratio(df: pd.DataFrame) -> pd.DataFrame:
+#     doc_label_df = df[["document_id", "object_label"]].drop_duplicates()
+
+#     total_docs = len(df["document_id"].drop_duplicates())
+
+#     doc_count_df = (
+#         doc_label_df.groupby("object_label")
+#         .size()
+#         .sort_values(ascending=False)
+#         .reset_index(name="doc_count")
+#     )
+#     # This new column calculates the ratio:
+#     # (# of documents where the object_label appears) / (Total # of docs)
+#     doc_count_df["object_to_doc_ratio"] = (
+#         doc_count_df["doc_count"] / total_docs
+#     )
+
+#     df = df.merge(doc_count_df, how="left", on="object_label")
+#     df = df.drop_duplicates()
+#     return df
+
+
+def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
+    doc_label_df = df[["document_id", column]].drop_duplicates()
 
     total_docs = len(df["document_id"].drop_duplicates())
 
+    doc_count = column + "_doc_count"
+
     doc_count_df = (
-        doc_label_df.groupby("object_label")
+        doc_label_df.groupby(column)
         .size()
         .sort_values(ascending=False)
-        .reset_index(name="doc_count")
+        .reset_index(name=doc_count)
     )
     # This new column calculates the ratio:
-    # (# of documents where the object_label appears) / (Total # of docs)
-    doc_count_df["term_to_doc_ratio"] = doc_count_df["doc_count"] / total_docs
+    # (# of documents where the str in 'column' appears) / (Total # of docs)
+    new_column = column + "_doc_ratio"
 
-    df = df.merge(doc_count_df, how="left", on="object_label")
+    doc_count_df[new_column] = doc_count_df[doc_count] / total_docs
+
+    df = df.merge(doc_count_df, how="left", on=column)
     df = df.drop_duplicates()
     return df
