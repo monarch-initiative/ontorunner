@@ -48,29 +48,13 @@ def consolidate_rows(df: pd.DataFrame) -> pd.DataFrame:
     return new_df
 
 
-# def get_object_doc_ratio(df: pd.DataFrame) -> pd.DataFrame:
-#     doc_label_df = df[["document_id", "object_label"]].drop_duplicates()
-
-#     total_docs = len(df["document_id"].drop_duplicates())
-
-#     doc_count_df = (
-#         doc_label_df.groupby("object_label")
-#         .size()
-#         .sort_values(ascending=False)
-#         .reset_index(name="doc_count")
-#     )
-#     # This new column calculates the ratio:
-#     # (# of documents where the object_label appears) / (Total # of docs)
-#     doc_count_df["object_to_doc_ratio"] = (
-#         doc_count_df["doc_count"] / total_docs
-#     )
-
-#     df = df.merge(doc_count_df, how="left", on="object_label")
-#     df = df.drop_duplicates()
-#     return df
-
-
 def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
+    """Get str to document ratio of given column in a pandas DataFrame.
+
+    :param df: Pandas DataFrame
+    :param column: Column name of the term
+    :return: Pandas DataFrame with additional columns showing term:document ratio
+    """
     doc_label_df = df[["document_id", column]].drop_duplicates()
 
     total_docs = len(df["document_id"].drop_duplicates())

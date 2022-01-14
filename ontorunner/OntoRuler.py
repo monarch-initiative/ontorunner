@@ -112,24 +112,6 @@ class OntoRuler(object):
             pickle.dump(self.terms, tp)
         print("Serialized files dumped!")
 
-        # # variables for tokens, spans and docs extensions
-        # self.token_term_extension = "is_an_ontology_term"
-        # self.token_id_extension = "object_id"
-        # self.has_id_extension = "has_curies"
-
-        # set extensions to tokens, spans and docs
-        # Token.set_extension(
-        #     self.token_term_extension, default=False, force=True
-        # )
-        # Token.set_extension(self.token_id_extension, default=False, force=True)
-        # Token.set_extension("object_category", default=False, force=True)
-        # Token.set_extension("object_label", default=False, force=True)
-        # Token.set_extension("object_match_field", default=False, force=True)
-        # Token.set_extension("origin", default=False, force=True)
-        # Token.set_extension("sentence", default=False, force=True)
-        # Token.set_extension("start", default=False, force=True)
-        # Token.set_extension("end", default=False, force=True)
-
         # variables for spans and docs extensions
         self.span_term_extension = "is_an_ontology_term"
         self.span_id_extension = "object_id"
@@ -160,9 +142,18 @@ class OntoRuler(object):
 
     # getter function for doc level
     def has_curies(self, tokens):
+        """Check if any one token has CURIEs
+
+        :param tokens: token
+        :return: Boolean
+        """
         return any([t._.get(self.span_term_extension) for t in tokens])
 
-    def get_ont_terms_df(self):
+    def get_ont_terms_df(self) -> pd.DataFrame:
+        """Get Ontology terms from external source in the form of a pandas DataFrame.
+
+        :return: Pandas DataFrame for of termlist.
+        """
         cols = [
             "CUI",
             "origin",
@@ -204,6 +195,13 @@ class OntoRuler(object):
         return df
 
     def get_terms_patterns(self, *args):
+        """Get dictionaries of terms and patterns, 
+        along with doc format of the term.
+
+        :return: Dictionary of terms; 
+        Dictionary of patterns; 
+        doc object of the term
+        """
         origin, object_id, matched_term, description, object_category = args[0]
         terms_dict = {}
         pattern_dict = {}
