@@ -3,7 +3,7 @@ import os
 import pdb
 from turtle import pos
 from ontorunner import PARENT_DIR, SETTINGS_FILE, get_config
-from ontorunner.OntoRuler import OntoRuler
+from ontorunner.pipes.OntoRuler import OntoRuler
 from glob import glob
 import pandas as pd
 from spacy.tokens import Span
