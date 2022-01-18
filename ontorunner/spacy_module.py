@@ -9,6 +9,7 @@ import pandas as pd
 from spacy.tokens import Span
 from multiprocessing import freeze_support
 from ontorunner.post import util
+import click
 
 
 def get_token_info(doc):
@@ -117,7 +118,7 @@ def get_token_info(doc):
     return df
 
 
-def explode_df(df: pd.DataFrame):
+def explode_df(df: pd.DataFrame) -> pd.DataFrame:
     new_df = pd.DataFrame()
     for _, doc_obj_row in df.iterrows():
         tmp_df = doc_obj_row[1]
@@ -245,8 +246,19 @@ def main():
     # export_tsv(nlp_df, "nlp_object_output")
 
 
+@click.group()
+def cli():
+    pass
+
+
+@cli.group
+@cli.command("run-spacy")
+def run_spacy_click():
+    main()
+
+
 if __name__ == "__main__":
     freeze_support()
     onto_ruler_obj = OntoRuler()
-    main()
+    cli()
 
