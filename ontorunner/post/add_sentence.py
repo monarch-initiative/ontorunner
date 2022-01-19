@@ -4,23 +4,12 @@ from ontorunner.post.util import (
     get_column_doc_ratio,
 )
 import pandas as pd
-
-# from nltk.corpus.reader.wordnet import NOUN, VERB
 from nltk.stem.wordnet import WordNetLemmatizer
-
-# from nltk import ngrams, FreqDist
-# from textdistance.algorithms.edit_based import Levenshtein
-
 import csv
 import os
 from glob import glob
-
 import nltk
 import textdistance
-
-# import logging
-
-# from pandas.core.arrays.categorical import contains
 
 # if not nltk.find("corpora/wordnet"):
 nltk.download("wordnet")
@@ -404,5 +393,3 @@ def parse(input_directory, output_directory) -> None:
                     )
 
                 sentencify(input_df, output_df, final_output_file)
-
-    os.system('say "Done!"')
