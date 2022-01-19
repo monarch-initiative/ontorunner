@@ -1,7 +1,7 @@
 from ontorunner.post.util import (
     filter_synonyms,
     consolidate_rows,
-    get_object_doc_ratio,
+    get_column_doc_ratio,
 )
 import pandas as pd
 
@@ -289,7 +289,8 @@ def parse(input_directory, output_directory) -> None:
             output_df["preferred_form"]
         )
 
-        output_df = get_object_doc_ratio(output_df)
+        output_df = get_column_doc_ratio(output_df, "object_label")
+        output_df = get_column_doc_ratio(output_df, "matched_term")
 
         # Add column which indicates how close
         # of a match is the recognized entity.
@@ -354,8 +355,8 @@ def parse(input_directory, output_directory) -> None:
                 "matched_term",
                 "preferred_form",
                 "object_label",
-                "doc_count",
                 "object_label_doc_ratio",
+                "matched_term_doc_ratio",
                 "match_type",
                 "levenshtein_distance",
                 "jaccard_index",
