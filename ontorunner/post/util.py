@@ -91,6 +91,8 @@ def get_ancestors(df: pd.DataFrame) -> pd.DataFrame:
     for origin in origin_list:
         sub_df = df[df["origin"] == origin]
         ont = origin.split(".")[0]
+        if "_" in ont:
+            ont = origin.split("_")[0]
         ontFact = OntologyFactory().create(ont)
         sub_df["ancestors"] = sub_df["object_id"].apply(
             lambda obj: ontFact.ancestors(ontFact.search(obj)[0])
