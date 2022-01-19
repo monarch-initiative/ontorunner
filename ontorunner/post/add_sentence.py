@@ -405,4 +405,4 @@ def parse(input_directory, output_directory) -> None:
 
                 sentencify(input_df, output_df, final_output_file)
 
-    os.system('say "Ontorunner has completed its run!"')
+    os.system('say "Done!"')
