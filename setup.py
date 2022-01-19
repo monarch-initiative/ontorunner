@@ -64,7 +64,8 @@ setup(
         "conllu",  # required by scispacy
         "nmslib>=1.7.3.6",  # required by scispacy
         "pysbd",  # required by scispacy
-        "dframcy"
+        "dframcy",
+        "ontobio"
         # "en_core_sci_scibert"
         # "en_ner_jnlpba_md",  # Joint wkshp for NLP in Biomedicine & application
         # "en_ner_bc5cdr_md",  # Biocreative V Chemical induce Disease NER

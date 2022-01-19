@@ -2,6 +2,7 @@ from ontorunner.post.util import (
     filter_synonyms,
     consolidate_rows,
     get_column_doc_ratio,
+    get_ancestors,
 )
 import pandas as pd
 from nltk.stem.wordnet import WordNetLemmatizer
@@ -358,6 +359,7 @@ def parse(input_directory, output_directory) -> None:
                 "object_sentence_%",
             ]
         )
+        output_df = get_ancestors(output_df)
 
         final_output_file = output_file.replace(".tsv", "_ontoRunNER.tsv")
 

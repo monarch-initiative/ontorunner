@@ -1,4 +1,6 @@
+from venv import create
 import pandas as pd
+from ontobio import OntologyFactory
 
 
 def filter_synonyms(df: pd.DataFrame) -> pd.DataFrame:
@@ -75,4 +77,24 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
 
     df = df.merge(doc_count_df, how="left", on=column)
     df = df.drop_duplicates()
+    return df
+
+
+def get_ancestors(df: pd.DataFrame) -> pd.DataFrame:
+    origin_object_df = df[["origin", "object_id"]].drop_duplicates()
+    origin_object_df["object_id"] = origin_object_df["object_id"].apply(
+        lambda x: x.split("_")[0]
+    )
+
+    origin_object_df = origin_object_df.drop_duplicates()
+    origin_list = list(origin_object_df["origin"].drop_duplicates())
+    for origin in origin_list:
+        sub_df = df[df["origin"] == origin]
+        ont = origin.split(".")[0]
+        ontFact = OntologyFactory().create(ont)
+        sub_df["ancestors"] = sub_df["object_id"].apply(
+            lambda obj: ontFact.ancestors(ontFact.search(obj)[0])
+        )
+        df = pd.merge(df, sub_df, how="left", on=list(df.columns))
+
     return df
