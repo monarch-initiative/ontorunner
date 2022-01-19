@@ -2,7 +2,8 @@ import os
 from posix import listdir
 import unittest
 import pandas as pd
-from ontorunner.oger_module import json2tsv, prepare_termlist, run_oger
+from ontorunner.oger_module import run_oger
+from ontorunner.pre.util import json2tsv, prepare_termlist
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, "data")
