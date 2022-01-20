@@ -15,6 +15,7 @@ import textdistance
 # if not nltk.find("corpora/wordnet"):
 nltk.download("wordnet")
 nltk.download("punkt")
+nltk.download("omw-1.4")
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
