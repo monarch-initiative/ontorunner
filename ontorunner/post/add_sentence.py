@@ -5,11 +5,11 @@ from ontorunner.post.util import (
     get_ancestors,
 )
 import pandas as pd
-from nltk.stem.wordnet import WordNetLemmatizer
 import csv
 import os
 from glob import glob
 import nltk
+from nltk.stem.wordnet import WordNetLemmatizer
 import textdistance
 
 # if not nltk.find("corpora/wordnet"):
