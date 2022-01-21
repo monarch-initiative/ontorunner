@@ -17,7 +17,7 @@ def get_token_info(doc):
         "matched_term",
         "POS",
         "tag",
-        "label",
+        "scispacy_object_category",
         "object_id",
         "object_category",
         "object_label",
@@ -99,7 +99,7 @@ def get_token_info(doc):
                     onto_dict["matched_term"].append(span.text)
                     onto_dict["POS"].append(pos_list)
                     onto_dict["tag"].append(tag_list)
-                    onto_dict["label"].append(span.label_)
+                    onto_dict["scispacy_object_category"].append(span.label_)
                     onto_dict["object_id"].append(span._.object_id)
                     onto_dict["object_category"].append(span._.object_category)
                     onto_dict["object_label"].append(span._.object_label)
