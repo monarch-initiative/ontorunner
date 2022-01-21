@@ -142,5 +142,6 @@ def get_ancestors(df: pd.DataFrame) -> pd.DataFrame:
     new_df = pd.merge(
         df.astype(str), ancestor_df.astype(str), how="left", on="object_id"
     )
+    new_df = new_df.fillna("Empty graph due to no edges")
 
     return new_df
