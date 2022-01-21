@@ -1,4 +1,3 @@
-from venv import create
 import pandas as pd
 from ontobio import OntologyFactory
 
@@ -81,22 +80,67 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
 
 
 def get_ancestors(df: pd.DataFrame) -> pd.DataFrame:
-    origin_object_df = df[["origin", "object_id"]].drop_duplicates()
-    origin_object_df["object_id"] = origin_object_df["object_id"].apply(
-        lambda x: x.split("_")[0]
+
+    # * Using origin as reference for ancestors.
+    # origin_object_df = df[["origin", "object_id"]].drop_duplicates()
+    # origin_object_df["object_id"] = origin_object_df["object_id"].apply(
+    #     lambda x: x.split("_")[0]
+    # )
+    # df_columns_no_ancestor = list(df.columns)
+    # origin_object_df = origin_object_df.drop_duplicates()
+    # origin_list = list(origin_object_df["origin"].drop_duplicates())
+    # for origin in origin_list:
+    #     sub_df = df[df["origin"] == origin]
+    #     ont = origin.split(".")[0]
+    #     if "_" in ont:
+    #         ont = origin.split("_")[0]
+    #     ontFact = OntologyFactory().create(ont)
+    #     sub_df["ancestors"] = sub_df["object_id"].apply(
+    #         lambda obj: ontFact.ancestors(ontFact.search(obj)[0])
+    #     )
+    #     df = pd.merge(
+    #         df.astype(str),
+    #         sub_df.astype(str),
+    #         how="outer",
+    #         on=df_columns_no_ancestor,
+    #     )
+    # * Using object as reference for ancestors.
+
+    object_df = df["object_id"].apply(lambda x: x.split("_")[0])
+    object_df = (
+        object_df.drop_duplicates().reset_index().drop(["index"], axis=1)
     )
 
-    origin_object_df = origin_object_df.drop_duplicates()
-    origin_list = list(origin_object_df["origin"].drop_duplicates())
-    for origin in origin_list:
-        sub_df = df[df["origin"] == origin]
-        ont = origin.split(".")[0]
-        if "_" in ont:
-            ont = origin.split("_")[0]
-        ontFact = OntologyFactory().create(ont)
-        sub_df["ancestors"] = sub_df["object_id"].apply(
+    source_df = (
+        object_df["object_id"]
+        .apply(lambda x: x.split(":")[0],)
+        .drop_duplicates()
+    )
+    tmp_df = pd.DataFrame()
+    for _, src in source_df.iteritems():
+
+        sub_df = object_df[object_df["object_id"].str.contains(src)]
+        ontFact = OntologyFactory().create(src)
+        sub_df.loc[:, "ancestors"] = sub_df["object_id"].apply(
             lambda obj: ontFact.ancestors(ontFact.search(obj)[0])
         )
-        df = pd.merge(df, sub_df, how="left", on=list(df.columns))
+        if len(tmp_df) == 0:
+            tmp_df = sub_df
+        else:
+            tmp_df = pd.concat([tmp_df, sub_df], ignore_index=True)
+    tmp_df_1 = tmp_df.astype(str).drop_duplicates()
+    tmp_df_syn = tmp_df_1.copy()
+    tmp_df_syn["object_id"] = tmp_df_1["object_id"] + "_SYNONYM"
 
-    return df
+    ancestor_df = pd.concat([tmp_df_1, tmp_df_syn])
+    # ancestor_df.to_csv(
+    #     os.path.join(PARENT_DIR, "data/output/ancestor.tsv"),
+    #     sep="\t",
+    #     index=None,
+    # )
+
+    new_df = pd.merge(
+        df.astype(str), ancestor_df.astype(str), how="left", on="object_id"
+    )
+
+    return new_df
