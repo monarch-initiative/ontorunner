@@ -4,18 +4,6 @@ from kgx.cli.cli_utils import transform
 import click
 
 
-@click.group()
-def cli():
-    pass
-
-
-@cli.command("json2tsv")
-@click.option("--input", "-i", type=click.Path(exists=True))
-@click.option("--output", "-o", type=str)
-def json2tsv_click(input, output):
-    json2tsv(input, output)
-
-
 def json2tsv(input, output) -> None:
     """
     Converts an JSON file into 'nodes' and 'edges' TSV.
@@ -51,13 +39,6 @@ def json2tsv(input, output) -> None:
                     )
 
 
-@cli.command("prepare-termlist")
-@click.option("--input", "-i", type=click.Path(exists=True), required=True)
-@click.option("--output", "-o", type=str, required=True)
-def prepare_termlist_click(input, output):
-    prepare_termlist(input, output)
-
-
 def prepare_termlist(input, output) -> None:
     """
     Generates a Bio Term Hub formatted term list for use with OGER.
@@ -67,6 +48,25 @@ def prepare_termlist(input, output) -> None:
     :return: None.
     """
     bc.parse(input, output)
+
+
+@click.group()
+def cli():
+    pass
+
+
+@cli.command("json2tsv")
+@click.option("--input", "-i", type=click.Path(exists=True))
+@click.option("--output", "-o", type=str)
+def json2tsv_click(input, output):
+    json2tsv(input, output)
+
+
+@cli.command("prepare-termlist")
+@click.option("--input", "-i", type=click.Path(exists=True), required=True)
+@click.option("--output", "-o", type=str, required=True)
+def prepare_termlist_click(input, output):
+    prepare_termlist(input, output)
 
 
 if __name__ == "__main__":
