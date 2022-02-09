@@ -360,7 +360,8 @@ def parse(input_directory, output_directory) -> None:
                 "object_sentence_%",
             ]
         )
-        output_df = get_ancestors(output_df)
+        # output_df = get_ancestors(output_df) Ontobio getting Ancestors.
+        # Takes too long
 
         final_output_file = output_file.replace(".tsv", "_ontoRunNER.tsv")
 
