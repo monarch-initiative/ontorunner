@@ -32,7 +32,7 @@ class TestOger(unittest.TestCase):
         ofilename = os.path.join(self.output, "envo")
         json2tsv(self.json, ofilename)
         ofiles = [ofilename + "_nodes.tsv", ofilename + "_edges.tsv"]
-        ofile_rows = [6405, 9643]
+        ofile_rows = [6405, 9645]
         for i, file in enumerate(ofiles):
             self.assertTrue(os.path.isfile(file))
             self.assertEqual(len(pd.read_csv(file, sep="\t")), ofile_rows[i])

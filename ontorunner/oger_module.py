@@ -1,6 +1,5 @@
 import click
 from ontorunner.post import add_sentence
-from ontorunner.pre.util import json2tsv, prepare_termlist
 from oger.ctrl.router import Router, PipelineServer
 from oger.doc import EXPORTERS
 from oger.ctrl.run import run
