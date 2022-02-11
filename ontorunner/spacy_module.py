@@ -66,6 +66,7 @@ def get_token_info(doc):
         "AUX",
         "NUM",
         "ADV",
+        "VERB",
     ]
     onto_dict = {}
     for k in key_list:
