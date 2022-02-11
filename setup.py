@@ -30,6 +30,7 @@ setup(
     include_package_data=True,
     # add package dependencies
     install_requires=[
+        "setuptools==57.5.0"  # else GH Actions yells "error in pystache setup command: use_2to3 is invalid."
         "kgx",
         "click",
         "pytz",  # required by pandas
