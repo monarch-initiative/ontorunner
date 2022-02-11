@@ -30,8 +30,8 @@ setup(
     include_package_data=True,
     # add package dependencies
     install_requires=[
-        "setuptools==57.5.0"  # else GH Actions yells "error in pystache setup command: use_2to3 is invalid."
-        "kgx",
+        "setuptools==58.0.4",
+        "kgx",  # else GH Actions yells "SEE LAST LINE"
         "click",
         "pytz",  # required by pandas
         "python-dateutil",  # required by pandas
@@ -79,3 +79,9 @@ setup(
         "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_core_sci_scibert-0.4.0.tar.gz",
     ],
 )
+
+
+# pystache: using: version '58.1.0' of <module 'setuptools'
+# from '/opt/hostedtoolcache/Python/3.9.10/x64/lib/python3.9/site-packages/setuptools/__init__.py'>
+# 1533 Warning: 'classifiers' should be a list, got type 'tuple'
+# 1534 error in pystache setup command: use_2to3 is invalid.
