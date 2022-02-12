@@ -30,8 +30,7 @@ setup(
     include_package_data=True,
     # add package dependencies
     install_requires=[
-        "setuptools==58.0.4",
-        "kgx",  # else GH Actions yells "SEE LAST LINE"
+        "kgx",
         "click",
         "pytz",  # required by pandas
         "python-dateutil",  # required by pandas
@@ -65,8 +64,7 @@ setup(
         "conllu",  # required by scispacy
         "nmslib>=1.7.3.6",  # required by scispacy
         "pysbd",  # required by scispacy
-        "dframcy",
-        "ontobio"
+        "dframcy"
         # "en_core_sci_scibert"
         # "en_ner_jnlpba_md",  # Joint wkshp for NLP in Biomedicine & application
         # "en_ner_bc5cdr_md",  # Biocreative V Chemical induce Disease NER
@@ -79,9 +77,3 @@ setup(
         "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_core_sci_scibert-0.4.0.tar.gz",
     ],
 )
-
-
-# pystache: using: version '58.1.0' of <module 'setuptools'
-# from '/opt/hostedtoolcache/Python/3.9.10/x64/lib/python3.9/site-packages/setuptools/__init__.py'>
-# 1533 Warning: 'classifiers' should be a list, got type 'tuple'
-# 1534 error in pystache setup command: use_2to3 is invalid.
