@@ -30,15 +30,14 @@ setup(
     include_package_data=True,
     # add package dependencies
     install_requires=[
-        "setuptools==57.5.0",  # else GH Actions yells "SEE LAST LINE"
-        "kgx",
-        "click",
+        "kgx>=1.5",
+        "click>=7.1",
         "pytz",  # required by pandas
-        "python-dateutil",  # required by pandas
-        "pandas",
-        "sphinx",
-        "sphinx_rtd_theme",
-        "recommonmark",
+        "python-dateutil>=2.8",  # required by pandas
+        "pandas>=1.3",
+        "sphinx>=2.3",
+        "sphinx_rtd_theme>=0.4",
+        "recommonmark>=0.7",
         "textdistance",
         "textdistance[extras]",  # With extra libraries for maximum speed
         "pytest",
@@ -49,7 +48,7 @@ setup(
         "validators",  # Needed by KGX
         "bmt",  # Needed by KGX
         "ordered_set",  # # Needed by KGX
-        "jsonstreams",  # NEeded by KGX
+        "jsonstreams",  # Needed by KGX
         "jsonlines",  # Needed by KGX
         "neo4jrestclient",  # Needed by KGX
         "ijson",  # Needed by KGX
@@ -79,9 +78,3 @@ setup(
         "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_core_sci_scibert-0.4.0.tar.gz",
     ],
 )
-
-
-# pystache: using: version '58.1.0' of <module 'setuptools'
-# from '/opt/hostedtoolcache/Python/3.9.10/x64/lib/python3.9/site-packages/setuptools/__init__.py'>
-# 1533 Warning: 'classifiers' should be a list, got type 'tuple'
-# 1534 error in pystache setup command: use_2to3 is invalid.
