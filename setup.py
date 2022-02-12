@@ -38,34 +38,34 @@ setup(
         "sphinx>=2.3",
         "sphinx_rtd_theme>=0.4",
         "recommonmark>=0.7",
-        "textdistance",
+        "textdistance>=4.2",
         "textdistance[extras]",  # With extra libraries for maximum speed
-        "pytest",
+        "pytest>=7",
         "OGER@git+git://github.com/OntoGene/OGER@master#egg=OGER",
-        "six",  # Needed by python_dateutil-2.8.2-py3.9.egg/dateutil/tz/tz.py
-        "requests",  # Needed by KGX
-        "pyyaml",  # Needed by KGX
-        "validators",  # Needed by KGX
-        "bmt",  # Needed by KGX
+        "six>=1.16",  # Needed by python_dateutil-2.8.2-py3.9.egg/dateutil/tz/tz.py
+        "requests>=2.26",  # Needed by KGX
+        "pyyaml>=5.4",  # Needed by KGX
+        "validators>=0.18",  # Needed by KGX
+        "bmt>=0.7",  # Needed by KGX
         "ordered_set",  # # Needed by KGX
-        "jsonstreams",  # Needed by KGX
-        "jsonlines",  # Needed by KGX
-        "neo4jrestclient",  # Needed by KGX
-        "ijson",  # Needed by KGX
-        "linkml-runtime",  # Needed by BMT
-        "rdflib",  # Needed by linkml-runtime
-        "wrapt",  # Needed by linkml-runtime
-        "pyjsg",  # Needed by ShExJSG-0.7.1-py3.9.egg/ShExJSG/ShExJ.py
-        "frozendict",  # Needed by pyld
-        "cachetools",  # Needed by pyld
+        "jsonstreams>=0.6",  # Needed by KGX
+        "jsonlines>=3",  # Needed by KGX
+        "neo4jrestclient>=2.1",  # Needed by KGX
+        "ijson>=3.1",  # Needed by KGX
+        "linkml-runtime>=1.1",  # Needed by BMT
+        "rdflib>=5",  # Needed by linkml-runtime
+        "wrapt>=1.13",  # Needed by linkml-runtime
+        "pyjsg>=0.11",  # Needed by ShExJSG-0.7.1-py3.9.egg/ShExJSG/ShExJ.py
+        "frozendict>=2.1",  # Needed by pyld
+        "cachetools>=4.2",  # Needed by pyld
         "spacy>=3.0.0,<3.1.0",  # dictated by scispacy
-        "scispacy",
-        "scipy",  # required by scispacy
-        "conllu",  # required by scispacy
+        "scispacy==0.4.0",
+        "scipy==1.7.3",  # required by scispacy
+        "conllu>=4.4",  # required by scispacy
         "nmslib>=1.7.3.6",  # required by scispacy
-        "pysbd",  # required by scispacy
-        "dframcy",
-        "ontobio"
+        "pysbd>=0.3",  # required by scispacy
+        "dframcy>=0.1",
+        "ontobio>=2.7"
         # "en_core_sci_scibert"
         # "en_ner_jnlpba_md",  # Joint wkshp for NLP in Biomedicine & application
         # "en_ner_bc5cdr_md",  # Biocreative V Chemical induce Disease NER
