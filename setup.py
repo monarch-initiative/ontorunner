@@ -64,7 +64,8 @@ setup(
         "conllu",  # required by scispacy
         "nmslib>=1.7.3.6",  # required by scispacy
         "pysbd",  # required by scispacy
-        "dframcy"
+        "dframcy",
+        "ontobio"
         # "en_core_sci_scibert"
         # "en_ner_jnlpba_md",  # Joint wkshp for NLP in Biomedicine & application
         # "en_ner_bc5cdr_md",  # Biocreative V Chemical induce Disease NER
@@ -76,4 +77,5 @@ setup(
         "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_ner_craft_md-0.4.0.tar.gz",
         "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.4.0/en_core_sci_scibert-0.4.0.tar.gz",
     ],
+    classifiers=[],
 )
