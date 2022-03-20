@@ -1,6 +1,5 @@
 import multiprocessing
 import pickle
-from py_compile import PycInvalidationMode
 from spacy.language import Language
 from spacy.pipeline import EntityRuler, entityruler
 from ontorunner import (
@@ -10,14 +9,15 @@ from ontorunner import (
     PARENT_DIR,
     SERIAL_DIR,
     TERMS_PICKLED,
+    PATTERN_LIST_PICKLED,
+    OBJ_DOC_LIST_PICKLED,
     get_config,
 )
 import pandas as pd
 import os
 import spacy
-from collections import defaultdict
 from scispacy.linking import EntityLinker
-from spacy.tokens import Doc, Span, Token
+from spacy.tokens import Doc, Span
 from spacy.matcher import PhraseMatcher
 
 
@@ -25,7 +25,9 @@ class OntoRuler(object):
     def __init__(self):
         self.label = "ontology"
         self.phrase_matcher_attr = "LOWER"
-        self.multiprocessing = False  # False -> Use single processor; True -> Use multiple processors
+        self.multiprocessing = False
+        # False -> Use single processor;
+        # True -> Use multiple processors
         self.processing_threshold = 100_000
         self.terms = {}
         self.list_of_pattern_dicts = []
@@ -61,7 +63,10 @@ class OntoRuler(object):
 
         if len(df) > self.processing_threshold:
             number_of_processes = multiprocessing.cpu_count() // 2 - 1
-            self.multiprocessing = True
+            if number_of_processes <= 1:
+                self.multiprocessing = False
+            else:
+                self.multiprocessing = True
 
         # iterate over terms in ontology
         if self.multiprocessing:
@@ -107,9 +112,13 @@ class OntoRuler(object):
 
         self.phrase_matcher.add(self.label, None, *self.list_of_obj_docs)
         # Dump serialized files
-        self.nlp.to_disk(CUSTOM_PIPE_DIR)
+        # self.nlp.to_disk(CUSTOM_PIPE_DIR)
         with open(TERMS_PICKLED, "wb") as tp:
             pickle.dump(self.terms, tp)
+        with open(PATTERN_LIST_PICKLED, "wb") as plp:
+            pickle.dump(self.list_of_pattern_dicts, plp)
+        with open(OBJ_DOC_LIST_PICKLED, "wb") as odlp:
+            pickle.dump(self.list_of_obj_docs, odlp)
         print("Serialized files dumped!")
 
         # variables for spans and docs extensions

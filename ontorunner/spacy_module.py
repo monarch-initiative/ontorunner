@@ -133,7 +133,6 @@ def explode_df(df: pd.DataFrame) -> pd.DataFrame:
 def onto_tokenize(doc):
     # matches = onto_ruler_obj.match(doc)
     matches = onto_ruler_obj.phrase_matcher(doc)
-
     spans = [
         Span(doc, start, end, label=onto_ruler_obj.label)
         for matchId, start, end in matches
@@ -174,7 +173,6 @@ def get_knowledgeBase_enitities(doc):
     key_list = ["cui", "matched_term", "aliases", "definition", "tui"]
     for k in key_list:
         ent_dict[k] = []
-    df = pd.DataFrame()
 
     for entity in doc.ents:
         for kb_ent in entity._.kb_ents:
@@ -230,7 +228,6 @@ def main():
     )
     stopwords_file = open(stopwords_file_path, "r")
     stopwords = stopwords_file.read().splitlines()
-
     # onto_df = onto_df.loc[~onto_df["POS"].isin(ignore_pos)]
     onto_df = onto_df.loc[~onto_df["matched_term"].isin(stopwords)]
 

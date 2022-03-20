@@ -1,4 +1,7 @@
+from genericpath import isdir
 import os
+import shutil
+from ontorunner import SERIAL_DIR
 from ontorunner.converters import biohub_converter as bc
 from kgx.cli.cli_utils import transform
 import click
@@ -67,6 +70,17 @@ def json2tsv_click(input, output):
 @click.option("--output", "-o", type=str, required=True)
 def prepare_termlist_click(input, output):
     prepare_termlist(input, output)
+
+
+@cli.command("delete-cache")
+def delete_cache():
+    for f in os.listdir(SERIAL_DIR):
+        path = os.path.join(SERIAL_DIR, f)
+        if isdir(path):
+            shutil.rmtree(path)
+        else:
+            os.remove(path)
+    print("Serialzed data folder purged!")
 
 
 if __name__ == "__main__":
