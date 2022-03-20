@@ -41,7 +41,7 @@ setup(
         "textdistance>=4.2",
         "textdistance[extras]",  # With extra libraries for maximum speed
         "pytest>=7",
-        "OGER@git+git://github.com/OntoGene/OGER@master#egg=OGER",
+        "OGER@git+https:://github.com/OntoGene/OGER@master#egg=OGER",
         "six>=1.16",  # Needed by python_dateutil-2.8.2-py3.9.egg/dateutil/tz/tz.py
         "requests>=2.26",  # Needed by KGX
         "pyyaml>=5.4",  # Needed by KGX
