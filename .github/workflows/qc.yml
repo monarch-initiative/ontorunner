@@ -25,6 +25,9 @@ jobs:
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
 
+      - name: Github protocol on port 9418 fix
+        run: git config --global url."https://".insteadOf git://
+
       - name: Install dependencies
         run: pip install .
 
