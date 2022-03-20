@@ -232,7 +232,9 @@ class OntoRuler(object):
                 "origin": origin,
             }
             pattern_dict["id"] = object_id
-            pattern_dict["label"] = origin.split(".")[0]
+            pattern_dict["label"] = origin.split(".")[
+                0
+            ]  # could be object_id/object_label
             pattern_dict["pattern"] = matched_term
 
         return terms_dict, pattern_dict, self.nlp(matched_term)
