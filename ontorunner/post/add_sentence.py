@@ -2,7 +2,7 @@ from ontorunner.post.util import (
     filter_synonyms,
     consolidate_rows,
     get_column_doc_ratio,
-    get_ancestors,
+    # get_ancestors,
 )
 import pandas as pd
 import csv

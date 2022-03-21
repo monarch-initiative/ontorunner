@@ -54,7 +54,8 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
 
     :param df: Pandas DataFrame
     :param column: Column name of the term
-    :return: Pandas DataFrame with additional columns showing term:document ratio
+    :return: Pandas DataFrame with additional
+            columns showing term:document ratio
     """
     doc_label_df = df[["document_id", column]].drop_duplicates()
 
