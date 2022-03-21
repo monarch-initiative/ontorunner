@@ -5,9 +5,9 @@ from spacy.pipeline import EntityRuler, entityruler
 from ontorunner import (
     COMBINED_ONTO_FILE,
     COMBINED_ONTO_PICKLED_FILE,
-    CUSTOM_PIPE_DIR,
+    # CUSTOM_PIPE_DIR,
     PARENT_DIR,
-    SERIAL_DIR,
+    # SERIAL_DIR,
     TERMS_PICKLED,
     PATTERN_LIST_PICKLED,
     OBJ_DOC_LIST_PICKLED,
@@ -85,7 +85,7 @@ class OntoRuler(object):
             self.list_of_obj_docs = [result[2] for result in results]
 
         else:
-            # * Single process **************************************************
+            # * Single process **********************************************
             for (
                 origin,
                 object_id,
@@ -105,7 +105,7 @@ class OntoRuler(object):
                 self.terms.update(terms)
                 self.list_of_pattern_dicts.append(patterns)
                 self.list_of_obj_docs.append(object_doc)
-            # ********************************************************************
+            # ***************************************************************
 
         ruler = self.nlp.add_pipe("entity_ruler", after="craft_ner")
         ruler.add_patterns(self.list_of_pattern_dicts)
@@ -204,11 +204,11 @@ class OntoRuler(object):
         return df
 
     def get_terms_patterns(self, *args):
-        """Get dictionaries of terms and patterns, 
+        """Get dictionaries of terms and patterns,
         along with doc format of the term.
 
-        :return: Dictionary of terms; 
-        Dictionary of patterns; 
+        :return: Dictionary of terms;
+        Dictionary of patterns;
         doc object of the term
         """
         origin, object_id, matched_term, description, object_category = args[0]
@@ -238,4 +238,3 @@ class OntoRuler(object):
             pattern_dict["pattern"] = matched_term
 
         return terms_dict, pattern_dict, self.nlp(matched_term)
-
