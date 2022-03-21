@@ -75,7 +75,7 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
     doc_count_df[new_column] = doc_count_df[doc_count] / total_docs
 
     df = df.merge(doc_count_df, how="left", on=column)
-    df = df.drop_duplicates()
+    df = df.loc[df.astype(str).drop_duplicates().index]
     return df
 
 

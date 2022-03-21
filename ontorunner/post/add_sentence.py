@@ -9,6 +9,7 @@ import csv
 import os
 from glob import glob
 import nltk
+from nltk import ne_chunk, pos_tag, word_tokenize
 from nltk.stem.wordnet import WordNetLemmatizer
 import textdistance
 
@@ -16,6 +17,8 @@ import textdistance
 nltk.download("wordnet")
 nltk.download("punkt")
 nltk.download("omw-1.4")
+nltk.download("maxent_ne_chunker")
+nltk.download("words")
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -280,6 +283,13 @@ def parse(input_directory, output_directory) -> None:
             output_df["preferred_form"]
         )
 
+        output_df["pos_and_ne_chunk"] = (
+            output_df["matched_term"]
+            .apply(word_tokenize)
+            .apply(pos_tag)
+            .apply(ne_chunk)
+        )
+
         output_df = get_column_doc_ratio(output_df, "object_label")
         output_df = get_column_doc_ratio(output_df, "matched_term")
 
@@ -353,6 +363,7 @@ def parse(input_directory, output_directory) -> None:
                 "jaccard_index",
                 "monge_elkan",
                 "object_id",
+                "pos_and_ne_chunk",
                 "sentence_id",
                 "umls_cui",
                 "origin",
