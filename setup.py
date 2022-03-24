@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+import spacy
 
 NAME = "ontoRunNER"
 URL = "https://github.com/monarch-initiative/ontorunner"
@@ -78,3 +79,6 @@ setup(
         "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_core_sci_scibert-0.5.0.tar.gz",
     ],
 )
+
+
+spacy.cli.download("en_core_web_sm")
