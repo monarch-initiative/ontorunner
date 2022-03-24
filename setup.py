@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-import spacy
+import post_install
 
 NAME = "ontoRunNER"
 URL = "https://github.com/monarch-initiative/ontorunner"
@@ -80,5 +80,4 @@ setup(
     ],
 )
 
-
-spacy.cli.download("en_core_web_sm")
+post_install.run()
