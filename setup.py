@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-from post_install import run
 
 NAME = "ontoRunNER"
 URL = "https://github.com/monarch-initiative/ontorunner"
