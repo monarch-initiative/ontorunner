@@ -24,6 +24,7 @@ TERMS_PICKLED = os.path.join(SERIAL_DIR, "terms.pickle")
 DOCS_PICKLED = os.path.join(SERIAL_DIR, "docs.pickle")
 PATTERN_LIST_PICKLED = os.path.join(SERIAL_DIR, "patterns.pickle")
 OBJ_DOC_LIST_PICKLED = os.path.join(SERIAL_DIR, "object_docs.pickle")
+PHRASE_MATCHER_PICKLED = os.path.join(SERIAL_DIR, "phrase_matcher.pickle")
 
 
 def get_config(param):
