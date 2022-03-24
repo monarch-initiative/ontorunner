@@ -19,6 +19,7 @@ nltk.download("punkt")
 nltk.download("omw-1.4")
 nltk.download("maxent_ne_chunker")
 nltk.download("words")
+nltk.download("averaged_perceptron_tagger")  # for GH Actions.
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
