@@ -57,6 +57,7 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
     :return: Pandas DataFrame with additional
             columns showing term:document ratio
     """
+    df[column] = df[column].str.lower()
     doc_label_df = df[["document_id", column]].drop_duplicates()
 
     total_docs = len(df["document_id"].drop_duplicates())
