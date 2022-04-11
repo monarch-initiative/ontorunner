@@ -1,5 +1,4 @@
 import pandas as pd
-from ontobio import OntologyFactory
 
 
 def filter_synonyms(df: pd.DataFrame) -> pd.DataFrame:

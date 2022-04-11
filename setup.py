@@ -64,8 +64,7 @@ setup(
         "conllu>=4.4",  # required by scispacy
         "nmslib>=1.7.3.6",  # required by scispacy
         "pysbd>=0.3",  # required by scispacy
-        "dframcy>=0.1",
-        "ontobio>=2.7"  # TODO: remove dependency and use alternate method.
+        "dframcy>=0.1"
         # "en_core_sci_scibert"
         # "en_ner_jnlpba_md",  # Joint wkshp for NLP in Biomedicine & application
         # "en_ner_bc5cdr_md",  # Biocreative V Chemical induce Disease NER
