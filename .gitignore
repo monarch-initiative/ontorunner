@@ -138,3 +138,4 @@ sphinx/_build
 
 ontorunner/settings.ini
 data/serialized/*
+data/nodes_and_edges/*.tsv
