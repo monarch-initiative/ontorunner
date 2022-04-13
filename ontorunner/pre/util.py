@@ -17,7 +17,7 @@ def json2tsv(input, output) -> None:
     """
     if input:
         if output is None:
-            output = "data/output/output"
+            output = "data/nodes_and_edges/"
 
         transform(
             inputs=[input],
@@ -27,7 +27,7 @@ def json2tsv(input, output) -> None:
         )
     else:
         input_folder = "data/input/"
-        output_folder = "data/output/"
+        output_folder = "data/nodes_and_edges/"
 
         for subdir, dirs, files in os.walk(input_folder):
             for file in files:
