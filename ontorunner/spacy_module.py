@@ -235,7 +235,7 @@ def main():
     # onto_df = util.get_object_doc_ratio(onto_df)
     onto_df = util.get_column_doc_ratio(onto_df, "object_label")
     onto_df = util.get_column_doc_ratio(onto_df, "matched_term")
-    onto_df = util.get_ancestors(onto_df)
+    # onto_df = util.get_ancestors(onto_df)
 
     onto_df = onto_df.astype(str).drop_duplicates()
     kb_df = kb_df.astype(str).drop_duplicates()
