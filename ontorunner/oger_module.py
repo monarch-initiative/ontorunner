@@ -67,7 +67,7 @@ def run_oger(
 
     add_sentence.parse(input, output)
 
-    os.system('say "Done!"')
+    # os.system('say "Done!"')
 
 
 @click.group()

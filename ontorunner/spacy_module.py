@@ -287,6 +287,8 @@ def run_spacy_click(
         data_dir=data_dir, settings_file=settings_file, linker=linker,
     )
 
+    # os.system('say "Done!"')
+
 
 if __name__ == "__main__":
     freeze_support()
