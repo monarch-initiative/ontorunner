@@ -1,10 +1,12 @@
 from genericpath import isdir
 import os
 import shutil
-from ontorunner import SERIAL_DIR
+from ontorunner import DATA_DIR_NAME, PARENT_DIR, SERIAL_DIR_NAME
 from ontorunner.converters import biohub_converter as bc
 from kgx.cli.cli_utils import transform
 import click
+
+SERIAL_DIR = os.path.join(PARENT_DIR, DATA_DIR_NAME, SERIAL_DIR_NAME)
 
 
 def json2tsv(input, output) -> None:

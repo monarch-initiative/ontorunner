@@ -1,15 +1,17 @@
 import multiprocessing
+from pathlib import Path
 import pickle
 from spacy.language import Language
 from spacy.pipeline import entityruler
 from ontorunner import (
-    COMBINED_ONTO_FILE,
-    COMBINED_ONTO_PICKLED_FILE,
-    PARENT_DIR,
-    PHRASE_MATCHER_PICKLED,
-    TERMS_PICKLED,
-    PATTERN_LIST_PICKLED,
-    OBJ_DOC_LIST_PICKLED,
+    DATA_DIR,
+    ONTO_TERMS_FILENAME,
+    PATTERN_LIST_PICKLED_FILENAME,
+    PHRASE_MATCHER_PICKLED_FILENAME,
+    SERIAL_DIR_NAME,
+    SETTINGS_FILE_PATH,
+    TERMS_DIR_NAME,
+    TERMS_PICKLED_FILENAME,
     get_config,
 )
 import pandas as pd
@@ -21,7 +23,36 @@ from spacy.matcher import PhraseMatcher
 
 
 class OntoRuler(object):
-    def __init__(self):
+    def __init__(
+        self,
+        data_dir: Path = DATA_DIR,
+        settings_filepath: Path = SETTINGS_FILE_PATH,
+        linker: str = "umls",  # Must be one of 'umls' or 'mesh'.
+    ):
+        # self.parent_dir = parent_dir
+        self.data_dir = data_dir
+        self.serial_dir = os.path.join(self.data_dir, SERIAL_DIR_NAME)
+        self.terms_dir = os.path.join(self.data_dir, TERMS_DIR_NAME)
+
+        self.phrase_matcher_pickled = os.path.join(
+            self.serial_dir, PHRASE_MATCHER_PICKLED_FILENAME
+        )
+        self.terms_pickled = os.path.join(
+            self.serial_dir, TERMS_PICKLED_FILENAME
+        )
+        self.pattern_list_pickled = os.path.join(
+            self.serial_dir, PATTERN_LIST_PICKLED_FILENAME
+        )
+        self.phrase_matcher_pickled = os.path.join(
+            self.serial_dir, PHRASE_MATCHER_PICKLED_FILENAME
+        )
+        self.settings_file = settings_filepath
+        self.combined_onto_file = os.path.join(
+            self.terms_dir, ONTO_TERMS_FILENAME
+        )
+        self.combined_onto_pickle = os.path.join(
+            self.serial_dir, (ONTO_TERMS_FILENAME + ".pickle")
+        )
         self.label = "ontology"
         self.phrase_matcher_attr = "LOWER"
         self.multiprocessing = False
@@ -38,13 +69,13 @@ class OntoRuler(object):
             "ner", source=spacy.load("en_core_web_sm"), before="craft_ner"
         )
 
-        if os.path.isfile(PHRASE_MATCHER_PICKLED):
+        if os.path.isfile(self.phrase_matcher_pickled):
             print("Found serialized files!")
-            with open(os.path.join(TERMS_PICKLED), "rb") as tf:
+            with open(os.path.join(self.terms_pickled), "rb") as tf:
                 self.terms = pickle.load(tf)
-            with open(PATTERN_LIST_PICKLED, "rb") as plp:
+            with open(self.pattern_list_pickled, "rb") as plp:
                 self.list_of_pattern_dicts = pickle.load(plp)
-            with open(PHRASE_MATCHER_PICKLED, "rb") as pmp:
+            with open(self.phrase_matcher_pickled, "rb") as pmp:
                 self.phrase_matcher = pickle.load(pmp)
             print("Serialized files imported!")
 
@@ -53,6 +84,7 @@ class OntoRuler(object):
 
         ruler = self.nlp.add_pipe("entity_ruler", after="craft_ner")
         ruler.add_patterns(self.list_of_pattern_dicts)
+        print("Patterns added!")
 
         # variables for spans and docs extensions
         self.span_term_extension = "is_an_ontology_term"
@@ -76,11 +108,13 @@ class OntoRuler(object):
             self.has_id_extension, getter=self.has_curies, force=True
         )
         Doc.set_extension(self.label.lower(), default=[], force=True)
+        print("Extensions set!")
 
         self.nlp.add_pipe(
             "scispacy_linker",
-            config={"resolve_abbreviations": True, "linker_name": "umls"},
-        )  # Must be one of 'umls' or 'mesh'.
+            config={"resolve_abbreviations": True, "linker_name": linker},
+        )
+        print("SciSpacy loaded!")
 
     # getter function for doc level
     def has_curies(self, tokens):
@@ -105,13 +139,13 @@ class OntoRuler(object):
             "object_category",
         ]
 
-        if not os.path.isfile(COMBINED_ONTO_PICKLED_FILE):
-            if not os.path.isfile(COMBINED_ONTO_FILE):
-                termlist = get_config("termlist")
+        if not os.path.isfile(self.combined_onto_pickle):
+            if not os.path.isfile(self.combined_onto_file):
+                termlist = get_config("termlist", self.settings_file)
                 df = pd.concat(
                     [
                         pd.read_csv(
-                            os.path.join(PARENT_DIR, f),
+                            os.path.join(self.terms_dir, f),
                             sep="\t",
                             low_memory=False,
                             header=None,
@@ -121,16 +155,16 @@ class OntoRuler(object):
                 )
                 df = df.drop_duplicates()
                 df.to_csv(
-                    COMBINED_ONTO_FILE, sep="\t", index=None, header=False
+                    self.combined_onto_file, sep="\t", index=None, header=False
                 )
-                df.to_pickle(COMBINED_ONTO_PICKLED_FILE)
+                df.to_pickle(self.combined_onto_pickle)
             else:
                 df = pd.read_csv(
-                    COMBINED_ONTO_FILE, sep="\t", low_memory=False
+                    self.combined_onto_file, sep="\t", low_memory=False
                 )
-                df.to_pickle(COMBINED_ONTO_PICKLED_FILE)
+                df.to_pickle(self.combined_onto_pickle)
         else:
-            df = pd.read_pickle(COMBINED_ONTO_PICKLED_FILE)
+            df = pd.read_pickle(self.combined_onto_pickle)
         df.columns = cols
         df = df.drop(["CUI"], axis=1)
         df = df.fillna("")
@@ -228,13 +262,13 @@ class OntoRuler(object):
 
         # Dump serialized files
         # self.nlp.to_disk(CUSTOM_PIPE_DIR)
-        with open(TERMS_PICKLED, "wb") as tp:
+        with open(self.terms_pickled, "wb") as tp:
             pickle.dump(self.terms, tp)
-        with open(PATTERN_LIST_PICKLED, "wb") as plp:
+        with open(self.pattern_list_pickled, "wb") as plp:
             pickle.dump(self.list_of_pattern_dicts, plp)
         # with open(OBJ_DOC_LIST_PICKLED, "wb") as odlp:
         #     pickle.dump(self.list_of_doc_obj, odlp)
-        with open(PHRASE_MATCHER_PICKLED, "wb") as pmp:
+        with open(self.phrase_matcher_pickled, "wb") as pmp:
             pickle.dump(self.phrase_matcher, pmp)
 
         print("Serialized files dumped!")

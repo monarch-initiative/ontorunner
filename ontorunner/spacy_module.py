@@ -1,8 +1,12 @@
-from asyncio.base_tasks import _task_get_stack
 import os
-import pdb
-from turtle import pos
-from ontorunner import PARENT_DIR, SETTINGS_FILE, get_config
+from pathlib import Path
+from ontorunner import (
+    DATA_DIR,
+    INPUT_DIR_NAME,
+    OUTPUT_DIR_NAME,
+    SETTINGS_FILE_PATH,
+    get_config,
+)
 from ontorunner.pipes.OntoRuler import OntoRuler
 from glob import glob
 import pandas as pd
@@ -10,6 +14,8 @@ from spacy.tokens import Span
 from multiprocessing import freeze_support
 from ontorunner.post import util
 import click
+
+SCI_SPACY_LINKERS = ["umls", "mesh"]
 
 
 def get_token_info(doc):
@@ -130,7 +136,7 @@ def explode_df(df: pd.DataFrame) -> pd.DataFrame:
     return new_df
 
 
-def onto_tokenize(doc):
+def onto_tokenize(doc, onto_ruler_obj):
     # matches = onto_ruler_obj.match(doc)
     matches = onto_ruler_obj.phrase_matcher(doc)
     spans = [
@@ -167,7 +173,7 @@ def onto_tokenize(doc):
     return doc
 
 
-def get_knowledgeBase_enitities(doc):
+def get_knowledgeBase_enitities(doc, onto_ruler_obj):
     linker = onto_ruler_obj.nlp.get_pipe("scispacy_linker")
     ent_dict = {}
     key_list = ["cui", "matched_term", "aliases", "definition", "tui"]
@@ -186,21 +192,42 @@ def get_knowledgeBase_enitities(doc):
     return pd.DataFrame.from_dict(ent_dict)
 
 
-def export_tsv(df: pd.DataFrame, fn: str) -> None:
-    fn_path = os.path.join(PARENT_DIR, "data/output/" + fn + ".tsv")
+def export_tsv(df: pd.DataFrame, data_dir: str, fn: str) -> None:
+    fn_path = os.path.join(data_dir, OUTPUT_DIR_NAME, fn + ".tsv")
     df.to_csv(fn_path, sep="\t", index=None)
 
 
+@click.group()
 def main():
-    batch_size = 10000
-    input_dir_path = (
-        os.path.join(PARENT_DIR, get_config("input-directory")[0]) + "/*.tsv"
+    pass
+
+
+def run_spacy(data_dir: Path, settings_file: Path, linker: str = "umls"):
+    """
+    Run spacy with sciSpacy pipeline.
+
+    :param data_dir: Path to the data directory.
+    :param settings: Path to settings.ini file.
+    :param linker: Type of sciSpacy linker desired ([umls]/mesh).
+    """
+    if linker not in SCI_SPACY_LINKERS:
+        raise (
+            ValueError(
+                f"SciSpacy linker provided '{linker}' is invalid."
+                f"Choose one of the following: {SCI_SPACY_LINKERS}"
+            )
+        )
+    onto_ruler_obj = OntoRuler(
+        data_dir=data_dir, settings_filepath=settings_file, linker=linker,
     )
+    batch_size = 10000
+    input_dir_path = os.path.join(data_dir, INPUT_DIR_NAME) + "/*.tsv"
     input_file_list = glob(input_dir_path)
     list_of_input_dfs = []
     for fn in input_file_list:
         in_df = pd.read_csv(fn, sep="\t", low_memory=False)
         list_of_input_dfs.append(in_df)
+
     input_df = pd.concat(list_of_input_dfs, axis=0, ignore_index=True)
 
     input_df["spacy_doc"] = list(
@@ -208,7 +235,7 @@ def main():
     )
 
     input_df["spacy_doc_tok"] = input_df["spacy_doc"].apply(
-        lambda row: onto_tokenize(row)
+        lambda row: onto_tokenize(row, onto_ruler_obj)
     )
 
     input_df["spacy_tokens"] = input_df["spacy_doc_tok"].apply(
@@ -216,7 +243,7 @@ def main():
     )
 
     input_df["spacy_kb_ent"] = input_df["spacy_doc_tok"].apply(
-        lambda row: get_knowledgeBase_enitities(row)
+        lambda row: get_knowledgeBase_enitities(row, onto_ruler_obj)
     )
 
     kb_df = explode_df(input_df[["id", "spacy_kb_ent"]])
@@ -224,15 +251,13 @@ def main():
     # nlp_df = doc_to_df(dframcy, input_df[["id", "spacy_doc"]])
 
     stopwords_file_path = os.path.join(
-        PARENT_DIR, get_config("termlist_stopwords")[0]
+        data_dir, get_config("termlist_stopwords")[0]
     )
     stopwords_file = open(stopwords_file_path, "r")
     stopwords = stopwords_file.read().splitlines()
-    # onto_df = onto_df.loc[~onto_df["POS"].isin(ignore_pos)]
     onto_df = onto_df.loc[~onto_df["matched_term"].isin(stopwords)]
 
     onto_df = util.consolidate_rows(onto_df)
-    # onto_df = util.get_object_doc_ratio(onto_df)
     onto_df = util.get_column_doc_ratio(onto_df, "object_label")
     onto_df = util.get_column_doc_ratio(onto_df, "matched_term")
     # onto_df = util.get_ancestors(onto_df)
@@ -240,23 +265,29 @@ def main():
     onto_df = onto_df.astype(str).drop_duplicates()
     kb_df = kb_df.astype(str).drop_duplicates()
 
-    export_tsv(kb_df, "umls_ontoRunNER")
-    export_tsv(onto_df, "ontology_ontoRunNER")
-    # export_tsv(nlp_df, "nlp_object_output")
+    export_tsv(kb_df, data_dir, "sciSpacy_" + linker + "_ontoRunNER")
+    export_tsv(onto_df, data_dir, "ontology_ontoRunNER")
 
 
-@click.group()
-def cli():
-    pass
-
-
-@cli.group
-@cli.command("run-spacy")
-def run_spacy_click():
-    main()
+@main.command("run-spacy")
+@click.option("-d", "--data-dir", help="Data directory path.")
+@click.option("-s", "--settings-file", help="settings.ini file path.")
+@click.option(
+    "-l",
+    "--linker",
+    type=click.Choice(["umls", "mesh"]),
+    help="Which sciSpacy linker to use.('umls'[Default] or 'mesh')",
+)
+def run_spacy_click(
+    data_dir: Path = DATA_DIR,
+    settings_file: Path = SETTINGS_FILE_PATH,
+    linker: str = "umls",
+):
+    run_spacy(
+        data_dir=data_dir, settings_file=settings_file, linker=linker,
+    )
 
 
 if __name__ == "__main__":
     freeze_support()
-    onto_ruler_obj = OntoRuler()
-    cli()
+    main()

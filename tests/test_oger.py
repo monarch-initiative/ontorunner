@@ -1,18 +1,12 @@
 import os
-from posix import listdir
 import unittest
 import pandas as pd
 from ontorunner.oger_module import run_oger
 from ontorunner.pre.util import json2tsv, prepare_termlist
+from . import cleanup
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, "data")
-
-
-def cleanup(dir):
-    for f in listdir(dir):
-        if f != "README.txt":
-            os.remove(os.path.join(dir, f))
 
 
 class TestOger(unittest.TestCase):
@@ -49,4 +43,3 @@ class TestOger(unittest.TestCase):
 
         # Clean-up files for next test run
         cleanup(self.output)
-        cleanup(self.terms)
