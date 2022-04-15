@@ -1,8 +1,8 @@
 import multiprocessing
 from pathlib import Path
 import pickle
-from spacy.language import Language
-from spacy.pipeline import entityruler
+from spacy.language import Language  # noqa F401
+from spacy.pipeline import entityruler  # noqa F401
 from ontorunner import (
     DATA_DIR,
     ONTO_TERMS_FILENAME,
@@ -17,7 +17,7 @@ from ontorunner import (
 import pandas as pd
 import os
 import spacy
-from scispacy.linking import EntityLinker
+from scispacy.linking import EntityLinker  # noqa F401
 from spacy.tokens import Doc, Span
 from spacy.matcher import PhraseMatcher
 
