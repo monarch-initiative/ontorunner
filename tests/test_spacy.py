@@ -23,7 +23,10 @@ class TestSpacy(unittest.TestCase):
     def test_run_spacy(self):
         settings_fp = os.path.join(cwd, "settings.ini")
         run_spacy(
-            data_dir=data_dir, settings_file=settings_fp, linker=self.linker
+            data_dir=data_dir,
+            settings_file=settings_fp,
+            linker=self.linker,
+            to_pickle=False,
         )
         onto_out_df = pd.read_csv(self.onto_output, sep="\t", low_memory=False)
         sciSpacy_out_df = pd.read_csv(

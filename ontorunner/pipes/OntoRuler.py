@@ -28,6 +28,7 @@ class OntoRuler(object):
         data_dir: Path = DATA_DIR,
         settings_filepath: Path = SETTINGS_FILE_PATH,
         linker: str = "umls",  # Must be one of 'umls' or 'mesh'.
+        to_pickle: bool = True,
     ):
         # self.parent_dir = parent_dir
         self.data_dir = data_dir
@@ -80,7 +81,7 @@ class OntoRuler(object):
             print("Serialized files imported!")
 
         else:
-            self.extract_termlist_info()
+            self.extract_termlist_info(to_pickle=to_pickle)
 
         ruler = self.nlp.add_pipe("entity_ruler", after="craft_ner")
         ruler.add_patterns(self.list_of_pattern_dicts)
@@ -125,7 +126,7 @@ class OntoRuler(object):
         """
         return any([t._.get(self.span_term_extension) for t in tokens])
 
-    def get_ont_terms_df(self) -> pd.DataFrame:
+    def get_ont_terms_df(self, to_pickle) -> pd.DataFrame:
         """Get Ontology terms from external source in the form of a pandas DataFrame.
 
         :return: Pandas DataFrame for of termlist.
@@ -162,7 +163,8 @@ class OntoRuler(object):
                 df = pd.read_csv(
                     self.combined_onto_file, sep="\t", low_memory=False
                 )
-                df.to_pickle(self.combined_onto_pickle)
+                if to_pickle:
+                    df.to_pickle(self.combined_onto_pickle)
         else:
             df = pd.read_pickle(self.combined_onto_pickle)
         df.columns = cols
@@ -206,8 +208,8 @@ class OntoRuler(object):
 
         return terms_dict, pattern_dict, self.nlp(matched_term)
 
-    def extract_termlist_info(self):
-        df = self.get_ont_terms_df()
+    def extract_termlist_info(self, to_pickle: bool):
+        df = self.get_ont_terms_df(to_pickle=to_pickle)
 
         if len(df) > self.processing_threshold:
             number_of_processes = multiprocessing.cpu_count() // 2 - 1
@@ -260,15 +262,16 @@ class OntoRuler(object):
         )
         self.phrase_matcher.add(self.label, None, *self.list_of_doc_obj)
 
-        # Dump serialized files
-        # self.nlp.to_disk(CUSTOM_PIPE_DIR)
-        with open(self.terms_pickled, "wb") as tp:
-            pickle.dump(self.terms, tp)
-        with open(self.pattern_list_pickled, "wb") as plp:
-            pickle.dump(self.list_of_pattern_dicts, plp)
-        # with open(OBJ_DOC_LIST_PICKLED, "wb") as odlp:
-        #     pickle.dump(self.list_of_doc_obj, odlp)
-        with open(self.phrase_matcher_pickled, "wb") as pmp:
-            pickle.dump(self.phrase_matcher, pmp)
+        if to_pickle:
+            # Dump serialized files
+            # self.nlp.to_disk(CUSTOM_PIPE_DIR)
+            with open(self.terms_pickled, "wb") as tp:
+                pickle.dump(self.terms, tp)
+            with open(self.pattern_list_pickled, "wb") as plp:
+                pickle.dump(self.list_of_pattern_dicts, plp)
+            # with open(OBJ_DOC_LIST_PICKLED, "wb") as odlp:
+            #     pickle.dump(self.list_of_doc_obj, odlp)
+            with open(self.phrase_matcher_pickled, "wb") as pmp:
+                pickle.dump(self.phrase_matcher, pmp)
 
-        print("Serialized files dumped!")
+            print("Serialized files dumped!")

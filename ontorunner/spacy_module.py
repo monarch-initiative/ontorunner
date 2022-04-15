@@ -202,7 +202,9 @@ def main():
     pass
 
 
-def run_spacy(data_dir: Path, settings_file: Path, linker: str = "umls"):
+def run_spacy(
+    data_dir: Path, settings_file: Path, linker: str, to_pickle: bool
+):
     """
     Run spacy with sciSpacy pipeline.
 
@@ -218,7 +220,10 @@ def run_spacy(data_dir: Path, settings_file: Path, linker: str = "umls"):
             )
         )
     onto_ruler_obj = OntoRuler(
-        data_dir=data_dir, settings_filepath=settings_file, linker=linker,
+        data_dir=data_dir,
+        settings_filepath=settings_file,
+        linker=linker,
+        to_pickle=to_pickle,
     )
     batch_size = 10000
     input_dir_path = os.path.join(data_dir, INPUT_DIR_NAME) + "/*.tsv"
@@ -278,13 +283,22 @@ def run_spacy(data_dir: Path, settings_file: Path, linker: str = "umls"):
     type=click.Choice(["umls", "mesh"]),
     help="Which sciSpacy linker to use.('umls'[Default] or 'mesh')",
 )
+@click.option(
+    "-p",
+    "--pickle-files",
+    help="Boolean to determine if intermediate files should be pickled or no",
+)
 def run_spacy_click(
     data_dir: Path = DATA_DIR,
     settings_file: Path = SETTINGS_FILE_PATH,
     linker: str = "umls",
+    to_pickle: bool = True,
 ):
     run_spacy(
-        data_dir=data_dir, settings_file=settings_file, linker=linker,
+        data_dir=data_dir,
+        settings_file=settings_file,
+        linker=linker,
+        to_pickle=to_pickle,
     )
 
     # os.system('say "Done!"')
