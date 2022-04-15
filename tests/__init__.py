@@ -3,7 +3,7 @@ from posix import listdir
 
 # If the import below is removed,
 # pytest complains about duplicate kwargs.
-from ontorunner.spacy_module import run_spacy
+from ontorunner.spacy_module import run_spacy  # noqa: F401
 
 
 def cleanup(dir):

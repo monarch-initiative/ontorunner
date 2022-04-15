@@ -1,6 +1,3 @@
-# Create required dirs
-
-
 # Prepare termlist
 terms/%_termlist.tsv: data/output/%_nodes.tsv
 	python -m ontorunner.oger_module prepare-termlist -i $< -o $@
