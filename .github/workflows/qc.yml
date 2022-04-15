@@ -31,5 +31,8 @@ jobs:
       - name: Install dependencies
         run: pip install .
 
+      - name: Get CRAFT corpus 'en_ner_craft_md' for SciSpacy
+        run: python -m spacy download en_ner_craft_md
+
       - name: Test with pytest
         run: python -m pytest
