@@ -58,7 +58,7 @@ setup(
         "pyjsg>=0.11",  # Needed by ShExJSG-0.7.1-py3.9.egg/ShExJSG/ShExJ.py
         "frozendict>=2.1",  # Needed by pyld
         "cachetools>=4.2",  # Needed by pyld
-        "spacy>=3.2.0,<3.3.0",  # dictated by scispacy
+        "spacy>=3.2.0,<3.2.4",  # dictated by scispacy
         "scispacy==0.5.0",
         "scipy==1.7.3",  # required by scispacy
         "conllu>=4.4",  # required by scispacy
