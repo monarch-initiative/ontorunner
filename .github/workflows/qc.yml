@@ -37,5 +37,10 @@ jobs:
       - name: Get CRAFT corpus 'en_ner_craft_md' for SciSpacy
         run: pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz
 
+       - name: Set Swap Space
+        uses: monarch-initiative/ontorunner@master
+        with:
+          swap-size-gb: 4
+
       - name: Test with pytest
         run: python -m pytest
