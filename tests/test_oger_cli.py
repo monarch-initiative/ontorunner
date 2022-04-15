@@ -1,18 +1,12 @@
 import os
-from posix import listdir
 import unittest
 import subprocess
 import pandas as pd
+from . import cleanup
 
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, "data")
-
-
-def cleanup(dir):
-    for f in listdir(dir):
-        if f != "README.txt":
-            os.remove(os.path.join(dir, f))
 
 
 class TestOgerCLI(unittest.TestCase):
@@ -31,12 +25,12 @@ class TestOgerCLI(unittest.TestCase):
     def test_cli_json2tsv(self) -> None:
         ofilename = os.path.join(self.output, "envo")
         ofiles = [ofilename + "_nodes.tsv", ofilename + "_edges.tsv"]
-        cli_ofile_rows = [6405, 9645]
+        cli_ofile_rows = [6405, 9643]
         process = subprocess.Popen(
             [
                 "python",
                 "-m",
-                "ontorunner.oger_module",
+                "ontorunner.pre.util",
                 "json2tsv",
                 "-i",
                 self.json,
@@ -64,7 +58,7 @@ class TestOgerCLI(unittest.TestCase):
             [
                 "python",
                 "-m",
-                "ontorunner.oger_module",
+                "ontorunner.pre.util",
                 "prepare-termlist",
                 "-i",
                 ifile,
@@ -128,5 +122,4 @@ class TestOgerCLI(unittest.TestCase):
 
         # Clean-up files for next test run
         cleanup(self.output)
-        cleanup(self.terms)
 

@@ -130,10 +130,15 @@ dmypy.json
 
 # Misc
 .vscode/
-data/input/*
-data/output/*
-data/terms/*
+**/archive/*
+
+data/input/*.tsv
+data/output/*.tsv
+data/terms/*.tsv
+data/terms/*.pickle
 sphinx/_build
 **/.DS_Store
 
 ontorunner/settings.ini
+data/serialized/*
+data/nodes_and_edges/*.tsv

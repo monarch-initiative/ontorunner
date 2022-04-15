@@ -1,17 +1,12 @@
 import os
-from posix import listdir
 import unittest
 import pandas as pd
-from ontorunner.oger_module import json2tsv, prepare_termlist, run_oger
+from ontorunner.oger_module import run_oger
+from ontorunner.pre.util import json2tsv, prepare_termlist
+from . import cleanup
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, "data")
-
-
-def cleanup(dir):
-    for f in listdir(dir):
-        if f != "README.txt":
-            os.remove(os.path.join(dir, f))
 
 
 class TestOger(unittest.TestCase):
@@ -31,7 +26,7 @@ class TestOger(unittest.TestCase):
         ofilename = os.path.join(self.output, "envo")
         json2tsv(self.json, ofilename)
         ofiles = [ofilename + "_nodes.tsv", ofilename + "_edges.tsv"]
-        ofile_rows = [6405, 9645]
+        ofile_rows = [6405, 9643]
         for i, file in enumerate(ofiles):
             self.assertTrue(os.path.isfile(file))
             self.assertEqual(len(pd.read_csv(file, sep="\t")), ofile_rows[i])
@@ -48,4 +43,3 @@ class TestOger(unittest.TestCase):
 
         # Clean-up files for next test run
         cleanup(self.output)
-        cleanup(self.terms)

@@ -22,8 +22,25 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Github protocol on port 9418 fix
+        run: git config --global url."https://".insteadOf git://
+
       - name: Install dependencies
         run: pip install .
+
+      - name: Download Spacy's 'en_core_web_sm' corpus.
+        run: python -m spacy download en_core_web_sm
+
+      - name: Get CRAFT corpus 'en_ner_craft_md' for SciSpacy
+        run: pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz
+
+      - name: Set Swap Space
+        uses: hrshdhgd/swap-space@main
+        with:
+          swap-size-gb: 10
 
       - name: Test with pytest
         run: python -m pytest

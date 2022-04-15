@@ -1,26 +1,26 @@
-from ontorunner.post.util import filter_synonyms, consolidate_rows
+import re
+from ontorunner.post.util import (
+    filter_synonyms,
+    consolidate_rows,
+    get_column_doc_ratio,
+)
 import pandas as pd
-
-# from nltk.corpus.reader.wordnet import NOUN, VERB
-from nltk.stem.wordnet import WordNetLemmatizer
-
-# from nltk import ngrams, FreqDist
-# from textdistance.algorithms.edit_based import Levenshtein
-
 import csv
 import os
 from glob import glob
-
 import nltk
+from nltk import ne_chunk, pos_tag, word_tokenize
+from nltk.stem.wordnet import WordNetLemmatizer
 import textdistance
-
-# import logging
-
-# from pandas.core.arrays.categorical import contains
 
 # if not nltk.find("corpora/wordnet"):
 nltk.download("wordnet")
 nltk.download("punkt")
+nltk.download("omw-1.4")
+nltk.download("averaged_perceptron_tagger")  # for GH Actions.
+nltk.download("maxent_ne_chunker")
+nltk.download("words")
+
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -46,8 +46,12 @@ def sentencify(input_df, output_df, output_fn):
                 .replace("\u2028", " ")
                 .replace("\n", "")
                 .replace("\r", "",)
+                .replace(
+                    ")", " "
+                )  # reason: re.error: unbalanced parenthesis at position x
+                .replace("(", " ")
             )
-            text_tok = nltk.sent_tokenize(text)
+            sent_tok = nltk.sent_tokenize(text)
             # ** This block is for freq count of term in text
             # # Calcualte frquencies of words and phrases
             # word_tok = nltk.word_tokenize(text.lower())
@@ -68,13 +72,14 @@ def sentencify(input_df, output_df, output_fn):
             ):
                 sub_df = filter_synonyms(sub_df)
 
-            if len(text_tok) == 1:
+            if len(sent_tok) == 1:
                 sub_df["sentence"] = text
             else:
-                relevant_tok = []
-                start_reached = False
-                end_reached = False
+                relevant_sents = []
+
                 for i, row2 in sub_df.iterrows():
+                    start_reached = False
+                    end_reached = False
                     term_of_interest = str(row2["matched_term"])
                     start_pos = int(row2["start_position"])
                     if start_pos == 0:
@@ -88,118 +93,83 @@ def sentencify(input_df, output_df, output_fn):
                         # because in case of _SYNONYM,
                         # there will be extra metadata which
                         # will not be present in the tokenized sentence.
-                        term_of_interest = str(row2["preferred_form"]).lower()
+                        term_of_interest = str(row2["preferred_form"])
 
-                    relevant_tok = [
-                        x for x in text_tok if term_of_interest in x
+                    relevant_sents = [
+                        x
+                        for x in sent_tok
+                        if re.search(term_of_interest, x, re.IGNORECASE)
                     ]
 
-                    # ** This block is for freq count of term in text ****
-                    # # Add frequency count for the `term_of_interest`
-                    # ngram = term_of_interest.split()
+                    if relevant_sents == []:
+                        relevant_sents = ["irrelevant token: can be ignored."]
 
-                    # if len(ngram) == 1:
-                    #     if ngram[0] in word_tok_freq.keys():
-                    #         sub_df.loc[i, "matched_term_freq"]
-                    #               = word_tok_freq[
-                    #             term_of_interest.strip()
-                    #         ]
-                    #     else:
-                    #         key_match = [
-                    #             key
-                    #             for key in word_tok_freq.keys()
-                    #             if ngram[0] in key and "-" in key
-                    #         ]
-
-                    #         freq = 0
-
-                    #         for key in key_match:
-                    #             # * Check how similar the
-                    #             # * tokens are to decide frequency
-                    #             similarity = textdistance.jaccard.distance(
-                    #                 key, ngram[0]
-                    #             )
-                    #             if similarity <= 0.40:
-                    #                 freq += word_tok_freq[key]
-                    #             import pdb
-
-                    #             pdb.set_trace()
-
-                    #         if freq > 0:
-                    #             sub_df.loc[i, "matched_term_freq"] = freq
-
-                    # elif len(ngram) > 1:
-                    #     sub_df.loc[i, "matched_term_freq"] = phrases[
-                    #         len(ngram)
-                    #     ][tuple(ngram)]
-                    # else:
-                    #     logging.warning(
-                    #         f"Term: {term_of_interest} => no frequency count"
-                    #     )
-                    # **********************************************************
-
-                    # Sometimes the term we're looking for gets separated by
-                    # sentence tokenizer from NLTK
-                    # for e.g. CHEBI identifies "J. A"
-
-                    #           PREFERRED FORM            |    object_id
-                    # j?_a?[SYNONYM_OF:GlyTouCan G98058RD]|CHEBI:146303_SYNONYM
-
-                    # but the tokenizer object is ['Downing, J.', 'A., Cole,].
-                    # In such a case, let relevant_tok = "irrelevant token"
-                    if relevant_tok == []:
-                        relevant_tok = ["irrelevant token: can be ignored."]
-
-                    single_tok = relevant_tok
+                    list_of_sents = relevant_sents
                     count = 0
 
-                    while len(single_tok) != 1:
+                    while len(list_of_sents) > 1:
                         count += 1
                         # This keeps track of the # of times the start_pos
                         # and/or end_pos are shifted
                         # Detect the beginning and ending of sentences
                         # ---------------------
-                        for tok in single_tok:
-                            if tok.startswith(text[start_pos:end_pos]):
-                                start_reached = True
-
                         if not start_reached:
                             start_pos -= 1
-
-                        for tok in single_tok:
-                            if tok.endswith(text[start_pos:end_pos]):
-                                end_reached = True
+                            for sent in list_of_sents:
+                                if sent.startswith(text[start_pos:end_pos]):
+                                    start_reached = True
+                                elif text[start_pos:end_pos].startswith("."):
+                                    start_pos += 1
+                                    start_reached = True
 
                         if not end_reached:
                             end_pos += 1
+                            for sent in list_of_sents:
+                                if sent.endswith(text[start_pos:end_pos]):
+                                    end_reached = True
+                                elif text[start_pos:end_pos].endswith("."):
+                                    end_pos -= 1
+                                    end_reached = True
                         # -------------------------------------------------------------------
                         term_of_interest = text[start_pos:end_pos]
+                        print(
+                            f"Doc: {row.id} |"
+                            f" iter: {i} |"
+                            f" count: {count} |"
+                            f" #_of_sent: {len(list_of_sents)}"
+                            f" search_term: {term_of_interest}"
+                        )
 
-                        single_tok = [
+                        # if i == 205 and count == 2:
+                        #     import pdb
+
+                        #     pdb.set_trace()
+
+                        list_of_sents = [
                             x
-                            for x in relevant_tok
-                            if term_of_interest.strip() in x
+                            for x in relevant_sents
+                            if re.search(term_of_interest.strip(), x)
                         ]
 
-                        if count > 30 and 1 < len(single_tok):
-                            single_tok = [single_tok[0]]
+                        if count > 30 and 1 < len(list_of_sents):
+                            list_of_sents = [list_of_sents[0]]
                             count = 0
                             break
                         # Reason for the break:
                         # In some instance the sentences are repeated.
                         # In such cases the expanding window with start_pos and
                         # end_pos goes expanding after 30 character match
-                        # (arbitrarily) we take the first element out of the
+                        # (arbitrary) we take the first element out of the
                         # common terms and take that as the SENTENCE
                         # and then 'break'-ing out of the 'while' loop.
                         # Else, it'll continue looking for the unique
                         # sentence forever. It's a hack but for now it'll
                         # do until severe consequences detected.
 
-                    sub_df.loc[i, "sentence"] = single_tok[0]
+                    sub_df.loc[i, "sentence"] = list_of_sents[0]
 
             if not sub_df.empty:
-                sub_df["entity_sentence_%"] = sub_df.apply(
+                sub_df["object_sentence_%"] = sub_df.apply(
                     lambda x: 1
                     - textdistance.jaccard.distance(
                         x.matched_term.lower(), x.sentence.lower()
@@ -286,34 +256,15 @@ def parse(input_directory, output_directory) -> None:
             output_df["preferred_form"]
         )
 
-        doc_label_df = output_df[
-            ["document_id", "object_label"]
-        ].drop_duplicates()
-
-        total_docs = len(output_df["document_id"].drop_duplicates())
-
-        doc_count_df = (
-            doc_label_df.groupby("object_label")
-            .size()
-            .sort_values(ascending=False)
-            .reset_index(name="doc_count")
-        )
-        # This new column calculates the ratio:
-        # (# of documents where the object_label appears) / (Total # of docs)
-        doc_count_df["object_label_doc_ratio"] = (
-            doc_count_df["doc_count"] / total_docs
+        output_df["pos_and_ne_chunk"] = (
+            output_df["matched_term"]
+            .apply(word_tokenize)
+            .apply(pos_tag)
+            .apply(ne_chunk)
         )
 
-        output_df = output_df.merge(
-            doc_count_df, how="left", on="object_label"
-        )
-
-        # label_count_df = (
-        #     doc_label_df.groupby(["document_id", "object_label"])
-        #     .size()
-        #     .sort_values(ascending=False)
-        #     .reset_index(name="doc_label_count")
-        # )
+        output_df = get_column_doc_ratio(output_df, "object_label")
+        output_df = get_column_doc_ratio(output_df, "matched_term")
 
         # Add column which indicates how close
         # of a match is the recognized entity.
@@ -378,13 +329,14 @@ def parse(input_directory, output_directory) -> None:
                 "matched_term",
                 "preferred_form",
                 "object_label",
-                "doc_count",
                 "object_label_doc_ratio",
+                "matched_term_doc_ratio",
                 "match_type",
                 "levenshtein_distance",
                 "jaccard_index",
                 "monge_elkan",
                 "object_id",
+                "pos_and_ne_chunk",
                 "sentence_id",
                 "umls_cui",
                 "origin",
@@ -392,6 +344,9 @@ def parse(input_directory, output_directory) -> None:
                 "object_sentence_%",
             ]
         )
+        # output_df = get_ancestors(output_df)
+        # Ontobio alternative to get Ancestors.
+        # Takes too long
 
         final_output_file = output_file.replace(".tsv", "_ontoRunNER.tsv")
 
@@ -427,5 +382,3 @@ def parse(input_directory, output_directory) -> None:
                     )
 
                 sentencify(input_df, output_df, final_output_file)
-
-    os.system('say "Ontorunner has completed its run!"')
