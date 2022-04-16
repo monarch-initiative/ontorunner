@@ -2,6 +2,7 @@ import re
 from ontorunner.post.util import (
     filter_synonyms,
     consolidate_rows,
+    get_ancestors,
     get_column_doc_ratio,
 )
 import pandas as pd
@@ -344,9 +345,8 @@ def parse(input_directory, output_directory) -> None:
                 "object_sentence_%",
             ]
         )
-        # output_df = get_ancestors(output_df)
-        # Ontobio alternative to get Ancestors.
-        # Takes too long
+        # TODO: Maybe use OAK for getting ancestors (?)
+        output_df = get_ancestors(output_df)
 
         final_output_file = output_file.replace(".tsv", "_ontoRunNER.tsv")
 
