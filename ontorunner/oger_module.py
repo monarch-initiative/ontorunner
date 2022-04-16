@@ -1,5 +1,5 @@
 import click
-from ontorunner.post import add_sentence
+from ontorunner.post import NODE_AND_EDGE_DIR, add_sentence
 from oger.ctrl.router import Router, PipelineServer
 from oger.doc import EXPORTERS
 from oger.ctrl.run import run
@@ -15,6 +15,7 @@ def run_oger(
     output_format="tsv",
     settings="settings.ini",
     workers=1,
+    nodes_and_edges=NODE_AND_EDGE_DIR,
 ) -> None:
     """
     Run Oger
@@ -38,6 +39,7 @@ def run_oger(
         settings["n_workers"] = workers
         output = settings["output-directory"]
         input = settings["input-directory"]
+        nodes_and_edges = nodes_and_edges
         run(**settings)
 
     else:
@@ -65,7 +67,7 @@ def run_oger(
             input = os.path.dirname(content)
             output = os.path.dirname(output)
 
-    add_sentence.parse(input, output)
+    add_sentence.parse(input, output, nodes_and_edges)
 
     # os.system('say "Done!"')
 
@@ -84,10 +86,25 @@ def cli():
 )
 @click.option("--settings", "-s", type=click.Path(exists=True))
 @click.option("--workers", "-w", default=1)
+@click.option("--nodes-and-edges", "-n", type=click.Path(exists=True))
 def run_oger_click(
-    content, termlist, output, output_format, settings, workers
+    content,
+    termlist,
+    output,
+    output_format,
+    settings,
+    workers,
+    nodes_and_edges=NODE_AND_EDGE_DIR,
 ):
-    run_oger(content, termlist, output, output_format, settings, workers)
+    run_oger(
+        content,
+        termlist,
+        output,
+        output_format,
+        settings,
+        workers,
+        nodes_and_edges,
+    )
 
 
 if __name__ == "__main__":
