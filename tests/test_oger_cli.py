@@ -122,4 +122,3 @@ class TestOgerCLI(unittest.TestCase):
 
         # Clean-up files for next test run
         cleanup(self.output)
-
