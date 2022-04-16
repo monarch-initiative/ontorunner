@@ -85,7 +85,7 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
 
 def ancestor_generator(
     df: pd.DataFrame, obj_series: pd.DataFrame
-) -> list(str):
+) -> list[str]:
     """
     Function that returns an ancestor list of a CURIE 
 
