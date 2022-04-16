@@ -85,7 +85,7 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
 
 def ancestor_generator(
     df: pd.DataFrame, obj_series: pd.DataFrame
-) -> list[str]:
+) -> list(str):
     ancestor_list = []
     obj_series_df = df.loc[df["subject"] == obj_series.object_id]
     while not df.loc[df["subject"] == obj_series.object_id].empty:
