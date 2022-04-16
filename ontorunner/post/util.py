@@ -1,4 +1,5 @@
 import os
+from typing import List
 import numpy as np
 import pandas as pd
 from . import NODE_AND_EDGE_DIR, SUBCLASS_PREDICATE
@@ -85,7 +86,7 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
 
 def ancestor_generator(
     df: pd.DataFrame, obj_series: pd.DataFrame
-) -> list[str]:
+) -> List[str]:
     """
     Function that returns an ancestor list of a CURIE 
 
