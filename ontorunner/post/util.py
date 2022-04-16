@@ -86,6 +86,12 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
 def ancestor_generator(
     df: pd.DataFrame, obj_series: pd.DataFrame
 ) -> list(str):
+    """
+    Function that returns an ancestor list of a CURIE 
+
+    :param df: KGX edges of source ontology in DataFrame form.
+    :return: List of CURIES (ancestors)
+    """
     ancestor_list = []
     obj_series_df = df.loc[df["subject"] == obj_series.object_id]
     while not df.loc[df["subject"] == obj_series.object_id].empty:
@@ -99,6 +105,13 @@ def ancestor_generator(
 def get_ancestors(
     df: pd.DataFrame, nodes_and_edges_dir: str = NODE_AND_EDGE_DIR
 ) -> pd.DataFrame:
+    """
+    Return a DataFrame with 'ancestors' column.
+
+    :param df: Input dataframe containing intermediate NER result.
+    :param nodes_and_edges_dir: Directoy location of KGX edges and nodes file (tsv)
+    :return: Dataframe with an 'ancestors' column.
+    """
     df["ancestors"] = ""
     object_origin = df[["object_id", "origin"]]
     object_origin["object_id"] = object_origin["object_id"].str.replace(
