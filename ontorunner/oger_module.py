@@ -1,11 +1,14 @@
-import click
-from ontorunner.post import NODE_AND_EDGE_DIR, add_sentence
-from oger.ctrl.router import Router, PipelineServer
-from oger.doc import EXPORTERS
-from oger.ctrl.run import run
+"""Run OGER."""
 import configparser
-import os
 import csv
+import os
+
+import click
+from oger.ctrl.router import PipelineServer, Router
+from oger.ctrl.run import run
+from oger.doc import EXPORTERS
+
+from ontorunner.post import NODE_AND_EDGE_DIR, add_sentence
 
 
 def run_oger(
@@ -19,7 +22,7 @@ def run_oger(
     need_ancestors=True,
 ) -> None:
     """
-    Run Oger
+    Run Oger.
 
     :param content: Input file OR folder containing txt files.
     :param termlist: Path to the dictionary (TSV format).
@@ -29,7 +32,10 @@ def run_oger(
     are provided in this file and are hence optional.
     Make changes to this file according to project needs
     s(default:'settings.ini').
-    :param workers: Number of parallel threads (default = 5).
+    :param workers: Number of parallel threads (default = 1).
+    :param nodes_and_edges: Directory where KGX nodes and edges tsv files.
+    :param need_ancestors: Bool to decide if ancestors should be present in
+    the output or no.
     :return: None.
     """
     if settings:

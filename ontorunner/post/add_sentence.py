@@ -1,18 +1,16 @@
-import re
-from ontorunner.post.util import (
-    filter_synonyms,
-    consolidate_rows,
-    get_ancestors,
-    get_column_doc_ratio,
-)
-import pandas as pd
 import csv
 import os
+import re
 from glob import glob
+
 import nltk
+import pandas as pd
+import textdistance
 from nltk import ne_chunk, pos_tag, word_tokenize
 from nltk.stem.wordnet import WordNetLemmatizer
-import textdistance
+
+from ontorunner.post.util import (consolidate_rows, filter_synonyms,
+                                  get_ancestors, get_column_doc_ratio)
 
 # if not nltk.find("corpora/wordnet"):
 nltk.download("wordnet")
@@ -71,9 +69,7 @@ def sentencify(input_df, output_df, output_fn):
             # terms being the same, the term is registered as a synonym by KGX
             # and hence the biohub_converter codes this with a '_SYNONYM' tag.
             # In order to counter this, we need to filter these extra rows out.
-            if not sub_df.empty and any(
-                sub_df["object_id"].str.endswith("_SYNONYM")
-            ):
+            if not sub_df.empty and any(sub_df["object_id"].str.endswith("_SYNONYM")):
                 sub_df = filter_synonyms(sub_df)
 
             if len(sent_tok) == 1:
@@ -176,9 +172,7 @@ def sentencify(input_df, output_df, output_fn):
                     axis=1,
                 )
 
-                sub_df.to_csv(
-                    output_fn, mode="a", sep="\t", header=None, index=None
-                )
+                sub_df.to_csv(output_fn, mode="a", sep="\t", header=None, index=None)
 
 
 def get_match_type(token1: str, token2: str) -> str:
@@ -361,9 +355,7 @@ def parse(
 
         if len(input_list_tsv) > 0:
             for f in input_list_tsv:
-                input_df = pd.read_csv(
-                    f, sep="\t", low_memory=False, index_col=None
-                )
+                input_df = pd.read_csv(f, sep="\t", low_memory=False, index_col=None)
                 sentencify(input_df, output_df, final_output_file)
 
         if len(input_list_txt) > 0:

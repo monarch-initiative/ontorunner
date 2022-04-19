@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 NAME = "ontoRunNER"
 URL = "https://github.com/monarch-initiative/ontorunner"
@@ -23,9 +23,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license=LICENSE,
-    packages=find_packages(
-        exclude=["*.tests", "*.tests.*", "tests.*", "tests"]
-    ),
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     extras_require=EXTRAS,
     include_package_data=True,
     # add package dependencies

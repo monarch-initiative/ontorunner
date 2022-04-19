@@ -1,8 +1,11 @@
 import os
 import unittest
+
 import pandas as pd
+
 from ontorunner.oger_module import run_oger
 from ontorunner.pre.util import json2tsv, prepare_termlist
+
 from . import cleanup
 
 cwd = os.path.abspath(os.path.dirname(__file__))

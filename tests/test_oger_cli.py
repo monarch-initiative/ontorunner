@@ -1,9 +1,10 @@
 import os
-import unittest
 import subprocess
-import pandas as pd
-from . import cleanup
+import unittest
 
+import pandas as pd
+
+from . import cleanup
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 data_dir = os.path.join(cwd, "data")
@@ -48,9 +49,7 @@ class TestOgerCLI(unittest.TestCase):
 
         for i, file in enumerate(ofiles):
             self.assertTrue(os.path.isfile(file))
-            self.assertEqual(
-                len(pd.read_csv(file, sep="\t")), cli_ofile_rows[i]
-            )
+            self.assertEqual(len(pd.read_csv(file, sep="\t")), cli_ofile_rows[i])
 
     def test_cli_prepare_termlist(self) -> None:
         ifile = os.path.join(self.output, "envo_nodes.tsv")

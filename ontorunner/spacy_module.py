@@ -1,19 +1,16 @@
 import os
-from pathlib import Path
-from ontorunner import (
-    DATA_DIR,
-    INPUT_DIR_NAME,
-    OUTPUT_DIR_NAME,
-    SETTINGS_FILE_PATH,
-    get_config,
-)
-from ontorunner.pipes.OntoRuler import OntoRuler
 from glob import glob
+from multiprocessing import freeze_support
+from pathlib import Path
+
+import click
 import pandas as pd
 from spacy.tokens import Span
-from multiprocessing import freeze_support
+
+from ontorunner import (DATA_DIR, INPUT_DIR_NAME, OUTPUT_DIR_NAME,
+                        SETTINGS_FILE_PATH, _get_config)
+from ontorunner.pipes.OntoRuler import OntoRuler
 from ontorunner.post import NODE_AND_EDGE_NAME, util
-import click
 
 SCI_SPACY_LINKERS = ["umls", "mesh"]
 
@@ -92,13 +89,8 @@ def get_token_info(doc):
         if span.label_ in unwanted_labels:
             unwanted_span_list.append(span.text)
         else:
-            if (
-                span._.is_an_ontology_term
-                and span.text not in unwanted_span_list
-            ):
-                valid_span = any(
-                    [token.pos_ not in ignore_pos for token in span]
-                )
+            if span._.is_an_ontology_term and span.text not in unwanted_span_list:
+                valid_span = any([token.pos_ not in ignore_pos for token in span])
 
                 if valid_span:
                     pos_list = ", ".join([token.pos_ for token in span])
@@ -110,9 +102,7 @@ def get_token_info(doc):
                     onto_dict["object_id"].append(span._.object_id)
                     onto_dict["object_category"].append(span._.object_category)
                     onto_dict["object_label"].append(span._.object_label)
-                    onto_dict["object_match_field"].append(
-                        span._.object_match_field
-                    )
+                    onto_dict["object_match_field"].append(span._.object_match_field)
                     onto_dict["origin"].append(span._.origin)
                     onto_dict["sentence"].append(span.sent)
                     onto_dict["start"].append(span.start_char)
@@ -166,9 +156,7 @@ def onto_tokenize(doc, onto_ruler_obj):
                 "object_match_field",
                 onto_ruler_obj.terms[span.text.lower()]["object_match_field"],
             )
-            span._.set(
-                "origin", onto_ruler_obj.terms[span.text.lower()]["origin"]
-            )
+            span._.set("origin", onto_ruler_obj.terms[span.text.lower()]["origin"])
 
     return doc
 
@@ -259,9 +247,7 @@ def run_spacy(
     onto_df = explode_df(input_df[["id", "spacy_tokens"]])
     # nlp_df = doc_to_df(dframcy, input_df[["id", "spacy_doc"]])
 
-    stopwords_file_path = os.path.join(
-        data_dir, get_config("termlist_stopwords")[0]
-    )
+    stopwords_file_path = os.path.join(data_dir, _get_config("termlist_stopwords")[0])
     stopwords_file = open(stopwords_file_path, "r")
     stopwords = stopwords_file.read().splitlines()
     onto_df = onto_df.loc[~onto_df["matched_term"].isin(stopwords)]
@@ -283,9 +269,7 @@ def run_spacy(
 
 
 @main.command("run-spacy")
-@click.option(
-    "-d", "--data-dir", help="Data directory path.", default=DATA_DIR
-)
+@click.option("-d", "--data-dir", help="Data directory path.", default=DATA_DIR)
 @click.option(
     "-s",
     "--settings-file",

@@ -1,4 +1,5 @@
 import os
+
 from ontorunner import DATA_DIR
 
 NODE_AND_EDGE_NAME = "nodes_and_edges"
