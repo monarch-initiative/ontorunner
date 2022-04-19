@@ -20,6 +20,7 @@ class TestOger(unittest.TestCase):
         self.terms = f"{data_dir}/terms/"
         self.termlist = os.path.join(self.terms, "envo_termlist.tsv")
         self.settings = f"{cwd}/settings.ini"
+        self.nodes_and_edges = os.path.join(data_dir, "nodes_and_edges")
         print("setup runs here")
 
     def test_json2tsv(self) -> None:
@@ -37,7 +38,7 @@ class TestOger(unittest.TestCase):
         self.assertEqual(len(pd.read_csv(self.termlist, sep="\t")), 11726)
 
     def test_run_oger(self) -> None:
-        run_oger(settings=self.settings)
+        run_oger(settings=self.settings, nodes_and_edges=self.nodes_and_edges)
         self.assertTrue(os.path.isfile(self.output_file))
         self.assertEqual(len(pd.read_csv(self.output_file, sep="\t")), 148)
 

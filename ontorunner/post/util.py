@@ -1,4 +1,8 @@
+import os
+from typing import List
+import numpy as np
 import pandas as pd
+from . import NODE_AND_EDGE_DIR, SUBCLASS_PREDICATE
 
 
 def filter_synonyms(df: pd.DataFrame) -> pd.DataFrame:
@@ -80,69 +84,64 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
     return df
 
 
-# def get_ancestors(df: pd.DataFrame) -> pd.DataFrame:
+def ancestor_generator(
+    df: pd.DataFrame, obj_series: pd.DataFrame
+) -> List[str]:
+    """
+    Function that returns an ancestor list of a CURIE
 
-#     # * Using origin as reference for ancestors.
-#     # origin_object_df = df[["origin", "object_id"]].drop_duplicates()
-#     # origin_object_df["object_id"] = origin_object_df["object_id"].apply(
-#     #     lambda x: x.split("_")[0]
-#     # )
-#     # df_columns_no_ancestor = list(df.columns)
-#     # origin_object_df = origin_object_df.drop_duplicates()
-#     # origin_list = list(origin_object_df["origin"].drop_duplicates())
-#     # for origin in origin_list:
-#     #     sub_df = df[df["origin"] == origin]
-#     #     ont = origin.split(".")[0]
-#     #     if "_" in ont:
-#     #         ont = origin.split("_")[0]
-#     #     ontFact = OntologyFactory().create(ont)
-#     #     sub_df["ancestors"] = sub_df["object_id"].apply(
-#     #         lambda obj: ontFact.ancestors(ontFact.search(obj)[0])
-#     #     )
-#     #     df = pd.merge(
-#     #         df.astype(str),
-#     #         sub_df.astype(str),
-#     #         how="outer",
-#     #         on=df_columns_no_ancestor,
-#     #     )
-#     # * Using object as reference for ancestors.
+    :param df: KGX edges of source ontology in DataFrame form.
+    :return: List of CURIES (ancestors)
+    """
+    ancestor_list = []
+    obj_series_df = df.loc[df["subject"] == obj_series.object_id]
+    while not df.loc[df["subject"] == obj_series.object_id].empty:
+        obj_series_df = df.loc[df["subject"] == obj_series.object_id]
+        ancestor_list.append(obj_series_df.iloc[0].object_id)
+        obj_series = obj_series_df.iloc[0]
 
-#     object_df = df["object_id"].apply(lambda x: x.split("_")[0])
-#     object_df = (
-#         object_df.drop_duplicates().reset_index().drop(["index"], axis=1)
-#     )
+    return ancestor_list
 
-#     source_df = (
-#         object_df["object_id"]
-#         .apply(lambda x: x.split(":")[0],)
-#         .drop_duplicates()
-#     )
-#     tmp_df = pd.DataFrame()
-#     for _, src in source_df.iteritems():
 
-#         sub_df = object_df[object_df["object_id"].str.contains(src)]
-#         ontFact = OntologyFactory().create(src)
-#         sub_df.loc[:, "ancestors"] = sub_df["object_id"].apply(
-#             lambda obj: ontFact.ancestors(ontFact.search(obj)[0])
-#         )
-#         if len(tmp_df) == 0:
-#             tmp_df = sub_df
-#         else:
-#             tmp_df = pd.concat([tmp_df, sub_df], ignore_index=True)
-#     tmp_df_1 = tmp_df.astype(str).drop_duplicates()
-#     tmp_df_syn = tmp_df_1.copy()
-#     tmp_df_syn["object_id"] = tmp_df_1["object_id"] + "_SYNONYM"
+def get_ancestors(
+    df: pd.DataFrame, nodes_and_edges_dir: str = NODE_AND_EDGE_DIR
+) -> pd.DataFrame:
+    """
+    Return a DataFrame with 'ancestors' column.
 
-#     ancestor_df = pd.concat([tmp_df_1, tmp_df_syn])
-#     # ancestor_df.to_csv(
-#     #     os.path.join(PARENT_DIR, "data/output/ancestor.tsv"),
-#     #     sep="\t",
-#     #     index=None,
-#     # )
+    :param df: Input dataframe containing intermediate NER result.
+    :param nodes_and_edges_dir: Dir location of KGX edges & nodes file (tsv)
+    :return: Dataframe with an 'ancestors' column.
+    """
+    df["ancestors"] = ""
+    object_origin = df[["object_id", "origin"]]
+    object_origin["object_id"] = object_origin["object_id"].str.replace(
+        "_SYNONYM", ""
+    )
+    object_origin = object_origin.drop_duplicates()
+    all_origins = object_origin["origin"].drop_duplicates().tolist()
+    all_origins = [ogn for ogn in all_origins if "|" not in ogn]
 
-#     new_df = pd.merge(
-#         df.astype(str), ancestor_df.astype(str), how="left", on="object_id"
-#     )
-#     new_df = new_df.fillna("Empty graph due to no edges")
+    for o in all_origins:
+        object_origin_subset = object_origin.loc[object_origin["origin"] == o]
+        ont_name = o.split(".")[0]
+        ont_edge_file = os.path.join(
+            nodes_and_edges_dir, ont_name + "_edges.tsv"
+        )
+        print(f"Getting ancestors for {ont_name} terms....")
+        ont_edge_df = pd.read_csv(ont_edge_file, sep="\t", low_memory=False)
+        ont_edge_df = ont_edge_df.loc[
+            ont_edge_df["predicate"] == SUBCLASS_PREDICATE
+        ]
+        ont_edge_df.rename(columns={"object": "object_id"}, inplace=True)
+        for idx, obj in object_origin_subset.T.iteritems():
+            list_of_ancestors = ancestor_generator(
+                ont_edge_df, pd.Series(obj).T
+            )
+            df.loc[
+                (df["object_id"] == object_origin_subset["object_id"][idx])
+                & (df["origin"] == object_origin_subset["origin"][idx]),
+                "ancestors",
+            ] = str(list_of_ancestors)
 
-#     return new_df
+    return df.replace(np.nan, "")

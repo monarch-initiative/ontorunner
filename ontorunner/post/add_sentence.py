@@ -2,6 +2,7 @@ import re
 from ontorunner.post.util import (
     filter_synonyms,
     consolidate_rows,
+    get_ancestors,
     get_column_doc_ratio,
 )
 import pandas as pd
@@ -45,7 +46,10 @@ def sentencify(input_df, output_df, output_fn):
                 text.replace("\t", " ")
                 .replace("\u2028", " ")
                 .replace("\n", "")
-                .replace("\r", "",)
+                .replace(
+                    "\r",
+                    "",
+                )
                 .replace(
                     ")", " "
                 )  # reason: re.error: unbalanced parenthesis at position x
@@ -140,11 +144,6 @@ def sentencify(input_df, output_df, output_fn):
                             f" search_term: {term_of_interest}"
                         )
 
-                        # if i == 205 and count == 2:
-                        #     import pdb
-
-                        #     pdb.set_trace()
-
                         list_of_sents = [
                             x
                             for x in relevant_sents
@@ -215,12 +214,13 @@ def get_match_type(token1: str, token2: str) -> str:
     return match
 
 
-def parse(input_directory, output_directory) -> None:
+def parse(input_directory, output_directory, nodes_and_edges) -> None:
     """
     This parses the OGER output and adds sentences of relevant tokenized terms
     for context to the reviewer.
     :param input_directory: (str) Input directory path.
     :param output_directory: (str) Output directory path.
+    :param nodes_and_edges: (str) Nodes and edges file directory path.
     :return: None.
     """
     # Get a list of potential input files for particular formats
@@ -344,9 +344,8 @@ def parse(input_directory, output_directory) -> None:
                 "object_sentence_%",
             ]
         )
-        # output_df = get_ancestors(output_df)
-        # Ontobio alternative to get Ancestors.
-        # Takes too long
+        # TODO: Maybe use OAK for getting ancestors (?)
+        output_df = get_ancestors(output_df, nodes_and_edges)
 
         final_output_file = output_file.replace(".tsv", "_ontoRunNER.tsv")
 

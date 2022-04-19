@@ -1,0 +1,23 @@
+document_id	matched_term	POS	tag	scispacy_object_category	object_id	object_category	object_label	object_match_field	origin
+86	archaea	NOUN	NN	PERSON	NCBITaxon:2157	biolink:NamedThing	archaea		envo.owl
+86	anaerobic	ADJ	JJ	envo	PATO:0001456	biolink:NamedThing	anaerobic		envo.owl
+103	community	NOUN	NN	envo	ENVO:00000428	biolink:NamedThing	biome	hasRelatedSynonym	envo.owl
+103	key	ADJ	JJ	envo	ENVO:00000098_SYNONYM	biolink:NamedThing	island	hasRelatedSynonym	envo.owl
+103	rainfall	NOUN	NN	envo	ENVO:01000830_SYNONYM	biolink:NamedThing	water-based rainfall	hasRelatedSynonym	envo.owl
+103	range	NOUN	NN	envo	ENVO:00000113_SYNONYM	biolink:NamedThing	obsolete cultivated habitat	hasRelatedSynonym	envo.owl
+103	tropical	ADJ	JJ	envo	ENVO:01000204	biolink:NamedThing	tropical		envo.owl
+103	efficient	ADJ	JJ	pato-subset	PATO:0001678	biolink:OntologyClass	efficient		pato-subset.json
+103	energy	NOUN	NN	envo	PATO:0001021	biolink:OntologyClass	energy		pato-subset.json
+113	forest	NOUN	NN	envo	ENVO:02500014	biolink:NamedThing	forest process	hasRelatedSynonym	envo.owl
+113	basal to	"ADJ, PART"	"JJ, TO"	envo	PATO:0002349	biolink:OntologyClass	basal to		pato-subset.json
+113	distance	NOUN	NN	pato-subset	PATO:0000040	biolink:OntologyClass	distance		pato-subset.json
+113	time	NOUN	NN	obi	PATO:0000165	biolink:OntologyClass	time		pato-subset.json
+113	work	NOUN	NN	pato-subset	PATO:0001026	biolink:OntologyClass	work		pato-subset.json
+144	depolymerization	NOUN	NN	mop	MOP:0000630_SYNONYM	biolink:OntologyClass	depolymerisation	hasRelatedSynonym	mop.json
+144	group	NOUN	NN	mop	CHEBI:24433	biolink:ChemicalSubstance	group		mop.json
+159	group	NOUN	NN	chebi	CHEBI:24433	biolink:ChemicalSubstance	group		mop.json
+159	group	NOUN	NN	mop	CHEBI:24433	biolink:ChemicalSubstance	group		mop.json
+159	group	NOUN	NN	pato	CHEBI:24433	biolink:ChemicalSubstance	group		mop.json
+182	group	NOUN	NN	to	CHEBI:24433	biolink:ChemicalSubstance	group		mop.json
+182	oxidation	NOUN	NN	mop	MOP:0000568	biolink:OntologyClass	oxidation		mop.json
+185	group	NOUN	NN	mop	CHEBI:24433	biolink:ChemicalSubstance	group		mop.json

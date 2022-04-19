@@ -17,6 +17,7 @@ class TestOgerCLI(unittest.TestCase):
         self.json = os.path.join(self.input, "envo.json")
         self.output = f"{data_dir}/output/"
         self.output_file = os.path.join(self.output, "test_ontoRunNER.tsv")
+        self.nodes_and_edges = os.path.join(data_dir, "nodes_and_edges")
         self.terms = f"{data_dir}/terms/"
         self.termlist = os.path.join(self.terms, "envo_termlist.tsv")
         self.settings = f"{cwd}/settings.ini"
@@ -78,7 +79,16 @@ class TestOgerCLI(unittest.TestCase):
     def test_cli_run_oger_with_settings(self) -> None:
         s = self.settings
         process = subprocess.Popen(
-            ["python", "-m", "ontorunner.oger_module", "run-oger", "-s", s],
+            [
+                "python",
+                "-m",
+                "ontorunner.oger_module",
+                "run-oger",
+                "-s",
+                s,
+                "-n",
+                self.nodes_and_edges,
+            ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
@@ -108,6 +118,8 @@ class TestOgerCLI(unittest.TestCase):
                 self.output_file,
                 "-f",
                 "tsv",
+                "-n",
+                self.nodes_and_edges,
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -122,4 +134,3 @@ class TestOgerCLI(unittest.TestCase):
 
         # Clean-up files for next test run
         cleanup(self.output)
-
