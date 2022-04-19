@@ -214,7 +214,12 @@ def get_match_type(token1: str, token2: str) -> str:
     return match
 
 
-def parse(input_directory, output_directory, nodes_and_edges) -> None:
+def parse(
+    input_directory: str,
+    output_directory: str,
+    nodes_and_edges: str,
+    need_ancestors: bool,
+) -> None:
     """
     This parses the OGER output and adds sentences of relevant tokenized terms
     for context to the reviewer.
@@ -345,7 +350,8 @@ def parse(input_directory, output_directory, nodes_and_edges) -> None:
             ]
         )
         # TODO: Maybe use OAK for getting ancestors (?)
-        output_df = get_ancestors(output_df, nodes_and_edges)
+        if need_ancestors:
+            output_df = get_ancestors(output_df, nodes_and_edges)
 
         final_output_file = output_file.replace(".tsv", "_ontoRunNER.tsv")
 

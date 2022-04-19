@@ -12,7 +12,7 @@ from glob import glob
 import pandas as pd
 from spacy.tokens import Span
 from multiprocessing import freeze_support
-from ontorunner.post import util
+from ontorunner.post import NODE_AND_EDGE_NAME, util
 import click
 
 SCI_SPACY_LINKERS = ["umls", "mesh"]
@@ -207,6 +207,7 @@ def run_spacy(
     settings_file: Path = SETTINGS_FILE_PATH,
     linker: str = "umls",
     to_pickle: bool = True,
+    need_ancestors: bool = True,
 ):
     """
     Run spacy with sciSpacy pipeline.
@@ -268,7 +269,11 @@ def run_spacy(
     onto_df = util.consolidate_rows(onto_df)
     onto_df = util.get_column_doc_ratio(onto_df, "object_label")
     onto_df = util.get_column_doc_ratio(onto_df, "matched_term")
-    # onto_df = util.get_ancestors(onto_df)
+    if need_ancestors:
+        nodes_and_edges_dir = os.path.join(data_dir, NODE_AND_EDGE_NAME)
+        onto_df = util.get_ancestors(
+            df=onto_df, nodes_and_edges_dir=nodes_and_edges_dir
+        )
 
     onto_df = onto_df.astype(str).drop_duplicates()
     kb_df = kb_df.astype(str).drop_duplicates()
@@ -300,17 +305,20 @@ def run_spacy(
     help="Boolean to determine if intermediate files should be pickled or no",
     default=True,
 )
+@click.option("--need-ancestors", "-a", type=bool, default=True)
 def run_spacy_click(
     data_dir: Path,
     settings_file: Path,
     linker: str,
     pickle_files: bool,
+    need_ancestors: bool,
 ):
     run_spacy(
         data_dir=data_dir,
         settings_file=settings_file,
         linker=linker,
         to_pickle=pickle_files,
+        need_ancestors=need_ancestors,
     )
 
     # os.system('say "Done!"')
