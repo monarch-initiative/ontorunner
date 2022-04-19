@@ -81,6 +81,7 @@ def run_oger(
 
 @click.group()
 def cli():
+    """CLI."""
     pass
 
 
