@@ -12,7 +12,7 @@ from glob import glob
 import pandas as pd
 from spacy.tokens import Span
 from multiprocessing import freeze_support
-from ontorunner.post import util
+from ontorunner.post import NODE_AND_EDGE_NAME, util
 import click
 
 SCI_SPACY_LINKERS = ["umls", "mesh"]
@@ -270,7 +270,10 @@ def run_spacy(
     onto_df = util.get_column_doc_ratio(onto_df, "object_label")
     onto_df = util.get_column_doc_ratio(onto_df, "matched_term")
     if need_ancestors:
-        onto_df = util.get_ancestors(onto_df)
+        nodes_and_edges_dir = os.path.join(data_dir, NODE_AND_EDGE_NAME)
+        onto_df = util.get_ancestors(
+            df=onto_df, nodes_and_edges_dir=nodes_and_edges_dir
+        )
 
     onto_df = onto_df.astype(str).drop_duplicates()
     kb_df = kb_df.astype(str).drop_duplicates()
