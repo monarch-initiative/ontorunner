@@ -16,6 +16,7 @@ def run_oger(
     settings="settings.ini",
     workers=1,
     nodes_and_edges=NODE_AND_EDGE_DIR,
+    need_ancestors=True,
 ) -> None:
     """
     Run Oger
@@ -67,7 +68,7 @@ def run_oger(
             input = os.path.dirname(content)
             output = os.path.dirname(output)
 
-    add_sentence.parse(input, output, nodes_and_edges)
+    add_sentence.parse(input, output, nodes_and_edges, need_ancestors)
 
     # os.system('say "Done!"')
 
@@ -92,6 +93,7 @@ def cli():
     type=click.Path(exists=True),
     default=NODE_AND_EDGE_DIR,
 )
+@click.option("--need-ancestors", "-a", type=bool, default=True)
 def run_oger_click(
     content,
     termlist,
@@ -100,6 +102,7 @@ def run_oger_click(
     settings,
     workers,
     nodes_and_edges,
+    need_ancestors,
 ):
     run_oger(
         content,
@@ -109,6 +112,7 @@ def run_oger_click(
         settings,
         workers,
         nodes_and_edges,
+        need_ancestors,
     )
 
 
