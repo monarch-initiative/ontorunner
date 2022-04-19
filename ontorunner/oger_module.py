@@ -86,7 +86,12 @@ def cli():
 )
 @click.option("--settings", "-s", type=click.Path(exists=True))
 @click.option("--workers", "-w", default=1)
-@click.option("--nodes-and-edges", "-n", type=click.Path(exists=True))
+@click.option(
+    "--nodes-and-edges",
+    "-n",
+    type=click.Path(exists=True),
+    default=NODE_AND_EDGE_DIR,
+)
 def run_oger_click(
     content,
     termlist,
@@ -94,7 +99,7 @@ def run_oger_click(
     output_format,
     settings,
     workers,
-    nodes_and_edges=NODE_AND_EDGE_DIR,
+    nodes_and_edges,
 ):
     run_oger(
         content,

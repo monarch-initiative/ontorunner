@@ -88,7 +88,7 @@ def ancestor_generator(
     df: pd.DataFrame, obj_series: pd.DataFrame
 ) -> List[str]:
     """
-    Function that returns an ancestor list of a CURIE 
+    Function that returns an ancestor list of a CURIE
 
     :param df: KGX edges of source ontology in DataFrame form.
     :return: List of CURIES (ancestors)
@@ -110,7 +110,7 @@ def get_ancestors(
     Return a DataFrame with 'ancestors' column.
 
     :param df: Input dataframe containing intermediate NER result.
-    :param nodes_and_edges_dir: Directoy location of KGX edges and nodes file (tsv)
+    :param nodes_and_edges_dir: Dir location of KGX edges & nodes file (tsv)
     :return: Dataframe with an 'ancestors' column.
     """
     df["ancestors"] = ""
@@ -120,6 +120,7 @@ def get_ancestors(
     )
     object_origin = object_origin.drop_duplicates()
     all_origins = object_origin["origin"].drop_duplicates().tolist()
+    all_origins = [ogn for ogn in all_origins if "|" not in ogn]
 
     for o in all_origins:
         object_origin_subset = object_origin.loc[object_origin["origin"] == o]
@@ -127,6 +128,7 @@ def get_ancestors(
         ont_edge_file = os.path.join(
             nodes_and_edges_dir, ont_name + "_edges.tsv"
         )
+        print(f"Getting ancestors for {ont_name} terms....")
         ont_edge_df = pd.read_csv(ont_edge_file, sep="\t", low_memory=False)
         ont_edge_df = ont_edge_df.loc[
             ont_edge_df["predicate"] == SUBCLASS_PREDICATE
