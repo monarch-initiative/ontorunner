@@ -144,11 +144,6 @@ def sentencify(input_df, output_df, output_fn):
                             f" search_term: {term_of_interest}"
                         )
 
-                        # if i == 205 and count == 2:
-                        #     import pdb
-
-                        #     pdb.set_trace()
-
                         list_of_sents = [
                             x
                             for x in relevant_sents
