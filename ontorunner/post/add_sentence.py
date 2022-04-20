@@ -1,3 +1,4 @@
+"""Add sentences for understanding the context of matched terms."""
 import csv
 import os
 import re
@@ -24,18 +25,24 @@ nltk.download("words")
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-def find_extensions(dr, ext):
+def find_extensions(dr, ext) -> list[str]:
+    """Find files with a specific extension.
+
+    :param dr: Directory path.
+    :param ext: Extension.
+    :return: List of relevant files.
+    """
     return glob(os.path.join(dr, "*.{}".format(ext)))
 
 
 def sentencify(input_df, output_df, output_fn):
     """
-    Add relevant sentences to the tokenized term in every row of a
-    pandas DataFrame
+    Add relevant sentences to the tokenized term in every row of a pandas DataFrame.
+
     :param df: (DataFrame) pandas DataFrame.
     :return: None
     """
-    for j, row in input_df.iterrows():
+    for _, row in input_df.iterrows():
         idx = row.id
         text = row.text
         # Check for text = NaN
@@ -177,7 +184,7 @@ def sentencify(input_df, output_df, output_fn):
 
 def get_match_type(token1: str, token2: str) -> str:
     """
-    Return type of token match
+    Return type of token match.
 
     :param token1: token from 'matched_term'
     :type token1: str
@@ -186,7 +193,6 @@ def get_match_type(token1: str, token2: str) -> str:
     :return: Type of match [e.g.: 'exact_match' etc.]
     :rtype: str
     """
-
     match = ""
     lemma = WordNetLemmatizer()
 
@@ -215,8 +221,8 @@ def parse(
     need_ancestors: bool,
 ) -> None:
     """
-    This parses the OGER output and adds sentences of relevant tokenized terms
-    for context to the reviewer.
+    Parse OGER output and add sentences of tokenized terms.
+
     :param input_directory: (str) Input directory path.
     :param output_directory: (str) Output directory path.
     :param nodes_and_edges: (str) Nodes and edges file directory path.

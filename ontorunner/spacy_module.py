@@ -1,3 +1,4 @@
+"""Run Spacy."""
 import os
 from glob import glob
 from multiprocessing import freeze_support
@@ -5,7 +6,7 @@ from pathlib import Path
 
 import click
 import pandas as pd
-from spacy.tokens import Span
+from spacy.tokens import Doc, Span
 
 from ontorunner import (DATA_DIR, INPUT_DIR_NAME, OUTPUT_DIR_NAME,
                         SETTINGS_FILE_PATH, _get_config)
@@ -15,7 +16,12 @@ from ontorunner.post import NODE_AND_EDGE_NAME, util
 SCI_SPACY_LINKERS = ["umls", "mesh"]
 
 
-def get_token_info(doc):
+def get_token_info(doc: Doc) -> pd.DataFrame:
+    """Get metadata associated with spans within a document.
+
+    :param doc: Doc object.
+    :return: Pandas DataFrame.
+    """ """"""
     key_list = [
         "matched_term",
         "POS",
@@ -116,6 +122,11 @@ def get_token_info(doc):
 
 
 def explode_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Explode multiple DataFrames in a single row into multiple rows.
+
+    :param df: Dataframe to be exploded.
+    :return: Exploded DataFrame where each row correspond to a row in the DataFrame.
+    """
     new_df = pd.DataFrame()
     for _, doc_obj_row in df.iterrows():
         tmp_df = doc_obj_row[1]
@@ -126,16 +137,22 @@ def explode_df(df: pd.DataFrame) -> pd.DataFrame:
     return new_df
 
 
-def onto_tokenize(doc, onto_ruler_obj):
+def onto_tokenize(doc: Doc, onto_ruler_obj: OntoRuler) -> Doc:
+    """Set custom span information from the Doc object.
+
+    :param doc: Doc object.
+    :param onto_ruler_obj: OntoRuler object.
+    :return: Doc object.
+    """
     # matches = onto_ruler_obj.match(doc)
     matches = onto_ruler_obj.phrase_matcher(doc)
     spans = [
         Span(doc, start, end, label=onto_ruler_obj.label)
-        for matchId, start, end in matches
+        for match_id, start, end in matches
     ]
     # doc.spans[onto_ruler_obj.label] = spans
 
-    for i, span in enumerate(spans):
+    for _, span in enumerate(spans):
         span._.set("has_curies", True)
 
         if span.text.lower() in onto_ruler_obj.terms.keys():
@@ -161,7 +178,13 @@ def onto_tokenize(doc, onto_ruler_obj):
     return doc
 
 
-def get_knowledgeBase_enitities(doc, onto_ruler_obj):
+def get_knowledge_base_enitities(doc: Doc, onto_ruler_obj: OntoRuler) -> pd.DataFrame:
+    """Get information from the SciSpacy pipeline.
+
+    :param doc: Doc object.
+    :param onto_ruler_obj: OntoRuler object.
+    :return: Pandas DataFrame.
+    """
     linker = onto_ruler_obj.nlp.get_pipe("scispacy_linker")
     ent_dict = {}
     key_list = ["cui", "matched_term", "aliases", "definition", "tui"]
@@ -181,12 +204,19 @@ def get_knowledgeBase_enitities(doc, onto_ruler_obj):
 
 
 def export_tsv(df: pd.DataFrame, data_dir: str, fn: str) -> None:
+    """Export pandas DataFrame object into a TSV file.
+
+    :param df: Pandas DataFrame.
+    :param data_dir: Destination directory for export.
+    :param fn: Filename.
+    """
     fn_path = os.path.join(data_dir, OUTPUT_DIR_NAME, fn + ".tsv")
     df.to_csv(fn_path, sep="\t", index=None)
 
 
 @click.group()
 def main():
+    """Blank function."""
     pass
 
 
@@ -240,7 +270,7 @@ def run_spacy(
     )
 
     input_df["spacy_kb_ent"] = input_df["spacy_doc_tok"].apply(
-        lambda row: get_knowledgeBase_enitities(row, onto_ruler_obj)
+        lambda row: get_knowledge_base_enitities(row, onto_ruler_obj)
     )
 
     kb_df = explode_df(input_df[["id", "spacy_kb_ent"]])
@@ -297,6 +327,16 @@ def run_spacy_click(
     pickle_files: bool,
     need_ancestors: bool,
 ):
+    """CLI for running the spacy module.
+
+    :param data_dir: Data dorectory path.
+    :param settings_file: Filepath for settings.ini file.
+    :param linker: Type of sciSpacy linker desired ([umls]/mesh).
+    :param pickle_files: Bool representing if files
+        must be pickled or not.
+    :param need_ancestors: Bool indicatind if output should.
+        contain ancestors of matched term or not.
+    """
     run_spacy(
         data_dir=data_dir,
         settings_file=settings_file,

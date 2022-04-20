@@ -1,3 +1,4 @@
+"""Utility functions called after NER."""
 import os
 from typing import List
 
@@ -9,27 +10,28 @@ from . import NODE_AND_EDGE_DIR, SUBCLASS_PREDICATE
 
 def filter_synonyms(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Consolidate entities where '_SYNONYM' object_id is a duplicate
+    Consolidate entities where '_SYNONYM' object_id is a duplicate.
 
     :param df: Input DataFrame
     :type df: pd.DataFrame
     :return: Consolidated Dataframe
     :rtype: pd.DataFrame
     """
-
     condition_1 = df["matched_term"].str.lower() == df["preferred_form"].str.lower()
     condition_2 = df["object_id"].str.contains("_SYNONYM")
     same_yet_syn_condition = condition_1 & condition_2
     new_df = df[~same_yet_syn_condition]
     tmp_df = df[same_yet_syn_condition]
-    tmp_df["object_id"] = tmp_df["object_id"].str.rstrip("_SYNONYM")
+    tmp_df["object_id"] = tmp_df["object_id"].str.replace("_SYNONYM", "")
     new_df = pd.concat([new_df, tmp_df])
     return new_df
 
 
 def consolidate_rows(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Group rows by all columns except "origin" to remove redundancies
+    Group rows by all columns except "origin".
+
+    This is done to remove redundancies
     created by entity recognition from multiple sources/ontologies
 
     :param df: Input DataFrame
@@ -86,7 +88,7 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
 
 def ancestor_generator(df: pd.DataFrame, obj_series: pd.DataFrame) -> List[str]:
     """
-    Function that returns an ancestor list of a CURIE
+    Return an ancestor list of a CURIE.
 
     :param df: KGX edges of source ontology in DataFrame form.
     :return: List of CURIES (ancestors)

@@ -21,8 +21,7 @@ def run_oger(
     nodes_and_edges=NODE_AND_EDGE_DIR,
     need_ancestors=True,
 ) -> None:
-    """
-    Run Oger.
+    """Run OGER.
 
     :param content: Input file OR folder containing txt files.
     :param termlist: Path to the dictionary (TSV format).
@@ -76,7 +75,8 @@ def run_oger(
 
     add_sentence.parse(input, output, nodes_and_edges, need_ancestors)
 
-    # os.system('say "Done!"')
+
+# os.system('say "Done!"')
 
 
 @click.group()
@@ -111,6 +111,20 @@ def run_oger_click(
     nodes_and_edges,
     need_ancestors,
 ):
+    """
+    Run OGER module using CLI.
+
+    :param content: Input file for NER.
+    :param termlist: Filepath for termlist TSV file.
+    :param output: Directory fro output.
+    :param output_format: Output format [default: tsv].
+    :param settings: Filepath for settings.ini file.
+    :param workers: Number of parallel threads.
+    :param nodes_and_edges: Directory where all KGX
+        nodes and edges tsv files reside.
+    :param need_ancestors: Bool indicating where output
+        should contain ancestors of matched term should be present.
+    """
     run_oger(
         content,
         termlist,

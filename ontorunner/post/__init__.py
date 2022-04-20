@@ -1,3 +1,4 @@
+"""Post process the NER results."""
 import os
 
 from ontorunner import DATA_DIR

@@ -1,7 +1,8 @@
 """Setup parameters."""
+import subprocess
+
 from setuptools import find_packages, setup
 from setuptools.command.install import install
-import subprocess
 
 NAME = "ontoRunNER"
 URL = "https://github.com/monarch-initiative/ontorunner"
@@ -17,6 +18,7 @@ LICENSE = "BSD"
 
 class PostInstallCommand(install):
     """Post-installation for installation mode."""
+
     def run(self):
         url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz"
         process = subprocess.Popen(
@@ -40,13 +42,7 @@ class PostInstallCommand(install):
         print(stdout)
 
         process = subprocess.Popen(
-            [
-                "python",
-                "-m",
-                "spacy",
-                "download",
-                "en_core_web_sm"
-            ],
+            ["python", "-m", "spacy", "download", "en_core_web_sm"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
@@ -113,13 +109,13 @@ setup(
         # "en_ner_bc5cdr_md",  # Biocreative V Chemical induce Disease NER
     ],
     # dependency_links=[
-        # From https://allenai.github.io/scispacy/
-        # 1. NER CRAFT corpus
-        # "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz",
-        # 2. SciBERT
-        # "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_core_sci_scibert-0.5.0.tar.gz",
+    # From https://allenai.github.io/scispacy/
+    # 1. NER CRAFT corpus
+    # "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz",
+    # 2. SciBERT
+    # "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_core_sci_scibert-0.5.0.tar.gz",
     # ],
     cmdclass={
-        'install': PostInstallCommand,
+        "install": PostInstallCommand,
     },
 )
