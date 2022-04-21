@@ -26,12 +26,6 @@ class PostInstallCommand(install):
                 "pip",
                 "install",
                 url
-                # " ; ",
-                # "python",
-                # "-m",
-                # "spacy",
-                # "download",
-                # "en_core_web_sm"
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
