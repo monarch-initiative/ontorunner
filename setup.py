@@ -18,32 +18,24 @@ LICENSE = "BSD"
 
 class PostInstallCommand(install):
     """Post-installation for installation mode."""
-
     def run(self):
         url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz"
-        process = subprocess.Popen(
-            [
-                "pip",
-                "install",
-                url
-            ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
+        commands = [
+            ["pip", "install", url],
+            ["python", "-m", "spacy", "download", "en_core_web_sm"]
+        ]
 
-        stdout, stderr = process.communicate()
-        print(stderr)
-        print(stdout)
+        """Run these commands after dependency installation."""
+        for command in commands:
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
 
-        process = subprocess.Popen(
-            ["python", "-m", "spacy", "download", "en_core_web_sm"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-
-        stdout, stderr = process.communicate()
-        print(stderr)
-        print(stdout)
+            stdout, stderr = process.communicate()
+            print(stderr)
+            print(stdout)
 
 
 EXTRAS = {}
