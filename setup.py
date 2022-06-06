@@ -18,11 +18,12 @@ LICENSE = "BSD"
 
 class PostInstallCommand(install):
     """Post-installation for installation mode."""
+
     def run(self):
         url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz"
         commands = [
             ["pip", "install", url],
-            ["python", "-m", "spacy", "download", "en_core_web_sm"]
+            ["python", "-m", "spacy", "download", "en_core_web_sm"],
         ]
 
         """Run these commands after dependency installation."""

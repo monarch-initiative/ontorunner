@@ -1,3 +1,4 @@
+"""OntoRuler class for running Spacy."""
 import multiprocessing
 import os
 import pickle
@@ -19,6 +20,8 @@ from ontorunner import (DATA_DIR, ONTO_TERMS_FILENAME,
 
 
 class OntoRuler(object):
+    """OntoRuler class."""
+
     def __init__(
         self,
         data_dir: Path = DATA_DIR,
