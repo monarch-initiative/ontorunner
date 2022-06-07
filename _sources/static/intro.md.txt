@@ -87,7 +87,7 @@ For now, `spaCy` (within `ontoRunNER`) can only process documents prepared as a 
 
 By default, these files are expected to be in the [`data/input`](https://github.com/monarch-initiative/ontorunner/tree/master/data/input) directory. If not, then the user can provide the path of the data directory using the `-d` or `--data-dir` parameter.
 
-The `settings.ini` file used in `OGER` above is also used by `spaCy` for some of it's parameters.
+The `settings.ini` file used in `OGER` above is also used by `spaCy` for some of its parameters.
  ### CLI
 ```
 python -m ontorunner.spacy_module run-spacy 
