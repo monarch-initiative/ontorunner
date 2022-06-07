@@ -3,6 +3,7 @@ import csv
 import os
 import re
 from glob import glob
+from typing import List
 
 import nltk
 import pandas as pd
@@ -25,7 +26,7 @@ nltk.download("words")
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-def find_extensions(dr, ext) -> list[str]:
+def find_extensions(dr, ext) -> List[str]:
     """Find files with a specific extension.
 
     :param dr: Directory path.
