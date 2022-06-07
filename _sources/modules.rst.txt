@@ -5,4 +5,3 @@ ontorunner
    :maxdepth: 4
 
    ontorunner
-   setup

@@ -89,11 +89,14 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ontorunner package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="ontorunner.converters.html">ontorunner.converters package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ontorunner.pipes.html">ontorunner.pipes package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ontorunner.post.html">ontorunner.post package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ontorunner.pre.html">ontorunner.pre package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-ontorunner.oger_module">ontorunner.oger_module module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ontorunner.spacy_module">ontorunner.spacy_module module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-ontorunner">Module contents</a></li>
 </ul>
 </li>
@@ -177,11 +180,23 @@
 <li class="toctree-l2"><a class="reference internal" href="ontorunner.converters.html#module-ontorunner.converters">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="ontorunner.pipes.html">ontorunner.pipes package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ontorunner.pipes.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ontorunner.pipes.html#module-ontorunner.pipes.OntoRuler">ontorunner.pipes.OntoRuler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ontorunner.pipes.html#module-ontorunner.pipes">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="ontorunner.post.html">ontorunner.post package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ontorunner.post.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ontorunner.post.html#module-ontorunner.post.add_sentence">ontorunner.post.add_sentence module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ontorunner.post.html#module-ontorunner.post.util">ontorunner.post.util module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ontorunner.post.html#module-ontorunner.post">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ontorunner.pre.html">ontorunner.pre package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ontorunner.pre.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ontorunner.pre.html#module-ontorunner.pre.util">ontorunner.pre.util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ontorunner.pre.html#module-ontorunner.pre">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -216,6 +231,102 @@ s(default:’settings.ini’).
 :param need_ancestors: Bool to decide if ancestors should be present in
 the output or no.
 :return: None.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ontorunner.spacy_module">
+<span id="ontorunner-spacy-module-module"></span><h2>ontorunner.spacy_module module<a class="headerlink" href="#module-ontorunner.spacy_module" title="Permalink to this headline">¶</a></h2>
+<p>Run Spacy.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ontorunner.spacy_module.explode_df">
+<span class="sig-prename descclassname"><span class="pre">ontorunner.spacy_module.</span></span><span class="sig-name descname"><span class="pre">explode_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#ontorunner.spacy_module.explode_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Explode multiple DataFrames in a single row into multiple rows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> – Dataframe to be exploded.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Exploded DataFrame where each row correspond to a row in the DataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ontorunner.spacy_module.export_tsv">
+<span class="sig-prename descclassname"><span class="pre">ontorunner.spacy_module.</span></span><span class="sig-name descname"><span class="pre">export_tsv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ontorunner.spacy_module.export_tsv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export pandas DataFrame object into a TSV file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – Pandas DataFrame.</p></li>
+<li><p><strong>data_dir</strong> – Destination directory for export.</p></li>
+<li><p><strong>fn</strong> – Filename.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ontorunner.spacy_module.get_knowledge_base_enitities">
+<span class="sig-prename descclassname"><span class="pre">ontorunner.spacy_module.</span></span><span class="sig-name descname"><span class="pre">get_knowledge_base_enitities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spacy.tokens.doc.Doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onto_ruler_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ontorunner.pipes.html#ontorunner.pipes.OntoRuler.OntoRuler" title="ontorunner.pipes.OntoRuler.OntoRuler"><span class="pre">ontorunner.pipes.OntoRuler.OntoRuler</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#ontorunner.spacy_module.get_knowledge_base_enitities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get information from the SciSpacy pipeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>doc</strong> – Doc object.</p></li>
+<li><p><strong>onto_ruler_obj</strong> – OntoRuler object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pandas DataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ontorunner.spacy_module.get_token_info">
+<span class="sig-prename descclassname"><span class="pre">ontorunner.spacy_module.</span></span><span class="sig-name descname"><span class="pre">get_token_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spacy.tokens.doc.Doc</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.core.frame.DataFrame</span></span></span><a class="headerlink" href="#ontorunner.spacy_module.get_token_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get metadata associated with spans within a document.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>doc</strong> – Doc object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Pandas DataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ontorunner.spacy_module.onto_tokenize">
+<span class="sig-prename descclassname"><span class="pre">ontorunner.spacy_module.</span></span><span class="sig-name descname"><span class="pre">onto_tokenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spacy.tokens.doc.Doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onto_ruler_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ontorunner.pipes.html#ontorunner.pipes.OntoRuler.OntoRuler" title="ontorunner.pipes.OntoRuler.OntoRuler"><span class="pre">ontorunner.pipes.OntoRuler.OntoRuler</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">spacy.tokens.doc.Doc</span></span></span><a class="headerlink" href="#ontorunner.spacy_module.onto_tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set custom span information from the Doc object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>doc</strong> – Doc object.</p></li>
+<li><p><strong>onto_ruler_obj</strong> – OntoRuler object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Doc object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ontorunner.spacy_module.run_spacy">
+<span class="sig-prename descclassname"><span class="pre">ontorunner.spacy_module.</span></span><span class="sig-name descname"><span class="pre">run_spacy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/home/runner/work/ontorunner/ontorunner/data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/home/runner/work/ontorunner/ontorunner/ontorunner/settings.ini'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'umls'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_pickle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">need_ancestors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ontorunner.spacy_module.run_spacy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run spacy with sciSpacy pipeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dir</strong> – Path to the data directory.</p></li>
+<li><p><strong>settings</strong> – Path to settings.ini file.</p></li>
+<li><p><strong>linker</strong> – Type of sciSpacy linker desired ([umls]/mesh).</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
