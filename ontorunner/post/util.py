@@ -1,35 +1,37 @@
+"""Utility functions called after NER."""
 import os
 from typing import List
+
 import numpy as np
 import pandas as pd
+
 from . import NODE_AND_EDGE_DIR, SUBCLASS_PREDICATE
 
 
 def filter_synonyms(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Consolidate entities where '_SYNONYM' object_id is a duplicate
+    Consolidate entities where '_SYNONYM' object_id is a duplicate.
 
     :param df: Input DataFrame
     :type df: pd.DataFrame
     :return: Consolidated Dataframe
     :rtype: pd.DataFrame
     """
-
-    condition_1 = (
-        df["matched_term"].str.lower() == df["preferred_form"].str.lower()
-    )
+    condition_1 = df["matched_term"].str.lower() == df["preferred_form"].str.lower()
     condition_2 = df["object_id"].str.contains("_SYNONYM")
     same_yet_syn_condition = condition_1 & condition_2
     new_df = df[~same_yet_syn_condition]
     tmp_df = df[same_yet_syn_condition]
-    tmp_df["object_id"] = tmp_df["object_id"].str.rstrip("_SYNONYM")
+    tmp_df["object_id"] = tmp_df["object_id"].str.replace("_SYNONYM", "")
     new_df = pd.concat([new_df, tmp_df])
     return new_df
 
 
 def consolidate_rows(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Group rows by all columns except "origin" to remove redundancies
+    Group rows by all columns except "origin".
+
+    This is done to remove redundancies
     created by entity recognition from multiple sources/ontologies
 
     :param df: Input DataFrame
@@ -84,11 +86,9 @@ def get_column_doc_ratio(df: pd.DataFrame, column: str) -> pd.DataFrame:
     return df
 
 
-def ancestor_generator(
-    df: pd.DataFrame, obj_series: pd.DataFrame
-) -> List[str]:
+def ancestor_generator(df: pd.DataFrame, obj_series: pd.DataFrame) -> List[str]:
     """
-    Function that returns an ancestor list of a CURIE
+    Return an ancestor list of a CURIE.
 
     :param df: KGX edges of source ontology in DataFrame form.
     :return: List of CURIES (ancestors)
@@ -115,9 +115,7 @@ def get_ancestors(
     """
     df["ancestors"] = ""
     object_origin = df[["object_id", "origin"]]
-    object_origin["object_id"] = object_origin["object_id"].str.replace(
-        "_SYNONYM", ""
-    )
+    object_origin["object_id"] = object_origin["object_id"].str.replace("_SYNONYM", "")
     object_origin = object_origin.drop_duplicates()
     all_origins = object_origin["origin"].drop_duplicates().tolist()
     all_origins = [ogn for ogn in all_origins if "|" not in ogn]
@@ -125,19 +123,13 @@ def get_ancestors(
     for o in all_origins:
         object_origin_subset = object_origin.loc[object_origin["origin"] == o]
         ont_name = o.split(".")[0]
-        ont_edge_file = os.path.join(
-            nodes_and_edges_dir, ont_name + "_edges.tsv"
-        )
+        ont_edge_file = os.path.join(nodes_and_edges_dir, ont_name + "_edges.tsv")
         print(f"Getting ancestors for {ont_name} terms....")
         ont_edge_df = pd.read_csv(ont_edge_file, sep="\t", low_memory=False)
-        ont_edge_df = ont_edge_df.loc[
-            ont_edge_df["predicate"] == SUBCLASS_PREDICATE
-        ]
+        ont_edge_df = ont_edge_df.loc[ont_edge_df["predicate"] == SUBCLASS_PREDICATE]
         ont_edge_df.rename(columns={"object": "object_id"}, inplace=True)
         for idx, obj in object_origin_subset.T.iteritems():
-            list_of_ancestors = ancestor_generator(
-                ont_edge_df, pd.Series(obj).T
-            )
+            list_of_ancestors = ancestor_generator(ont_edge_df, pd.Series(obj).T)
             df.loc[
                 (df["object_id"] == object_origin_subset["object_id"][idx])
                 & (df["origin"] == object_origin_subset["origin"][idx]),

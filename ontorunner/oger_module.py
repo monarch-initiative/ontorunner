@@ -1,11 +1,14 @@
-import click
-from ontorunner.post import NODE_AND_EDGE_DIR, add_sentence
-from oger.ctrl.router import Router, PipelineServer
-from oger.doc import EXPORTERS
-from oger.ctrl.run import run
+"""Run OGER."""
 import configparser
-import os
 import csv
+import os
+
+import click
+from oger.ctrl.router import PipelineServer, Router
+from oger.ctrl.run import run
+from oger.doc import EXPORTERS
+
+from ontorunner.post import NODE_AND_EDGE_DIR, add_sentence
 
 
 def run_oger(
@@ -18,8 +21,7 @@ def run_oger(
     nodes_and_edges=NODE_AND_EDGE_DIR,
     need_ancestors=True,
 ) -> None:
-    """
-    Run Oger
+    """Run OGER.
 
     :param content: Input file OR folder containing txt files.
     :param termlist: Path to the dictionary (TSV format).
@@ -29,7 +31,10 @@ def run_oger(
     are provided in this file and are hence optional.
     Make changes to this file according to project needs
     s(default:'settings.ini').
-    :param workers: Number of parallel threads (default = 5).
+    :param workers: Number of parallel threads (default = 1).
+    :param nodes_and_edges: Directory where KGX nodes and edges tsv files.
+    :param need_ancestors: Bool to decide if ancestors should be present in
+    the output or no.
     :return: None.
     """
     if settings:
@@ -70,11 +75,13 @@ def run_oger(
 
     add_sentence.parse(input, output, nodes_and_edges, need_ancestors)
 
-    # os.system('say "Done!"')
+
+# os.system('say "Done!"')
 
 
 @click.group()
 def cli():
+    """CLI."""
     pass
 
 
@@ -104,6 +111,20 @@ def run_oger_click(
     nodes_and_edges,
     need_ancestors,
 ):
+    """
+    Run OGER module using CLI.
+
+    :param content: Input file for NER.
+    :param termlist: Filepath for termlist TSV file.
+    :param output: Directory fro output.
+    :param output_format: Output format [default: tsv].
+    :param settings: Filepath for settings.ini file.
+    :param workers: Number of parallel threads.
+    :param nodes_and_edges: Directory where all KGX
+        nodes and edges tsv files reside.
+    :param need_ancestors: Bool indicating where output
+        should contain ancestors of matched term should be present.
+    """
     run_oger(
         content,
         termlist,

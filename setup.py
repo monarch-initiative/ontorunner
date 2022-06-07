@@ -1,4 +1,8 @@
-from setuptools import setup, find_packages
+"""Setup parameters."""
+import subprocess
+
+from setuptools import find_packages, setup
+from setuptools.command.install import install
 
 NAME = "ontoRunNER"
 URL = "https://github.com/monarch-initiative/ontorunner"
@@ -10,6 +14,30 @@ LICENSE = "BSD"
 
 # with open("requirements.txt", "r") as FH:
 #     REQUIREMENTS = FH.readlines()
+
+
+class PostInstallCommand(install):
+    """Post-installation for installation mode."""
+
+    def run(self):
+        url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz"
+        commands = [
+            ["pip", "install", url],
+            ["python", "-m", "spacy", "download", "en_core_web_sm"],
+        ]
+
+        """Run these commands after dependency installation."""
+        for command in commands:
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+
+            stdout, stderr = process.communicate()
+            print(stderr)
+            print(stdout)
+
 
 EXTRAS = {}
 
@@ -23,9 +51,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license=LICENSE,
-    packages=find_packages(
-        exclude=["*.tests", "*.tests.*", "tests.*", "tests"]
-    ),
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     extras_require=EXTRAS,
     include_package_data=True,
     # add package dependencies
@@ -42,7 +68,7 @@ setup(
         "textdistance[extras]",  # With extra libraries for maximum speed
         "pytest>=7",
         "oger",
-        "six>=1.16",  # Needed by python_dateutil-2.8.2-py3.9.egg/dateutil/tz/tz.py
+        "six>=1.16",  # Needed by python_dateutil-2.8.2-py3.9
         "requests>=2.26",  # Needed by KGX
         "pyyaml>=5.4",  # Needed by KGX
         "validators>=0.18",  # Needed by KGX
@@ -66,14 +92,17 @@ setup(
         "pysbd>=0.3",  # required by scispacy
         "dframcy>=0.1"
         # "en_core_sci_scibert"
-        # "en_ner_jnlpba_md",  # Joint wkshp for NLP in Biomedicine & application
+        # "en_ner_jnlpba_md",  # Joint wkshp for NLP in Biomedicine & app
         # "en_ner_bc5cdr_md",  # Biocreative V Chemical induce Disease NER
     ],
-    dependency_links=[
-        # From https://allenai.github.io/scispacy/
-        # 1. NER CRAFT corpus
-        # 2. SciBERT
-        "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz",
-        "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_core_sci_scibert-0.5.0.tar.gz",
-    ],
+    # dependency_links=[
+    # From https://allenai.github.io/scispacy/
+    # 1. NER CRAFT corpus
+    # "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz",
+    # 2. SciBERT
+    # "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_core_sci_scibert-0.5.0.tar.gz",
+    # ],
+    cmdclass={
+        "install": PostInstallCommand,
+    },
 )

@@ -1,5 +1,6 @@
 import os
 import unittest
+
 import numpy as np
 import pandas as pd
 
@@ -12,13 +13,9 @@ data_dir = os.path.join(cwd, "data")
 class TestPost(unittest.TestCase):
     def setUp(self) -> None:
         self.input_dir = os.path.join(data_dir, "input")
-        self.ancestor_input_dir = os.path.join(
-            self.input_dir, "ancestor_test_input"
-        )
+        self.ancestor_input_dir = os.path.join(self.input_dir, "ancestor_test_input")
         self.node_and_edge_dir = os.path.join(data_dir, "nodes_and_edges")
-        self.input_file = os.path.join(
-            self.ancestor_input_dir, "ancestor_test.tsv"
-        )
+        self.input_file = os.path.join(self.ancestor_input_dir, "ancestor_test.tsv")
         self.df = pd.read_csv(self.input_file, sep="\t", low_memory=False)
         self.valid_dir = os.path.join(data_dir, "validation")
         self.valid_ancestor_output = os.path.join(

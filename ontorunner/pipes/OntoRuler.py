@@ -1,28 +1,27 @@
+"""OntoRuler class for running Spacy."""
 import multiprocessing
-from pathlib import Path
-import pickle
-from spacy.language import Language  # noqa F401
-from spacy.pipeline import entityruler  # noqa F401
-from ontorunner import (
-    DATA_DIR,
-    ONTO_TERMS_FILENAME,
-    PATTERN_LIST_PICKLED_FILENAME,
-    PHRASE_MATCHER_PICKLED_FILENAME,
-    SERIAL_DIR_NAME,
-    SETTINGS_FILE_PATH,
-    TERMS_DIR_NAME,
-    TERMS_PICKLED_FILENAME,
-    get_config,
-)
-import pandas as pd
 import os
+import pickle
+from pathlib import Path
+
+import pandas as pd
 import spacy
 from scispacy.linking import EntityLinker  # noqa F401
-from spacy.tokens import Doc, Span
+from spacy.language import Language  # noqa F401
 from spacy.matcher import PhraseMatcher
+from spacy.pipeline import entityruler  # noqa F401
+from spacy.tokens import Doc, Span
+
+from ontorunner import (DATA_DIR, ONTO_TERMS_FILENAME,
+                        PATTERN_LIST_PICKLED_FILENAME,
+                        PHRASE_MATCHER_PICKLED_FILENAME, SERIAL_DIR_NAME,
+                        SETTINGS_FILE_PATH, TERMS_DIR_NAME,
+                        TERMS_PICKLED_FILENAME, _get_config)
 
 
 class OntoRuler(object):
+    """OntoRuler class."""
+
     def __init__(
         self,
         data_dir: Path = DATA_DIR,
@@ -38,9 +37,7 @@ class OntoRuler(object):
         self.phrase_matcher_pickled = os.path.join(
             self.serial_dir, PHRASE_MATCHER_PICKLED_FILENAME
         )
-        self.terms_pickled = os.path.join(
-            self.serial_dir, TERMS_PICKLED_FILENAME
-        )
+        self.terms_pickled = os.path.join(self.serial_dir, TERMS_PICKLED_FILENAME)
         self.pattern_list_pickled = os.path.join(
             self.serial_dir, PATTERN_LIST_PICKLED_FILENAME
         )
@@ -48,9 +45,7 @@ class OntoRuler(object):
             self.serial_dir, PHRASE_MATCHER_PICKLED_FILENAME
         )
         self.settings_file = settings_filepath
-        self.combined_onto_file = os.path.join(
-            self.terms_dir, ONTO_TERMS_FILENAME
-        )
+        self.combined_onto_file = os.path.join(self.terms_dir, ONTO_TERMS_FILENAME)
         self.combined_onto_pickle = os.path.join(
             self.serial_dir, (ONTO_TERMS_FILENAME + ".pickle")
         )
@@ -101,13 +96,9 @@ class OntoRuler(object):
         Span.set_extension("start", default=False, force=True)
         Span.set_extension("end", default=False, force=True)
 
-        Span.set_extension(
-            self.has_id_extension, getter=self.has_curies, force=True
-        )
+        Span.set_extension(self.has_id_extension, getter=self.has_curies, force=True)
 
-        Doc.set_extension(
-            self.has_id_extension, getter=self.has_curies, force=True
-        )
+        Doc.set_extension(self.has_id_extension, getter=self.has_curies, force=True)
         Doc.set_extension(self.label.lower(), default=[], force=True)
         print("Extensions set!")
 
@@ -142,7 +133,7 @@ class OntoRuler(object):
 
         if not os.path.isfile(self.combined_onto_pickle):
             if not os.path.isfile(self.combined_onto_file):
-                termlist = get_config("termlist", self.settings_file)
+                termlist = _get_config("termlist", self.settings_file)
                 df = pd.concat(
                     [
                         pd.read_csv(
@@ -155,14 +146,10 @@ class OntoRuler(object):
                     ]
                 )
                 df = df.drop_duplicates()
-                df.to_csv(
-                    self.combined_onto_file, sep="\t", index=None, header=False
-                )
+                df.to_csv(self.combined_onto_file, sep="\t", index=None, header=False)
                 df.to_pickle(self.combined_onto_pickle)
             else:
-                df = pd.read_csv(
-                    self.combined_onto_file, sep="\t", low_memory=False
-                )
+                df = pd.read_csv(self.combined_onto_file, sep="\t", low_memory=False)
                 if to_pickle:
                     df.to_pickle(self.combined_onto_pickle)
         else:
@@ -222,14 +209,10 @@ class OntoRuler(object):
         if self.multiprocessing:
             # * Multiprocessing ***********************************************
             with multiprocessing.Pool(processes=number_of_processes) as pool:
-                results = pool.map(
-                    self.get_terms_patterns, df.to_records(index=False)
-                )
+                results = pool.map(self.get_terms_patterns, df.to_records(index=False))
 
             self.terms = {
-                k: v
-                for d in [result[0] for result in results]
-                for k, v in d.items()
+                k: v for d in [result[0] for result in results] for k, v in d.items()
             }
             self.list_of_pattern_dicts = [result[1] for result in results]
             self.list_of_doc_obj = [result[2] for result in results]

@@ -1,18 +1,18 @@
-import re
-from ontorunner.post.util import (
-    filter_synonyms,
-    consolidate_rows,
-    get_ancestors,
-    get_column_doc_ratio,
-)
-import pandas as pd
+"""Add sentences for understanding the context of matched terms."""
 import csv
 import os
+import re
 from glob import glob
+from typing import List
+
 import nltk
+import pandas as pd
+import textdistance
 from nltk import ne_chunk, pos_tag, word_tokenize
 from nltk.stem.wordnet import WordNetLemmatizer
-import textdistance
+
+from ontorunner.post.util import (consolidate_rows, filter_synonyms,
+                                  get_ancestors, get_column_doc_ratio)
 
 # if not nltk.find("corpora/wordnet"):
 nltk.download("wordnet")
@@ -26,18 +26,24 @@ nltk.download("words")
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-def find_extensions(dr, ext):
+def find_extensions(dr, ext) -> List[str]:
+    """Find files with a specific extension.
+
+    :param dr: Directory path.
+    :param ext: Extension.
+    :return: List of relevant files.
+    """
     return glob(os.path.join(dr, "*.{}".format(ext)))
 
 
 def sentencify(input_df, output_df, output_fn):
     """
-    Add relevant sentences to the tokenized term in every row of a
-    pandas DataFrame
+    Add relevant sentences to the tokenized term in every row of a pandas DataFrame.
+
     :param df: (DataFrame) pandas DataFrame.
     :return: None
     """
-    for j, row in input_df.iterrows():
+    for _, row in input_df.iterrows():
         idx = row.id
         text = row.text
         # Check for text = NaN
@@ -71,9 +77,7 @@ def sentencify(input_df, output_df, output_fn):
             # terms being the same, the term is registered as a synonym by KGX
             # and hence the biohub_converter codes this with a '_SYNONYM' tag.
             # In order to counter this, we need to filter these extra rows out.
-            if not sub_df.empty and any(
-                sub_df["object_id"].str.endswith("_SYNONYM")
-            ):
+            if not sub_df.empty and any(sub_df["object_id"].str.endswith("_SYNONYM")):
                 sub_df = filter_synonyms(sub_df)
 
             if len(sent_tok) == 1:
@@ -176,14 +180,12 @@ def sentencify(input_df, output_df, output_fn):
                     axis=1,
                 )
 
-                sub_df.to_csv(
-                    output_fn, mode="a", sep="\t", header=None, index=None
-                )
+                sub_df.to_csv(output_fn, mode="a", sep="\t", header=None, index=None)
 
 
 def get_match_type(token1: str, token2: str) -> str:
     """
-    Return type of token match
+    Return type of token match.
 
     :param token1: token from 'matched_term'
     :type token1: str
@@ -192,7 +194,6 @@ def get_match_type(token1: str, token2: str) -> str:
     :return: Type of match [e.g.: 'exact_match' etc.]
     :rtype: str
     """
-
     match = ""
     lemma = WordNetLemmatizer()
 
@@ -221,8 +222,8 @@ def parse(
     need_ancestors: bool,
 ) -> None:
     """
-    This parses the OGER output and adds sentences of relevant tokenized terms
-    for context to the reviewer.
+    Parse OGER output and add sentences of tokenized terms.
+
     :param input_directory: (str) Input directory path.
     :param output_directory: (str) Output directory path.
     :param nodes_and_edges: (str) Nodes and edges file directory path.
@@ -361,9 +362,7 @@ def parse(
 
         if len(input_list_tsv) > 0:
             for f in input_list_tsv:
-                input_df = pd.read_csv(
-                    f, sep="\t", low_memory=False, index_col=None
-                )
+                input_df = pd.read_csv(f, sep="\t", low_memory=False, index_col=None)
                 sentencify(input_df, output_df, final_output_file)
 
         if len(input_list_txt) > 0:

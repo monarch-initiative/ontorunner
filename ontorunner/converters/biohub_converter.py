@@ -1,13 +1,13 @@
+"""Biohub convertor."""
 import logging
-
 
 EXCLUDE = ["biolink:Publication"]
 
 
 def parse(input_filename, output_filename) -> None:
     """
-    Parse the typical KGX compatible nodes TSV into Bio Term Hub format
-    for compatibility with OGER.
+    Parse the typical KGX tsv nodes into Bio Term Hub format for compatibility with OGER.
+
     Mapping of columns from KGX format to Bio Term Hub format,
     -   [0] 'CUI-less' -> UMLS CUI
     -   [1] 'N/A' -> resource from which it comes
@@ -21,11 +21,11 @@ def parse(input_filename, output_filename) -> None:
     :return: None.
     """
     counter = 0
-    OUTSTREAM = open(output_filename, "w+")
+    outstream = open(output_filename, "w+")
     header_dict = None
 
-    with open(input_filename) as FH:
-        for line in FH:
+    with open(input_filename) as fh:
+        for line in fh:
             if counter == 0:
                 header = line.rstrip().split("\t")
                 header_dict = parse_header(header)
@@ -68,13 +68,10 @@ def parse(input_filename, output_filename) -> None:
                         syn_record[2] = syn_record[2] + "_SYNONYM"
                         # Preferred form == Synonym matched
                         syn_record[4] = (
-                            syn_record[3]
-                            + "[SYNONYM_OF:"
-                            + syn_record[4]
-                            + "]"
+                            syn_record[3] + "[SYNONYM_OF:" + syn_record[4] + "]"
                         )
-                        write_line(syn_record, OUTSTREAM)
-            write_line(parsed_record, OUTSTREAM)
+                        write_line(syn_record, outstream)
+            write_line(parsed_record, outstream)
 
 
 def parse_header(elements) -> dict:
@@ -92,7 +89,7 @@ def parse_header(elements) -> dict:
     return header_dict
 
 
-def write_line(elements, OUTSTREAM) -> None:
+def write_line(elements, outstream) -> None:
     """
     Write line to OUTSTREAM.
 
@@ -100,4 +97,4 @@ def write_line(elements, OUTSTREAM) -> None:
     :param OUTSTREAM: File handle to the output file.
     :return: None.
     """
-    OUTSTREAM.write("\t".join(elements) + "\n")
+    outstream.write("\t".join(elements) + "\n")
