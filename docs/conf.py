@@ -24,7 +24,7 @@ copyright = "2021, Harshad Hegde"
 author = "Harshad Hegde"
 
 # The full version, including alpha/beta/rc tags
-release = VERSION
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
