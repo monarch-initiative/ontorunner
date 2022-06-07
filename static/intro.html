@@ -96,13 +96,16 @@
 <li class="toctree-l3"><a class="reference internal" href="#id2">Python</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#running-oger-on-a-document">Running OGER on a document</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-oger">Running OGER.</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id3">CLI</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#running-oger-using-a-settings-ini-file">Running OGER using a ‘settings.ini’ file</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#running-oger-using-a-settings-ini-file">Running OGER using a ‘settings.ini’ file</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id4">CLI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id5">Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#running-spacy">Running spaCy.</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Python</a></li>
 </ul>
 </li>
 </ul>
@@ -174,21 +177,26 @@
             
   <div class="section" id="ontorunner">
 <h1>ontoRunNER<a class="headerlink" href="#ontorunner" title="Permalink to this headline">¶</a></h1>
-<p>This repository contains a few accessory scripts for
-parsing a KGX generated nodes TSV into a term list
-that is compatible with <a class="reference external" href="https://github.com/OntoGene/OGER">OGER</a>.</p>
-<p>The long term goal is to build term list inputs for
-NER tools in addition to OGER.</p>
+<p>This repository is a wrapper project around the following named entity recognition (NER tools:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/OntoGene/OGER">OGER</a>.</p></li>
+<li><p><a class="reference external" href="https://spacy.io">spaCy</a></p>
+<ul>
+<li><p>using <a class="reference external" href="https://scispacy.apps.allenai.org">sciSpaCy</a> pipeline
+namely the CRAFT corpus (<code class="docutils literal notranslate"><span class="pre">en_ner_craft_md</span></code>) used by default. Others can be used as listed <a class="reference external" href="https://github.com/allenai/scispacy#available-models">here</a></p></li>
+</ul>
+</li>
+</ul>
 <div class="section" id="setup">
 <h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
-<p>To setup ontoRunNER,</p>
+<p>To setup <code class="docutils literal notranslate"><span class="pre">ontoRunNER</span></code>,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="ontology-to-kgx-tsv">
-<h2>Ontology to KGX TSV<a class="headerlink" href="#ontology-to-kgx-tsv" title="Permalink to this headline">¶</a></h2>
-<p>To generate a TSV from your OBO JSON ontology,</p>
+<h2>Ontology to <a class="reference external" href="https://github.com/biolink/kgx">KGX</a> TSV<a class="headerlink" href="#ontology-to-kgx-tsv" title="Permalink to this headline">¶</a></h2>
+<p>Generate <code class="docutils literal notranslate"><span class="pre">nodes.tsv</span></code> and <code class="docutils literal notranslate"><span class="pre">edges.tsv</span></code> files from your OBO JSON ontology file,</p>
 <div class="section" id="cli">
 <h3>CLI<a class="headerlink" href="#cli" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">pre</span><span class="o">.</span><span class="n">util</span> <span class="n">json2tsv</span> <span class="o">-</span><span class="n">i</span> <span class="n">ontology</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span>
@@ -205,6 +213,7 @@ NER tools in addition to OGER.</p>
 </div>
 <div class="section" id="preparing-term-list">
 <h2>Preparing term-list<a class="headerlink" href="#preparing-term-list" title="Permalink to this headline">¶</a></h2>
+<p>Generate termlist from the <code class="docutils literal notranslate"><span class="pre">output_nodes.tsv</span></code> generated in the previous step.</p>
 <div class="section" id="id1">
 <h3>CLI<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The conversion can be done as follows,</p>
@@ -220,8 +229,11 @@ NER tools in addition to OGER.</p>
 </div>
 </div>
 </div>
-<div class="section" id="running-oger-on-a-document">
-<h2>Running OGER on a document<a class="headerlink" href="#running-oger-on-a-document" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="running-oger">
+<h2>Running OGER.<a class="headerlink" href="#running-oger" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p><strong>Note:</strong> Make sure the output directory <a class="reference external" href="https://github.com/monarch-initiative/ontorunner/tree/master/data/output"><code class="docutils literal notranslate"><span class="pre">data/output</span></code></a> is empty before every run.</p>
+</div></blockquote>
 <p>You can run OGER against a text document as follows,</p>
 <div class="section" id="id3">
 <h3>CLI<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
@@ -230,14 +242,14 @@ NER tools in addition to OGER.</p>
 </div>
 <blockquote>
 <div><p><strong>Note:</strong> This command is just to demonstrate how to OGER.
-For more complex use cases, it is advised to run OGER
-as recommended <a class="reference external" href="https://github.com/OntoGene/OGER/wiki/run">here</a>.</p>
+For more use cases, <a class="reference external" href="https://github.com/OntoGene/OGER/wiki/run">here</a>
+is the reference to the OGER documentation.</p>
 </div></blockquote>
 </div>
-</div>
 <div class="section" id="running-oger-using-a-settings-ini-file">
-<h2>Running OGER using a ‘settings.ini’ file<a class="headerlink" href="#running-oger-using-a-settings-ini-file" title="Permalink to this headline">¶</a></h2>
-<p>You can run OGER using a ‘settings’ file as follows,</p>
+<h3>Running OGER using a ‘settings.ini’ file<a class="headerlink" href="#running-oger-using-a-settings-ini-file" title="Permalink to this headline">¶</a></h3>
+<p>You can run <code class="docutils literal notranslate"><span class="pre">OGER</span></code> using a ‘settings’ file as follows,</p>
+</div>
 <div class="section" id="id4">
 <h3>CLI<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">oger_module</span> <span class="n">run</span><span class="o">-</span><span class="n">oger</span> <span class="o">-</span><span class="n">s</span> <span class="n">settings</span><span class="o">.</span><span class="n">ini</span>
@@ -253,6 +265,44 @@ as recommended <a class="reference external" href="https://github.com/OntoGene/O
 <blockquote>
 <div><p>The <a class="reference external" href="https://github.com/monarch-initiative/ontorunner/blob/master/ontorunner/settings.ini">settings.ini</a> file provides all relevant arguments to OGER. More information on the parameter list could be found at the <a class="reference external" href="https://github.com/OntoGene/OGER/wiki/run#parameter-index">OGER GitHub</a></p>
 </div></blockquote>
+<p>There will be two output tsv files generated:</p>
+<ul class="simple">
+<li><p>An output whose filename is exactly similar to the input filename (say <code class="docutils literal notranslate"><span class="pre">docs.tsv</span></code>)</p>
+<ul>
+<li><p>This is the pure output from <code class="docutils literal notranslate"><span class="pre">OGER</span></code></p></li>
+</ul>
+</li>
+<li><p>Another file named <code class="docutils literal notranslate"><span class="pre">docs_ontoRunNER.tsv</span></code> which contains more results because it is the outcome of some postprocessing.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="running-spacy">
+<h2>Running spaCy.<a class="headerlink" href="#running-spacy" title="Permalink to this headline">¶</a></h2>
+<p>For now, <code class="docutils literal notranslate"><span class="pre">spaCy</span></code> (within <code class="docutils literal notranslate"><span class="pre">ontoRunNER</span></code>) can only process documents prepared as a tsv
+(or multiple tsv) file(s) with two columns:</p>
+<ul class="simple">
+<li><p>id</p></li>
+<li><p>text</p></li>
+</ul>
+<p>By default, these files are expected to be in the <a class="reference external" href="https://github.com/monarch-initiative/ontorunner/tree/master/data/input"><code class="docutils literal notranslate"><span class="pre">data/input</span></code></a> directory. If not, then the user can provide the path of the data directory using the <code class="docutils literal notranslate"><span class="pre">-d</span></code> or <code class="docutils literal notranslate"><span class="pre">--data-dir</span></code> parameter.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">settings.ini</span></code> file used in <code class="docutils literal notranslate"><span class="pre">OGER</span></code> above is also used by <code class="docutils literal notranslate"><span class="pre">spaCy</span></code> for some of it’s parameters.</p>
+<div class="section" id="id6">
+<h3>CLI<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">spacy_module</span> <span class="n">run</span><span class="o">-</span><span class="n">spacy</span> 
+</pre></div>
+</div>
+</div>
+<div class="section" id="id7">
+<h3>Python<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ontorunner</span> <span class="kn">import</span> <span class="n">spacy_module</span>
+<span class="n">spacy_module</span><span class="o">.</span><span class="n">run_spacy</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>There will be two output tsv files generated:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ontology_ontoRunNER.tsv</span></code>: This file is the output with the ontology termlists (generated above) as the dictionary for entity recognition.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">umls_ontoRunNER.tsv</span></code>: This file is the output derived by using <code class="docutils literal notranslate"><span class="pre">sciSpaCY</span></code>’s <code class="docutils literal notranslate"><span class="pre">EntityLinker</span></code>. By default the linker is <code class="docutils literal notranslate"><span class="pre">umls</span></code> but you can provide others as listed <a class="reference external" href="https://github.com/allenai/scispacy#entitylinker">here</a>.</p></li>
+</ul>
 </div>
 </div>
 </div>
