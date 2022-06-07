@@ -18,3 +18,12 @@ oger:
 # Run Spacy
 spacy:
 	python -m ontorunner.spacy_module run-spacy -s ontorunner/settings.ini -a False
+
+# Update Sphinx *.rst files
+sphinx-clean:
+	find docs/ -name "*.rst" -type f ! -name "index.rst" -delete
+
+# Re-build sphinx docs
+sphinx-gen:
+	sphinx-apidoc -o docs/ . --ext-autodoc
+	

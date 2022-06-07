@@ -12,6 +12,7 @@
 #
 import os
 import sys
+from ontorunner import __version__
 
 sys.path.insert(0, os.path.abspath("../.."))
 
@@ -23,7 +24,7 @@ copyright = "2021, Harshad Hegde"
 author = "Harshad Hegde"
 
 # The full version, including alpha/beta/rc tags
-release = "0.0.1"
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------

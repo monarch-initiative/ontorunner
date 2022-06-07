@@ -319,7 +319,7 @@ def run_spacy(
     help="Boolean to determine if intermediate files should be pickled or no",
     default=True,
 )
-@click.option("--need-ancestors", "-a", type=bool, default=True)
+@click.option("--need-ancestors", "-a", type=bool, default=False)
 def run_spacy_click(
     data_dir: Path,
     settings_file: Path,

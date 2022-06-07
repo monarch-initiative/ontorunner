@@ -6,6 +6,7 @@ from os import pardir
 from os.path import abspath, dirname, join
 from pathlib import Path
 
+__version__ = "0.1.0"
 # import pathlib
 
 # HERE = pathlib.Path(__file__).parent.resolve()
@@ -39,4 +40,8 @@ def _get_config(param: str, settings_file: Path = SETTINGS_FILE_PATH):
             if param in k and re.search(r"\d", k)
         ]
     else:
-        return [v.replace("data/", "") for k, v in main_section.items() if param in k]
+        return [
+            v.replace("data/", "")
+            for k, v in main_section.items()
+            if param in k
+        ]

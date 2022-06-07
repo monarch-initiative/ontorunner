@@ -1,6 +1,6 @@
 """Setup parameters."""
 import subprocess
-
+from ontorunner import __version__
 from setuptools import find_packages, setup
 from setuptools.command.install import install
 
@@ -9,7 +9,7 @@ URL = "https://github.com/monarch-initiative/ontorunner"
 AUTHOR = "Harshad Hegde"
 EMAIL = "hhegde@lbl.gov"
 REQUIRES_PYTHON = ">=3.8.0"
-VERSION = "0.1.0"
+VERSION = __version__
 LICENSE = "MIT"
 
 # with open("requirements.txt", "r") as FH:
