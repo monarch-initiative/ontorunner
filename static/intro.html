@@ -191,14 +191,14 @@ NER tools in addition to OGER.</p>
 <p>To generate a TSV from your OBO JSON ontology,</p>
 <div class="section" id="cli">
 <h3>CLI<a class="headerlink" href="#cli" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kgx</span> <span class="n">transform</span> <span class="n">ontology</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">obojson</span> <span class="o">--</span><span class="n">output</span> <span class="n">output</span> <span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="n">tsv</span> 
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">pre</span><span class="o">.</span><span class="n">util</span> <span class="n">json2tsv</span> <span class="o">-</span><span class="n">i</span> <span class="n">ontology</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="python">
 <h3>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ontorunner</span> <span class="kn">import</span> <span class="n">oger_module</span>
-<span class="n">oger_module</span><span class="o">.</span><span class="n">json2tsv</span><span class="p">(</span><span class="s1">&#39;ontology.json&#39;</span><span class="p">,</span> <span class="s1">&#39;output.tsv&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ontorunner.pre.util</span> <span class="kn">import</span> <span class="n">json2tsv</span>
+<span class="n">json2tsv</span><span class="p">(</span><span class="s1">&#39;ontology.json&#39;</span><span class="p">,</span> <span class="s1">&#39;output.tsv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -208,14 +208,14 @@ NER tools in addition to OGER.</p>
 <div class="section" id="id1">
 <h3>CLI<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The conversion can be done as follows,</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">oger_module</span> <span class="n">prepare</span><span class="o">-</span><span class="n">termlist</span> <span class="o">-</span><span class="n">i</span> <span class="n">output_nodes</span><span class="o">.</span><span class="n">tsv</span> <span class="o">-</span><span class="n">o</span> <span class="n">termlist</span><span class="o">.</span><span class="n">tsv</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">pre</span><span class="o">.</span><span class="n">util</span> <span class="n">prepare</span><span class="o">-</span><span class="n">termlist</span> <span class="o">-</span><span class="n">i</span> <span class="n">output_nodes</span><span class="o">.</span><span class="n">tsv</span> <span class="o">-</span><span class="n">o</span> <span class="n">termlist</span><span class="o">.</span><span class="n">tsv</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="id2">
 <h3>Python<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ontorunner</span> <span class="kn">import</span> <span class="n">oger_module</span>
-<span class="n">oger_module</span><span class="o">.</span><span class="n">prepare_termlist</span><span class="p">(</span><span class="s1">&#39;output_nodes.tsv&#39;</span><span class="p">,</span> <span class="s1">&#39;termlist.tsv&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ontorunner.pre.util</span> <span class="kn">import</span> <span class="n">prepare_termlist</span>
+<span class="n">prepare_termlist</span><span class="p">(</span><span class="s1">&#39;output_nodes.tsv&#39;</span><span class="p">,</span> <span class="s1">&#39;termlist.tsv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

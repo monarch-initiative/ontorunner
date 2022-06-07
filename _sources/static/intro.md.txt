@@ -19,12 +19,12 @@ To generate a TSV from your OBO JSON ontology,
 
 ### CLI
 ```
-kgx transform ontology.json --input-format obojson --output output --output-format tsv 
+python -m ontorunner.pre.util json2tsv -i ontology.json -o output
 ```
 ### Python
 ```
-from ontorunner import oger_module
-oger_module.json2tsv('ontology.json', 'output.tsv')
+from ontorunner.pre.util import json2tsv
+json2tsv('ontology.json', 'output.tsv')
 ```
 
 ## Preparing term-list
@@ -32,13 +32,13 @@ oger_module.json2tsv('ontology.json', 'output.tsv')
 ### CLI
 The conversion can be done as follows,
 ```
-python -m ontorunner.oger_module prepare-termlist -i output_nodes.tsv -o termlist.tsv
+python -m ontorunner.pre.util prepare-termlist -i output_nodes.tsv -o termlist.tsv
 ```
 
 ### Python
 ```
-from ontorunner import oger_module
-oger_module.prepare_termlist('output_nodes.tsv', 'termlist.tsv')
+from ontorunner.pre.util import prepare_termlist
+prepare_termlist('output_nodes.tsv', 'termlist.tsv')
 ```
 
 ## Running OGER on a document
