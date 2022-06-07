@@ -12,7 +12,7 @@
 #
 import os
 import sys
-from setup import VERSION
+from ontorunner import __version__
 
 sys.path.insert(0, os.path.abspath("../.."))
 
