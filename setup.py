@@ -8,9 +8,9 @@ NAME = "ontoRunNER"
 URL = "https://github.com/monarch-initiative/ontorunner"
 AUTHOR = "Harshad Hegde"
 EMAIL = "hhegde@lbl.gov"
-REQUIRES_PYTHON = ">=3.7.0"
-VERSION = "0.0.1"
-LICENSE = "BSD"
+REQUIRES_PYTHON = ">=3.8.0"
+VERSION = "0.1.0"
+LICENSE = "MIT"
 
 # with open("requirements.txt", "r") as FH:
 #     REQUIREMENTS = FH.readlines()
@@ -39,7 +39,9 @@ class PostInstallCommand(install):
             print(stdout)
 
 
-EXTRAS = {}
+EXTRAS = {
+    "docs": ["sphinx>=2.3", "sphinx_rtd_theme>=0.4", "recommonmark>=0.7"]
+}
 
 setup(
     name=NAME,
@@ -51,7 +53,9 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license=LICENSE,
-    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+    packages=find_packages(
+        exclude=["*.tests", "*.tests.*", "tests.*", "tests"]
+    ),
     extras_require=EXTRAS,
     include_package_data=True,
     # add package dependencies
@@ -61,9 +65,6 @@ setup(
         "pytz",  # required by pandas
         "python-dateutil>=2.8",  # required by pandas
         "pandas>=1.3",
-        "sphinx>=2.3",
-        "sphinx_rtd_theme>=0.4",
-        "recommonmark>=0.7",
         "textdistance>=4.2",
         "textdistance[extras]",  # With extra libraries for maximum speed
         "pytest>=7",
