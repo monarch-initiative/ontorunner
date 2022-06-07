@@ -18,15 +18,3 @@ oger:
 # Run Spacy
 spacy:
 	python -m ontorunner.spacy_module run-spacy -s ontorunner/settings.ini -a False
-
-# Create Sphinx Docs
-.PHONY: sphinx
-sphinx:
-	cd sphinx &&\
-	find ./ -name "*.rst" -not -name "index.rst" -exec rm {} \; &&\
-	sphinx-apidoc --ext-autodoc -o . .. &&\
-	make clean html
-
-.PHONY: deploy-docs
-deploy-docs:
-	cp -r sphinx/_build/html/* docs/
