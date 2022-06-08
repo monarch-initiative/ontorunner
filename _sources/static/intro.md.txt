@@ -1,6 +1,6 @@
 # ontoRunNER
 
-This repository is a wrapper project around the following named entity recognition (NER) tools:
+This is a wrapper project around the following named entity recognition (NER) tools:
  - [OGER](https://github.com/OntoGene/OGER).
  - [spaCy](https://spacy.io)
    - using [sciSpaCy](https://scispacy.apps.allenai.org) pipeline 
