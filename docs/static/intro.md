@@ -10,9 +10,16 @@ This repository is a wrapper project around the following named entity recogniti
 
 ## Setup
 To setup `ontoRunNER`,
+### For developers
 ```
-python setup.py install
+poetry install
 ```
+
+### For users
+```
+pip install ontorunner
+```
+> Note: If you're using poetry outside of `poetry shell`, precede all CLI commands with a `poetry run`.
 
 ## Ontology to [KGX](https://github.com/biolink/kgx) TSV
 
@@ -20,7 +27,7 @@ Generate `nodes.tsv` and `edges.tsv` files from your OBO JSON ontology file,
 
 ### CLI
 ```
-poetry run python -m ontorunner.pre.util json2tsv -i ontology.json -o output
+python -m ontorunner.pre.util json2tsv -i ontology.json -o output
 ```
 ### Python
 ```
@@ -34,7 +41,7 @@ Generate termlist from the `output_nodes.tsv` generated in the previous step.
 ### CLI
 The conversion can be done as follows,
 ```
-poetry run python -m ontorunner.pre.util prepare-termlist -i output_nodes.tsv -o termlist.tsv
+python -m ontorunner.pre.util prepare-termlist -i output_nodes.tsv -o termlist.tsv
 ```
 
 ### Python
@@ -51,7 +58,7 @@ You can run OGER against a text document as follows,
 
 ### CLI
 ```
-poetry run python -m ontorunner.oger_module run-oger -c abstract.txt -t termlist.tsv -o out.json -f bioc_json
+python -m ontorunner.oger_module run-oger -c abstract.txt -t termlist.tsv -o out.json -f bioc_json
 ```
 
 > **Note:** This command is just to demonstrate how to OGER.
@@ -64,7 +71,7 @@ You can run `OGER` using a 'settings' file as follows,
 
 ### CLI
 ```
-poetry run python -m ontorunner.oger_module run-oger -s settings.ini
+python -m ontorunner.oger_module run-oger -s settings.ini
 ```
 
 ### Python
@@ -90,7 +97,7 @@ By default, these files are expected to be in the [`data/input`](https://github.
 The `settings.ini` file used in `OGER` above is also used by `spaCy` for some of its parameters.
  ### CLI
 ```
-poetry run python -m ontorunner.spacy_module run-spacy 
+python -m ontorunner.spacy_module run-spacy 
 ```
 
 ### Python
