@@ -705,7 +705,7 @@ data = ["language-data (>=1.1,<2.0)"]
 
 [[package]]
 name = "linkml"
-version = "1.2.13"
+version = "1.2.12"
 description = "Linked Open Data Modeling Language"
 category = "main"
 optional = false
@@ -722,7 +722,7 @@ jinja2 = "*"
 jsonasobj2 = ">=1.0.3,<2.0.0"
 jsonschema = ">=3.0.1"
 linkml-dataops = "*"
-linkml-runtime = "1.2.16"
+linkml-runtime = ">=1.2.14,<2.0.0"
 myst-parser = "*"
 openpyxl = "*"
 parse = "*"
@@ -759,7 +759,7 @@ linkml-runtime = ">=1.1.6"
 
 [[package]]
 name = "linkml-runtime"
-version = "1.2.16"
+version = "1.2.17"
 description = "Runtime environment for LinkML, the Linked open data modeling language"
 category = "main"
 optional = false
@@ -2199,7 +2199,7 @@ docs = []
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "9449e260d48aa54a4110fdd8f93ad4a6db098b29840e7e1df2e7d1bbe4d84a13"
+content-hash = "72bba1596629b5ce642c651d3934b7caf21844d088fbea57d059521bd42dd0dd"
 
 [metadata.files]
 abydos = [
@@ -2634,16 +2634,16 @@ langcodes = [
     {file = "langcodes-3.3.0.tar.gz", hash = "sha256:794d07d5a28781231ac335a1561b8442f8648ca07cd518310aeb45d6f0807ef6"},
 ]
 linkml = [
-    {file = "linkml-1.2.13-py3-none-any.whl", hash = "sha256:be8de2848fc038549bad9abaa43a32d9a7550ba245cda2baa14027b6a10c71c2"},
-    {file = "linkml-1.2.13.tar.gz", hash = "sha256:df0e1b5e87ca41ae51812f30906829dc2d2db1d63062ceb0fc7c61e91a53932d"},
+    {file = "linkml-1.2.12-py3-none-any.whl", hash = "sha256:de67c9f4e962af96362cce1234739c3c828e54c77633f5b1c74089452d7c8b2d"},
+    {file = "linkml-1.2.12.tar.gz", hash = "sha256:aace378f8f4372ac890484ddeabc3ebb35df4852ae895028b5b729750ea1a38c"},
 ]
 linkml-dataops = [
     {file = "linkml_dataops-0.1.0-py3-none-any.whl", hash = "sha256:193cf7f659e5f07946d2c2761896910d5f7151d91282543b1363801f68307f4c"},
     {file = "linkml_dataops-0.1.0.tar.gz", hash = "sha256:4550eab65e78b70dc3b9c651724a94ac2b1d1edb2fbe576465f1d6951a54ed04"},
 ]
 linkml-runtime = [
-    {file = "linkml-runtime-1.2.16.tar.gz", hash = "sha256:02fef5408920b4d7cb997cb2090ac635652a2cebbb67097db5d7711863e28904"},
-    {file = "linkml_runtime-1.2.16-py3-none-any.whl", hash = "sha256:b719304eb5dc2aa4e3aacff82852955a0e0cba46580f262d9f0cf1a4ed920219"},
+    {file = "linkml-runtime-1.2.17.tar.gz", hash = "sha256:c3620a7260cee6ed31db3b51de73d818a33d030f64ddcabc143c8f5590c35149"},
+    {file = "linkml_runtime-1.2.17-py3-none-any.whl", hash = "sha256:b9974a34c8ab58ea036e9a757c8117e745a991d732d7b846df89968dad4ecaff"},
 ]
 lxml = [
     {file = "lxml-4.9.0-cp27-cp27m-macosx_10_15_x86_64.whl", hash = "sha256:b5031d151d6147eac53366d6ec87da84cd4d8c5e80b1d9948a667a7164116e39"},
