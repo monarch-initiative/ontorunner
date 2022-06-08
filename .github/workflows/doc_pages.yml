@@ -29,7 +29,7 @@ jobs:
         touch gh-pages/.nojekyll
         cd docs/
         poetry run sphinx-build -b html . _build
-        cp -r _build/html/* ../gh-pages/
+        cp -r _build/* ../gh-pages/
     
     - name: Deploy documentation.
       if: ${{ github.event_name == 'pull_request' }}
