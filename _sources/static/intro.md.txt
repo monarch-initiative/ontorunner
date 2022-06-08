@@ -20,7 +20,7 @@ Generate `nodes.tsv` and `edges.tsv` files from your OBO JSON ontology file,
 
 ### CLI
 ```
-python -m ontorunner.pre.util json2tsv -i ontology.json -o output
+poetry run python -m ontorunner.pre.util json2tsv -i ontology.json -o output
 ```
 ### Python
 ```
@@ -34,7 +34,7 @@ Generate termlist from the `output_nodes.tsv` generated in the previous step.
 ### CLI
 The conversion can be done as follows,
 ```
-python -m ontorunner.pre.util prepare-termlist -i output_nodes.tsv -o termlist.tsv
+poetry run python -m ontorunner.pre.util prepare-termlist -i output_nodes.tsv -o termlist.tsv
 ```
 
 ### Python
@@ -51,7 +51,7 @@ You can run OGER against a text document as follows,
 
 ### CLI
 ```
-python -m ontorunner.oger_module run-oger -c abstract.txt -t termlist.tsv -o out.json -f bioc_json
+poetry run python -m ontorunner.oger_module run-oger -c abstract.txt -t termlist.tsv -o out.json -f bioc_json
 ```
 
 > **Note:** This command is just to demonstrate how to OGER.
@@ -64,7 +64,7 @@ You can run `OGER` using a 'settings' file as follows,
 
 ### CLI
 ```
-python -m ontorunner.oger_module run-oger -s settings.ini
+poetry run python -m ontorunner.oger_module run-oger -s settings.ini
 ```
 
 ### Python
@@ -90,7 +90,7 @@ By default, these files are expected to be in the [`data/input`](https://github.
 The `settings.ini` file used in `OGER` above is also used by `spaCy` for some of its parameters.
  ### CLI
 ```
-python -m ontorunner.spacy_module run-spacy 
+poetry run python -m ontorunner.spacy_module run-spacy 
 ```
 
 ### Python

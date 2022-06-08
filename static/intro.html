@@ -199,7 +199,7 @@ namely the CRAFT corpus (<code class="docutils literal notranslate"><span class=
 <p>Generate <code class="docutils literal notranslate"><span class="pre">nodes.tsv</span></code> and <code class="docutils literal notranslate"><span class="pre">edges.tsv</span></code> files from your OBO JSON ontology file,</p>
 <div class="section" id="cli">
 <h3>CLI<a class="headerlink" href="#cli" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">pre</span><span class="o">.</span><span class="n">util</span> <span class="n">json2tsv</span> <span class="o">-</span><span class="n">i</span> <span class="n">ontology</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">run</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">pre</span><span class="o">.</span><span class="n">util</span> <span class="n">json2tsv</span> <span class="o">-</span><span class="n">i</span> <span class="n">ontology</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span>
 </pre></div>
 </div>
 </div>
@@ -217,7 +217,7 @@ namely the CRAFT corpus (<code class="docutils literal notranslate"><span class=
 <div class="section" id="id1">
 <h3>CLI<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The conversion can be done as follows,</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">pre</span><span class="o">.</span><span class="n">util</span> <span class="n">prepare</span><span class="o">-</span><span class="n">termlist</span> <span class="o">-</span><span class="n">i</span> <span class="n">output_nodes</span><span class="o">.</span><span class="n">tsv</span> <span class="o">-</span><span class="n">o</span> <span class="n">termlist</span><span class="o">.</span><span class="n">tsv</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">run</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">pre</span><span class="o">.</span><span class="n">util</span> <span class="n">prepare</span><span class="o">-</span><span class="n">termlist</span> <span class="o">-</span><span class="n">i</span> <span class="n">output_nodes</span><span class="o">.</span><span class="n">tsv</span> <span class="o">-</span><span class="n">o</span> <span class="n">termlist</span><span class="o">.</span><span class="n">tsv</span>
 </pre></div>
 </div>
 </div>
@@ -237,7 +237,7 @@ namely the CRAFT corpus (<code class="docutils literal notranslate"><span class=
 <p>You can run OGER against a text document as follows,</p>
 <div class="section" id="id3">
 <h3>CLI<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">oger_module</span> <span class="n">run</span><span class="o">-</span><span class="n">oger</span> <span class="o">-</span><span class="n">c</span> <span class="n">abstract</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">t</span> <span class="n">termlist</span><span class="o">.</span><span class="n">tsv</span> <span class="o">-</span><span class="n">o</span> <span class="n">out</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">f</span> <span class="n">bioc_json</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">run</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">oger_module</span> <span class="n">run</span><span class="o">-</span><span class="n">oger</span> <span class="o">-</span><span class="n">c</span> <span class="n">abstract</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">t</span> <span class="n">termlist</span><span class="o">.</span><span class="n">tsv</span> <span class="o">-</span><span class="n">o</span> <span class="n">out</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">f</span> <span class="n">bioc_json</span>
 </pre></div>
 </div>
 <blockquote>
@@ -252,7 +252,7 @@ is the reference to the OGER documentation.</p>
 </div>
 <div class="section" id="id4">
 <h3>CLI<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">oger_module</span> <span class="n">run</span><span class="o">-</span><span class="n">oger</span> <span class="o">-</span><span class="n">s</span> <span class="n">settings</span><span class="o">.</span><span class="n">ini</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">run</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">oger_module</span> <span class="n">run</span><span class="o">-</span><span class="n">oger</span> <span class="o">-</span><span class="n">s</span> <span class="n">settings</span><span class="o">.</span><span class="n">ini</span>
 </pre></div>
 </div>
 </div>
@@ -288,7 +288,7 @@ is the reference to the OGER documentation.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">settings.ini</span></code> file used in <code class="docutils literal notranslate"><span class="pre">OGER</span></code> above is also used by <code class="docutils literal notranslate"><span class="pre">spaCy</span></code> for some of its parameters.</p>
 <div class="section" id="id6">
 <h3>CLI<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">spacy_module</span> <span class="n">run</span><span class="o">-</span><span class="n">spacy</span> 
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">run</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">spacy_module</span> <span class="n">run</span><span class="o">-</span><span class="n">spacy</span> 
 </pre></div>
 </div>
 </div>
