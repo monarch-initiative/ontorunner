@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "OntoRunNER"
-version = "0.1.0.dev"
-description = "This repository is a wrapper project around various entity recognition (NER) tools."
+version = "0.1.0"
+description = "This is a wrapper project around various entity recognition (NER) tools."
 authors = ["Harshad Hegde <hhegde@lbl.gov>"]
+readme = "README.md"
 license = "MIT"
 
 [tool.poetry.dependencies]
