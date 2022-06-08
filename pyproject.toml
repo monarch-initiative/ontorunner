@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "OntoRunNER"
+version = "0.1.0"
+description = "This repository is a wrapper project around various entity recognition (NER) tools."
+authors = ["Harshad Hegde <hhegde@lbl.gov>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+kgx = "^1.5.8"
+click = "^8.1.3"
+pandas = "^1.4.2"
+textdistance = {extras = ["extras"], version = "^4.2.2"}
+OGER = "^1.5"
+six = "^1.16.0"
+spacy = ">=3.2.0,<3.3.0"
+scispacy = "0.5.0"
+dframcy = "^0.1.6"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+
+[tool.poetry.dependencies.en_ner_craft_md]
+url = "https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz"
+
+[tool.poetry.dependencies.en_core_web_sm]
+url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.2.0/en_core_web_sm-3.2.0.tar.gz"
+
+[tool.poetry.extras]
+docs = ["sphinx", "sphinx_rtd_theme", "recommonmark"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
