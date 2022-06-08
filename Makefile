@@ -27,6 +27,3 @@ sphinx-clean:
 # Re-build sphinx docs
 sphinx-gen:
 	sphinx-apidoc -o docs/ . --ext-autodoc
-	
-test:
-	$(RUN) python -m ontorunner.oger_module --help
