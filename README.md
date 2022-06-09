@@ -1,12 +1,11 @@
 # ontoRunNER
 
-This repository contains a few accessory scripts for
-parsing a KGX generated nodes TSV into a term list
-that is compatible with [OGER](https://github.com/OntoGene/OGER).
-
-The long term goal is to build term list inputs for
-NER tools in addition to OGER.
+This is a wrapper project around the following named entity recognition (NER) tools:
+ - [OGER](https://github.com/OntoGene/OGER).
+ - [spaCy](https://spacy.io)
+   - using [sciSpaCy](https://scispacy.apps.allenai.org) pipeline 
+   namely the CRAFT corpus (`en_ner_craft_md`) used by default. Others can be used as listed [here](https://github.com/allenai/scispacy#available-models)
 
 ## Documentation
 
-[ontoRunNER on Sphinx](https://monarch-initiative.github.io/ontorunner/index.html)
+[ontoRunNER using Sphinx](https://monarch-initiative.github.io/ontorunner/index.html)

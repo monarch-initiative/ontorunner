@@ -216,7 +216,11 @@ def export_tsv(df: pd.DataFrame, data_dir: str, fn: str) -> None:
 
 @click.group()
 def main():
-    """Blank function."""
+    """
+    Spacy module to run NER.
+
+    e.g. poetry run python -m ontorunner.spacy_module run-spacy
+    """
     pass
 
 

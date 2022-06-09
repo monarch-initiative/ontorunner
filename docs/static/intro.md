@@ -1,6 +1,6 @@
 # ontoRunNER
 
-This repository is a wrapper project around the following named entity recognition (NER tools:
+This is a wrapper project around the following named entity recognition (NER) tools:
  - [OGER](https://github.com/OntoGene/OGER).
  - [spaCy](https://spacy.io)
    - using [sciSpaCy](https://scispacy.apps.allenai.org) pipeline 
@@ -10,9 +10,23 @@ This repository is a wrapper project around the following named entity recogniti
 
 ## Setup
 To setup `ontoRunNER`,
+### For developers
+
+After cloning the repository:
 ```
-python setup.py install
+poetry install
 ```
+### For users
+
+Activate your virtual environment (`poetry` or `conda` or `venv` etc.)
+```
+pip install ontorunner
+
+pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.0/en_ner_craft_md-0.5.0.tar.gz
+
+python -m spacy download en_core_web_sm
+```
+> Note: If you're using poetry outside of `poetry shell`, precede all CLI commands with a `poetry run`.
 
 ## Ontology to [KGX](https://github.com/biolink/kgx) TSV
 

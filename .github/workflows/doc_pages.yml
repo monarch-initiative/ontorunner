@@ -16,16 +16,20 @@ jobs:
       with:
         python-version: 3.9
 
+    - name: Install Poetry.
+      uses: snok/install-poetry@v1.3
+
     - name: Install dependencies.
       run: |
-        pip install -e .[docs]
+        poetry install -E docs
+
     - name: Build documentation.
       run: |
         mkdir gh-pages
         touch gh-pages/.nojekyll
         cd docs/
-        make clean html
-        cp -r _build/html/* ../gh-pages/
+        poetry run sphinx-build -b html . _build
+        cp -r _build/* ../gh-pages/
     
     - name: Deploy documentation.
       if: ${{ github.event_name == 'push' }}

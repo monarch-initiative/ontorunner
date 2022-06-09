@@ -81,7 +81,11 @@ def run_oger(
 
 @click.group()
 def cli():
-    """CLI."""
+    """
+    Run the OGER module.
+
+    e.g. python -m ontorunner.oger_module run-oger -s ontorunner/settings.ini
+    """
     pass
 
 
