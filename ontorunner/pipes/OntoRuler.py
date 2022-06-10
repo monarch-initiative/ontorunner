@@ -81,8 +81,9 @@ class OntoRuler(object):
             )
 
         else:
-            timer0 = timer()
+            start = timer()
             self.extract_termlist_info(to_pickle=to_pickle)
+            timer0 = timer()
             print(
                 f"Extracted termlist info! Time elapsed: {round(timer0 - start)} seconds."
             )
