@@ -74,15 +74,16 @@ class OntoRuler(object):
                 self.list_of_pattern_dicts = pickle.load(plp)
             with open(self.phrase_matcher_pickled, "rb") as pmp:
                 self.phrase_matcher = pickle.load(pmp)
-            print("Serialized files imported!")
+            timer1 = timer()
+            print(f"Serialized files imported! Time elapsed: {timer1 - start} seconds.")
 
         else:
             self.extract_termlist_info(to_pickle=to_pickle)
 
         ruler = self.nlp.add_pipe("entity_ruler", after="craft_ner")
         ruler.add_patterns(self.list_of_pattern_dicts)
-        end1 = start = timer()
-        print(f"Patterns added! Time elapsed to import: {end1 - start}")
+        timer2 = timer()
+        print(f"Patterns added! Time elapsed: {timer2 - timer1} seconds.")
 
         # variables for spans and docs extensions
         self.span_term_extension = "is_an_ontology_term"
@@ -102,14 +103,15 @@ class OntoRuler(object):
 
         Doc.set_extension(self.has_id_extension, getter=self.has_curies, force=True)
         Doc.set_extension(self.label.lower(), default=[], force=True)
-        end2 = timer()
-        print(f"Extensions set! Time elapsed to set ext: {end2 - end1}")
+        timer3 = timer()
+        print(f"Extensions set! Time elapsed: {timer3 - timer2} seconds.")
 
         self.nlp.add_pipe(
             "scispacy_linker",
             config={"resolve_abbreviations": True, "linker_name": linker},
         )
-        print("SciSpacy loaded!")
+        timer4 = timer()
+        print(f"SciSpacy loaded! Time elapsed: {timer4 - timer3} seconds.")
 
     # getter function for doc level
     def has_curies(self, tokens):
