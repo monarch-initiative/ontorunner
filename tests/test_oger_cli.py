@@ -103,7 +103,7 @@ class TestOgerCLI(unittest.TestCase):
     def test_cli_run_oger_without_settings(self) -> None:
         process = subprocess.Popen(
             [
-                "ontooger",
+                "ontoger",
                 "run",
                 "-c",
                 self.txt,
