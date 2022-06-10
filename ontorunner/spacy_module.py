@@ -1,5 +1,4 @@
 """Run Spacy."""
-import shutil
 from os.path import join, isdir, isfile, splitext
 from glob import glob
 from multiprocessing import freeze_support
@@ -13,7 +12,6 @@ from ontorunner import (DATA_DIR, INPUT_DIR_NAME, OUTPUT_DIR, OUTPUT_DIR_NAME,
                         SETTINGS_FILE_PATH, _get_config, IMAGE_DIR)
 from ontorunner.pipes.OntoRuler import OntoRuler
 from ontorunner.post import NODE_AND_EDGE_NAME, util
-from html2image import Html2Image
 
 SCI_SPACY_LINKERS = ["umls", "mesh"]
 DEFAULT_TEXT = """A bacterial isolate, designated \
@@ -379,17 +377,17 @@ def run_viz(input_text: str = DEFAULT_TEXT):
 
     dep_html_path = Path(join(OUTPUT_DIR, "dependencies.html"))
     ent_html_path = Path(join(OUTPUT_DIR, "entities.html"))
-    ent_html_output_path = join(OUTPUT_DIR, "entities.html")
+
     dep_svg_output_path = join(IMAGE_DIR, "dependencies.svg")
     dep_png_output_path = join(IMAGE_DIR, "dependencies.png")
     # model_path = Path(join(SERIAL_DIR, "onto_obj.pickle"))
 
     onto_ruler_obj = OntoRuler()
-    # onto_ruler_obj.to_disk(model_path)
 
     doc = onto_ruler_obj.nlp(text)
+
     # displacy.render documentation: https://spacy.io/api/top-level#displacy.render
-    # HTML
+    # *HTML output ******************************************************
     viz_options = {
         "collapse_punct": True,
         "collapse_phrases": True,
@@ -404,15 +402,13 @@ def run_viz(input_text: str = DEFAULT_TEXT):
     )
     dep_html_path.open("w", encoding="utf-8").write(dep_html)
     ent_html_path.open("w", encoding="utf-8").write(ent_html)
-
-    # Images
+    # *********************************************************************
+    #* Images
     dep_svg = displacy.render(doc, style="dep")
-    ent_html = displacy.render(doc, style="ent")
+    # ent_html = displacy.render(doc, style="ent")
     Path(dep_svg_output_path).open("w", encoding="utf-8").write(dep_svg)
-    Path(ent_html_output_path).open("w", encoding="utf-8").write(ent_html)
-
     cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
-
+    #***********************************************************************
 @main.command("run-viz")
 @click.option(
     "-t",
