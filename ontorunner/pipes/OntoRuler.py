@@ -4,6 +4,7 @@ import os
 import pickle
 from pathlib import Path
 from timeit import default_timer as timer
+
 import pandas as pd
 import spacy
 from scispacy.linking import EntityLinker  # noqa F401
@@ -75,7 +76,9 @@ class OntoRuler(object):
             with open(self.phrase_matcher_pickled, "rb") as pmp:
                 self.phrase_matcher = pickle.load(pmp)
             timer1 = timer()
-            print(f"Serialized files imported! Time elapsed: {round(timer1 - start)} seconds.")
+            print(
+                f"Serialized files imported! Time elapsed: {round(timer1 - start)} seconds."
+            )
 
         else:
             self.extract_termlist_info(to_pickle=to_pickle)
