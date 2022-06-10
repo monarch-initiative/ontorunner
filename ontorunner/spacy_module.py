@@ -1,6 +1,6 @@
 """Run Spacy."""
 
-from os.path import join
+from os.path import join, isdir, isfile, splitext
 from glob import glob
 from multiprocessing import freeze_support
 from pathlib import Path
@@ -9,8 +9,8 @@ import click
 import pandas as pd
 from spacy.tokens import Doc, Span
 from spacy import displacy
-from ontorunner import (DATA_DIR, IMAGES_DIR_NAME, INPUT_DIR_NAME, OUTPUT_DIR, OUTPUT_DIR_NAME,
-                        SETTINGS_FILE_PATH, _get_config)
+from ontorunner import (DATA_DIR, INPUT_DIR_NAME, OUTPUT_DIR, OUTPUT_DIR_NAME,
+                        SETTINGS_FILE_PATH, _get_config, IMAGE_DIR)
 from ontorunner.pipes.OntoRuler import OntoRuler
 from ontorunner.post import NODE_AND_EDGE_NAME, util
 
@@ -19,7 +19,7 @@ DEFAULT_TEXT = """A bacterial isolate, designated \
     strain SZ,was obtained from noncontaminated creek \
     sediment microcosms based on its ability to derive \
     energy from acetate oxidation coupled to tetrachloroethene."""
-IMAGE_DIR = join(DATA_DIR, IMAGES_DIR_NAME)
+
 
 def get_token_info(doc: Doc) -> pd.DataFrame:
     """Get metadata associated with spans within a document.
@@ -355,11 +355,27 @@ def run_spacy_click(
     )
 
 
-def run_viz(text: str = DEFAULT_TEXT):
+def run_viz(input_text: str = DEFAULT_TEXT):
     """Text that needs to be annotated.
 
-    :param text:Text to be annotated, defaults to DEFAULT_TEXT
+    :param input_text:Text to be annotated, defaults to DEFAULT_TEXT
     """
+    # Determine the input_text type.
+    if isfile(input_text):
+        fn, ext = splitext(input_text)
+        if ext == ".txt":
+            with open(input_text, "r") as t:
+                text = t.read().replace('\n', '')
+        elif ext == ".tsv":
+            print("Only txt files are processed as of now. TSV coming soon!")
+        else:
+            raise(TypeError("File format should be '.txt' only \
+                (tsv will be available in the future)"))
+    elif isdir(input_text):
+        print("Only .txt files are processed as of now. Bulk inputs coming soon!")
+    else:
+        text = input_text
+
     dep_html_path = Path(join(OUTPUT_DIR, "dependencies.html"))
     ent_html_path = Path(join(OUTPUT_DIR, "entities.html"))
     ent_svg_output_path = join(IMAGE_DIR, "entities.svg")
@@ -367,7 +383,7 @@ def run_viz(text: str = DEFAULT_TEXT):
     ent_png_output_path = join(IMAGE_DIR, "entities.png")
     dep_png_output_path = join(IMAGE_DIR, "dependencies.png")
     # model_path = Path(join(SERIAL_DIR, "onto_obj.pickle"))
-
+    import pdb; pdb.set_trace()
     onto_ruler_obj = OntoRuler()
     # onto_ruler_obj.to_disk(model_path)
 
@@ -377,27 +393,27 @@ def run_viz(text: str = DEFAULT_TEXT):
     viz_options = {
         "collapse_punct": True,
         "collapse_phrases": True,
-        # "compact": True,
+        "compact": True,
         "distance": 75,
     }
     dep_html = displacy.render(
         doc, style="dep", page=True, minify=True, options=viz_options
     )
     ent_html = displacy.render(
-        doc, style="ent", page=True, minify=True, options=viz_options
+        doc, style="ent", page=True
     )
     dep_html_path.open("w", encoding="utf-8").write(dep_html)
     ent_html_path.open("w", encoding="utf-8").write(ent_html)
 
     # SVG
-    dep_svg = displacy.render(doc, style="dep")
-    ent_svg = displacy.serve(doc, style="ent")
+    dep_svg = displacy.render(doc, style="dep", page=True)
+    ent_svg = displacy.render(doc, style="ent", page=True)
     Path(dep_svg_output_path).open("w", encoding="utf-8").write(dep_svg)
     Path(ent_svg_output_path).open("w", encoding="utf-8").write(ent_svg)
 
     cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
     import pdb; pdb.set_trace()
-    cairosvg.svg2png(url=ent_svg_output_path, write_to=ent_png_output_path)
+    # cairosvg.svg2png(url=ent_svg_output_path, write_to=ent_png_output_path)
     # The above is commented becuse the entity svg lacks svg tags <svg>
 
 
