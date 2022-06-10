@@ -20,7 +20,7 @@ dframcy = "^0.1.6"
 CairoSVG = "^2.5.2"
 
 [tool.poetry.scripts]
-ontospacy = "ontorunner.spacy_module"
+ontospacy = "ontorunner.spacy_module:main"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
