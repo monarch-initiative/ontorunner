@@ -16,9 +16,9 @@ from ontorunner.post import NODE_AND_EDGE_NAME, util
 
 SCI_SPACY_LINKERS = ["umls", "mesh"]
 DEFAULT_TEXT = """A bacterial isolate, designated \
-    strain SZ,was obtained from noncontaminated creek \
-    sediment microcosms based on its ability to derive \
-    energy from acetate oxidation coupled to tetrachloroethene."""
+strain SZ,was obtained from noncontaminated creek \
+sediment microcosms based on its ability to derive \
+energy from acetate oxidation coupled to tetrachloroethene."""
 
 
 def get_token_info(doc: Doc) -> pd.DataFrame:
@@ -383,7 +383,7 @@ def run_viz(input_text: str = DEFAULT_TEXT):
     ent_png_output_path = join(IMAGE_DIR, "entities.png")
     dep_png_output_path = join(IMAGE_DIR, "dependencies.png")
     # model_path = Path(join(SERIAL_DIR, "onto_obj.pickle"))
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     onto_ruler_obj = OntoRuler()
     # onto_ruler_obj.to_disk(model_path)
 
@@ -396,6 +396,7 @@ def run_viz(input_text: str = DEFAULT_TEXT):
         "compact": True,
         "distance": 75,
     }
+    # import pdb; pdb.set_trace()
     dep_html = displacy.render(
         doc, style="dep", page=True, minify=True, options=viz_options
     )
@@ -412,7 +413,7 @@ def run_viz(input_text: str = DEFAULT_TEXT):
     Path(ent_svg_output_path).open("w", encoding="utf-8").write(ent_svg)
 
     cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     # cairosvg.svg2png(url=ent_svg_output_path, write_to=ent_png_output_path)
     # The above is commented becuse the entity svg lacks svg tags <svg>
 
