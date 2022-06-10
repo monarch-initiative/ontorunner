@@ -84,7 +84,7 @@ def cli():
     """
     Run the OGER module.
 
-    e.g. python -m ontorunner.oger_module run-oger -s ontorunner/settings.ini
+    e.g. ontoger run -s ontorunner/settings.ini
     """
     pass
 
