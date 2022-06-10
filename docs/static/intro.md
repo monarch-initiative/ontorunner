@@ -119,7 +119,7 @@ There will be two output tsv files generated:
  ## Visualization using `spacy.displaCy`.
 
  ### Dependency SVG image.
- ![Sentence Dependency](../../data/images/sentence.svg)
+ ![Sentence Dependency](../../data/images/example_dependency.svg)
 
  ### Entity SVG image. 
- ![Sentence Dependency](../../data/images/entities.svg)
+ ![Sentence Dependency](../../data/images/example_entities.svg)
