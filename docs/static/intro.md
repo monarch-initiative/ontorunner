@@ -138,4 +138,4 @@ spacy_module.run_viz("text")
  ![Sentence Dependency](../../data/images/example_dependency.svg)
  ### Entity display using displaCy. 
 
-![Entities](../../data/images/entities.png)
+![Entities](../../data/images/example_entities.png)
