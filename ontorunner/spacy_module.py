@@ -1,5 +1,5 @@
 """Run Spacy."""
-import os
+
 from os.path import join
 from glob import glob
 from multiprocessing import freeze_support
@@ -9,7 +9,7 @@ import click
 import pandas as pd
 from spacy.tokens import Doc, Span
 from spacy import displacy
-from ontorunner import (DATA_DIR, IMAGE_DIR, INPUT_DIR_NAME, OUTPUT_DIR, OUTPUT_DIR_NAME,
+from ontorunner import (DATA_DIR, IMAGES_DIR_NAME, INPUT_DIR_NAME, OUTPUT_DIR, OUTPUT_DIR_NAME,
                         SETTINGS_FILE_PATH, _get_config)
 from ontorunner.pipes.OntoRuler import OntoRuler
 from ontorunner.post import NODE_AND_EDGE_NAME, util
@@ -19,7 +19,7 @@ DEFAULT_TEXT = """A bacterial isolate, designated \
     strain SZ,was obtained from noncontaminated creek \
     sediment microcosms based on its ability to derive \
     energy from acetate oxidation coupled to tetrachloroethene."""
-
+IMAGE_DIR = join(DATA_DIR, IMAGES_DIR_NAME)
 
 def get_token_info(doc: Doc) -> pd.DataFrame:
     """Get metadata associated with spans within a document.
@@ -391,13 +391,13 @@ def run_viz(text: str = DEFAULT_TEXT):
 
     # SVG
     dep_svg = displacy.render(doc, style="dep")
-    ent_svg = displacy.render(doc, style="ent")
+    ent_svg = displacy.serve(doc, style="ent")
     Path(dep_svg_output_path).open("w", encoding="utf-8").write(dep_svg)
     Path(ent_svg_output_path).open("w", encoding="utf-8").write(ent_svg)
 
     cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
     import pdb; pdb.set_trace()
-    # cairosvg.svg2png(url=ent_svg_output_path, write_to=ent_png_output_path)
+    cairosvg.svg2png(url=ent_svg_output_path, write_to=ent_png_output_path)
     # The above is commented becuse the entity svg lacks svg tags <svg>
 
 
