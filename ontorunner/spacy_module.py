@@ -1,19 +1,24 @@
 """Run Spacy."""
 import os
+from os.path import join
 from glob import glob
 from multiprocessing import freeze_support
 from pathlib import Path
-
+import cairosvg
 import click
 import pandas as pd
 from spacy.tokens import Doc, Span
-
-from ontorunner import (DATA_DIR, INPUT_DIR_NAME, OUTPUT_DIR_NAME,
+from spacy import displacy
+from ontorunner import (DATA_DIR, IMAGE_DIR, INPUT_DIR_NAME, OUTPUT_DIR, OUTPUT_DIR_NAME,
                         SETTINGS_FILE_PATH, _get_config)
 from ontorunner.pipes.OntoRuler import OntoRuler
 from ontorunner.post import NODE_AND_EDGE_NAME, util
 
 SCI_SPACY_LINKERS = ["umls", "mesh"]
+DEFAULT_TEXT = """A bacterial isolate, designated \
+    strain SZ,was obtained from noncontaminated creek \
+    sediment microcosms based on its ability to derive \
+    energy from acetate oxidation coupled to tetrachloroethene."""
 
 
 def get_token_info(doc: Doc) -> pd.DataFrame:
@@ -210,7 +215,7 @@ def export_tsv(df: pd.DataFrame, data_dir: str, fn: str) -> None:
     :param data_dir: Destination directory for export.
     :param fn: Filename.
     """
-    fn_path = os.path.join(data_dir, OUTPUT_DIR_NAME, fn + ".tsv")
+    fn_path = join(data_dir, OUTPUT_DIR_NAME, fn + ".tsv")
     df.to_csv(fn_path, sep="\t", index=None)
 
 
@@ -252,7 +257,7 @@ def run_spacy(
         to_pickle=to_pickle,
     )
     batch_size = 10000
-    input_dir_path = os.path.join(data_dir, INPUT_DIR_NAME) + "/*.tsv"
+    input_dir_path = join(data_dir, INPUT_DIR_NAME) + "/*.tsv"
     input_file_list = glob(input_dir_path)
     list_of_input_dfs = []
     for fn in input_file_list:
@@ -281,7 +286,7 @@ def run_spacy(
     onto_df = explode_df(input_df[["id", "spacy_tokens"]])
     # nlp_df = doc_to_df(dframcy, input_df[["id", "spacy_doc"]])
 
-    stopwords_file_path = os.path.join(data_dir, _get_config("termlist_stopwords")[0])
+    stopwords_file_path = join(data_dir, _get_config("termlist_stopwords")[0])
     stopwords_file = open(stopwords_file_path, "r")
     stopwords = stopwords_file.read().splitlines()
     onto_df = onto_df.loc[~onto_df["matched_term"].isin(stopwords)]
@@ -290,7 +295,7 @@ def run_spacy(
     onto_df = util.get_column_doc_ratio(onto_df, "object_label")
     onto_df = util.get_column_doc_ratio(onto_df, "matched_term")
     if need_ancestors:
-        nodes_and_edges_dir = os.path.join(data_dir, NODE_AND_EDGE_NAME)
+        nodes_and_edges_dir = join(data_dir, NODE_AND_EDGE_NAME)
         onto_df = util.get_ancestors(
             df=onto_df, nodes_and_edges_dir=nodes_and_edges_dir
         )
@@ -349,7 +354,66 @@ def run_spacy_click(
         need_ancestors=need_ancestors,
     )
 
-    # os.system('say "Done!"')
+
+def run_viz(text: str = DEFAULT_TEXT):
+    """Text that needs to be annotated.
+
+    :param text:Text to be annotated, defaults to DEFAULT_TEXT
+    """
+    dep_html_path = Path(join(OUTPUT_DIR, "dependencies.html"))
+    ent_html_path = Path(join(OUTPUT_DIR, "entities.html"))
+    ent_svg_output_path = join(IMAGE_DIR, "entities.svg")
+    dep_svg_output_path = join(IMAGE_DIR, "dependencies.svg")
+    ent_png_output_path = join(IMAGE_DIR, "entities.png")
+    dep_png_output_path = join(IMAGE_DIR, "dependencies.png")
+    # model_path = Path(join(SERIAL_DIR, "onto_obj.pickle"))
+
+    onto_ruler_obj = OntoRuler()
+    # onto_ruler_obj.to_disk(model_path)
+
+    doc = onto_ruler_obj.nlp(text)
+    # displacy.render documentation: https://spacy.io/api/top-level#displacy.render
+    # HTML
+    viz_options = {
+        "collapse_punct": True,
+        "collapse_phrases": True,
+        # "compact": True,
+        "distance": 75,
+    }
+    dep_html = displacy.render(
+        doc, style="dep", page=True, minify=True, options=viz_options
+    )
+    ent_html = displacy.render(
+        doc, style="ent", page=True, minify=True, options=viz_options
+    )
+    dep_html_path.open("w", encoding="utf-8").write(dep_html)
+    ent_html_path.open("w", encoding="utf-8").write(ent_html)
+
+    # SVG
+    dep_svg = displacy.render(doc, style="dep")
+    ent_svg = displacy.render(doc, style="ent")
+    Path(dep_svg_output_path).open("w", encoding="utf-8").write(dep_svg)
+    Path(ent_svg_output_path).open("w", encoding="utf-8").write(ent_svg)
+
+    cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
+    import pdb; pdb.set_trace()
+    # cairosvg.svg2png(url=ent_svg_output_path, write_to=ent_png_output_path)
+    # The above is commented becuse the entity svg lacks svg tags <svg>
+
+
+@main.command("run-viz")
+@click.option(
+    "-t",
+    "--text",
+    help="Text that needs to be annotated.",
+    default=DEFAULT_TEXT,
+)
+def run_viz_click(text: str):
+    """Run the displaCy visualizer on text.
+
+    :param text: Text to be annotated.
+    """
+    run_viz(text)
 
 
 if __name__ == "__main__":
