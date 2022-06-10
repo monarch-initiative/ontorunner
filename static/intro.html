@@ -113,8 +113,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#visualization-using-spacy-displacy">Visualization using <code class="docutils literal notranslate"><span class="pre">spacy.displaCy</span></code>.</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#dependency-svg-image">Dependency SVG image.</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#entity-svg-image">Entity SVG image.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependency-display-using-displacy">Dependency display using displaCy.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#entity-display-using-displacy">Entity display using displaCy.</a></li>
 </ul>
 </li>
 </ul>
@@ -334,12 +336,31 @@ is the reference to the OGER documentation.</p>
 </div>
 <div class="section" id="visualization-using-spacy-displacy">
 <h2>Visualization using <code class="docutils literal notranslate"><span class="pre">spacy.displaCy</span></code>.<a class="headerlink" href="#visualization-using-spacy-displacy" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="dependency-svg-image">
-<h3>Dependency SVG image.<a class="headerlink" href="#dependency-svg-image" title="Permalink to this headline">¶</a></h3>
+<p>SpaCy visualizers are also available through ontoRunNER! There are two types of visualizers offered by displaCy:</p>
+<ul class="simple">
+<li><p>Displays dependencies</p></li>
+<li><p>Highlights entities</p></li>
+</ul>
+<p>Both are rendered using one command - <code class="docutils literal notranslate"><span class="pre">run-viz</span></code>.</p>
+<div class="section" id="id8">
+<h3>CLI<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">spacy_module</span> <span class="n">run</span><span class="o">-</span><span class="n">viz</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;text&quot;</span> 
+</pre></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h3>Python<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ontorunner</span> <span class="kn">import</span> <span class="n">spacy_module</span>
+<span class="n">spacy_module</span><span class="o">.</span><span class="n">run_viz</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dependency-display-using-displacy">
+<h3>Dependency display using displaCy.<a class="headerlink" href="#dependency-display-using-displacy" title="Permalink to this headline">¶</a></h3>
 <p><img alt="Sentence Dependency" src="../_images/example_dependency.svg" /></p>
 </div>
-<div class="section" id="entity-svg-image">
-<h3>Entity SVG image.<a class="headerlink" href="#entity-svg-image" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="entity-display-using-displacy">
+<h3>Entity display using displaCy.<a class="headerlink" href="#entity-display-using-displacy" title="Permalink to this headline">¶</a></h3>
  <!-- ![Sentence Dependency](../../data/images/example_entities.svg) --></div>
 </div>
 </div>
