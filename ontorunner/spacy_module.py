@@ -306,7 +306,7 @@ def run_spacy(
     export_tsv(onto_df, data_dir, "ontology_ontoRunNER")
 
 
-@main.command("run-spacy")
+@main.command("run")
 @click.option("-d", "--data-dir", help="Data directory path.", default=DATA_DIR)
 @click.option(
     "-s",
@@ -410,7 +410,7 @@ def run_viz(input_text: str = DEFAULT_TEXT):
     cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
     #***********************************************************************
     
-@main.command("run-viz")
+@main.command("viz")
 @click.option(
     "-t",
     "--text",

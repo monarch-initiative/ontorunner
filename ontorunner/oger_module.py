@@ -89,7 +89,7 @@ def cli():
     pass
 
 
-@cli.command("run-oger")
+@cli.command("run")
 @click.option("--content", "-c", type=click.Path(exists=True))
 @click.option("--termlist", "-t", type=click.Path(exists=True))
 @click.option("--output", "-o", type=str)
