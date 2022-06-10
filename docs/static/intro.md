@@ -118,8 +118,24 @@ There will be two output tsv files generated:
 
  ## Visualization using `spacy.displaCy`.
 
- ### Dependency SVG image.
+SpaCy visualizers are also available through ontoRunNER! There are two types of visualizers offered by displaCy:
+ - Displays dependencies
+ - Highlights entities
+
+Both are rendered using one command - `run-viz`.
+ ### CLI
+```
+python -m ontorunner.spacy_module run-viz -t "text" 
+```
+
+### Python
+```
+from ontorunner import spacy_module
+spacy_module.run_viz("text")
+```
+ ### Dependency display using displaCy.
  ![Sentence Dependency](../../data/images/example_dependency.svg)
 
- ### Entity SVG image. 
+ ### Entity display using displaCy. 
+
  <!-- ![Sentence Dependency](../../data/images/example_entities.svg) -->
