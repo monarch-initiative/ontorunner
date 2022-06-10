@@ -506,6 +506,14 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "html2image"
+version = "2.0.1"
+description = "Package acting as a wrapper around the headless mode of existing web browsers to generate images from URLs and from HTML+CSS strings or files."
+category = "main"
+optional = false
+python-versions = ">=3.6,<4.0"
+
+[[package]]
 name = "idna"
 version = "3.3"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -2324,7 +2332,7 @@ docs = []
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "3d764bd5118b019756494769f91c0a96e6bac2742a195fdff701a7a51e1c72c0"
+content-hash = "20dc8059cd1c8bd3b95c00c16b3bf3f4a1a4d2428a65c3547a8acbd5e0edadba"
 
 [metadata.files]
 abydos = [
@@ -2667,6 +2675,10 @@ greenlet = [
 hbreader = [
     {file = "hbreader-0.9.1-py3-none-any.whl", hash = "sha256:9a6e76c9d1afc1b977374a5dc430a1ebb0ea0488205546d4678d6e31cc5f6801"},
     {file = "hbreader-0.9.1.tar.gz", hash = "sha256:d2c132f8ba6276d794c66224c3297cec25c8079d0a4cf019c061611e0a3b94fa"},
+]
+html2image = [
+    {file = "html2image-2.0.1-py3-none-any.whl", hash = "sha256:3540fd23d25630d4e374e7de6e4ae711b40d4e672e82300f7e16ad2a9aa88553"},
+    {file = "html2image-2.0.1.tar.gz", hash = "sha256:5ca86cd454c6dc91873cd479edfc5db2b48e7fa580023823896f3e67c65a02b0"},
 ]
 idna = [
     {file = "idna-3.3-py3-none-any.whl", hash = "sha256:84d9dd047ffa80596e0f246e2eab0b391788b0503584e8945f2368256d2735ff"},
