@@ -116,7 +116,7 @@ There will be two output tsv files generated:
  - `ontology_ontoRunNER.tsv`: This file is the output with the ontology termlists (generated above) as the dictionary for entity recognition.
  - `umls_ontoRunNER.tsv`: This file is the output derived by using `sciSpaCY`'s `EntityLinker`. By default the linker is `umls` but you can provide others as listed [here](https://github.com/allenai/scispacy#entitylinker).
 
- ## Visualization using `spacy.displaCy`.
+ ## Visualization using `spaCy.displaCy`.
 
 SpaCy visualizers are also available through ontoRunNER! There are two types of visualizers offered by displaCy:
  - Displays dependencies
