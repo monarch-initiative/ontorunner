@@ -13,6 +13,7 @@ from ontorunner import (DATA_DIR, INPUT_DIR_NAME, OUTPUT_DIR, OUTPUT_DIR_NAME,
                         SETTINGS_FILE_PATH, _get_config, IMAGE_DIR)
 from ontorunner.pipes.OntoRuler import OntoRuler
 from ontorunner.post import NODE_AND_EDGE_NAME, util
+from html2image import Html2Image
 
 SCI_SPACY_LINKERS = ["umls", "mesh"]
 DEFAULT_TEXT = """A bacterial isolate, designated \
@@ -378,12 +379,12 @@ def run_viz(input_text: str = DEFAULT_TEXT):
 
     dep_html_path = Path(join(OUTPUT_DIR, "dependencies.html"))
     ent_html_path = Path(join(OUTPUT_DIR, "entities.html"))
-    ent_svg_output_path = join(IMAGE_DIR, "entities.svg")
+    ent_html_output_path = join(IMAGE_DIR, "entities.svg")
     dep_svg_output_path = join(IMAGE_DIR, "dependencies.svg")
     ent_png_output_path = join(IMAGE_DIR, "entities.png")
     dep_png_output_path = join(IMAGE_DIR, "dependencies.png")
     # model_path = Path(join(SERIAL_DIR, "onto_obj.pickle"))
-    # import pdb; pdb.set_trace()
+
     onto_ruler_obj = OntoRuler()
     # onto_ruler_obj.to_disk(model_path)
 
@@ -393,29 +394,27 @@ def run_viz(input_text: str = DEFAULT_TEXT):
     viz_options = {
         "collapse_punct": True,
         "collapse_phrases": True,
-        "compact": True,
+        # "compact": True,
         "distance": 75,
     }
-    # import pdb; pdb.set_trace()
     dep_html = displacy.render(
         doc, style="dep", page=True, minify=True, options=viz_options
     )
     ent_html = displacy.render(
-        doc, style="ent", page=True
+        doc, style="ent", page=True, minify=True, options=viz_options
     )
     dep_html_path.open("w", encoding="utf-8").write(dep_html)
     ent_html_path.open("w", encoding="utf-8").write(ent_html)
 
-    # SVG
-    dep_svg = displacy.render(doc, style="dep", page=True)
-    ent_svg = displacy.render(doc, style="ent", page=True)
+    # Images
+    dep_svg = displacy.render(doc, style="dep")
+    ent_html = displacy.render(doc, style="ent")
     Path(dep_svg_output_path).open("w", encoding="utf-8").write(dep_svg)
-    Path(ent_svg_output_path).open("w", encoding="utf-8").write(ent_svg)
+    Path(ent_html_output_path).open("w", encoding="utf-8").write(ent_html)
 
     cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
-    # import pdb; pdb.set_trace()
-    # cairosvg.svg2png(url=ent_svg_output_path, write_to=ent_png_output_path)
-    # The above is commented becuse the entity svg lacks svg tags <svg>
+    hti = Html2Image()
+    hti.screenshot(html_file=ent_html_output_path, save_as=ent_png_output_path, css_str="body{background-color: white;}")
 
 
 @main.command("run-viz")
