@@ -21,6 +21,7 @@ jobs:
 
     - name: Install dependencies.
       run: |
+        poetry cache clear --all pypi
         poetry install -E docs
 
     - name: Build documentation.
