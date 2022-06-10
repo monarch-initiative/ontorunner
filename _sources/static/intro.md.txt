@@ -65,7 +65,7 @@ You can run OGER against a text document as follows,
 
 ### CLI
 ```
-python -m ontorunner.oger_module run-oger -c abstract.txt -t termlist.tsv -o out.json -f bioc_json
+ontoger run -c abstract.txt -t termlist.tsv -o out.json -f bioc_json
 ```
 
 > **Note:** This command is just to demonstrate how to OGER.
@@ -78,7 +78,7 @@ You can run `OGER` using a 'settings' file as follows,
 
 ### CLI
 ```
-python -m ontorunner.oger_module run-oger -s settings.ini
+ontoger run -s settings.ini
 ```
 
 ### Python
@@ -104,7 +104,7 @@ By default, these files are expected to be in the [`data/input`](https://github.
 The `settings.ini` file used in `OGER` above is also used by `spaCy` for some of its parameters.
  ### CLI
 ```
-python -m ontorunner.spacy_module run-spacy 
+ontospacy run
 ```
 
 ### Python
@@ -125,7 +125,7 @@ SpaCy visualizers are also available through ontoRunNER! There are two types of 
 Both are rendered using one command - `run-viz`.
  ### CLI
 ```
-python -m ontorunner.spacy_module run-viz -t "text" 
+ontospacy viz -t "text" 
 ```
 
 ### Python

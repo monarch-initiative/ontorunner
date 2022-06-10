@@ -266,7 +266,7 @@ namely the CRAFT corpus (<code class="docutils literal notranslate"><span class=
 <p>You can run OGER against a text document as follows,</p>
 <div class="section" id="id3">
 <h3>CLI<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">oger_module</span> <span class="n">run</span><span class="o">-</span><span class="n">oger</span> <span class="o">-</span><span class="n">c</span> <span class="n">abstract</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">t</span> <span class="n">termlist</span><span class="o">.</span><span class="n">tsv</span> <span class="o">-</span><span class="n">o</span> <span class="n">out</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">f</span> <span class="n">bioc_json</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ontoger</span> <span class="n">run</span> <span class="o">-</span><span class="n">c</span> <span class="n">abstract</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">t</span> <span class="n">termlist</span><span class="o">.</span><span class="n">tsv</span> <span class="o">-</span><span class="n">o</span> <span class="n">out</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">f</span> <span class="n">bioc_json</span>
 </pre></div>
 </div>
 <blockquote>
@@ -281,7 +281,7 @@ is the reference to the OGER documentation.</p>
 </div>
 <div class="section" id="id4">
 <h3>CLI<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">oger_module</span> <span class="n">run</span><span class="o">-</span><span class="n">oger</span> <span class="o">-</span><span class="n">s</span> <span class="n">settings</span><span class="o">.</span><span class="n">ini</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ontoger</span> <span class="n">run</span> <span class="o">-</span><span class="n">s</span> <span class="n">settings</span><span class="o">.</span><span class="n">ini</span>
 </pre></div>
 </div>
 </div>
@@ -317,7 +317,7 @@ is the reference to the OGER documentation.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">settings.ini</span></code> file used in <code class="docutils literal notranslate"><span class="pre">OGER</span></code> above is also used by <code class="docutils literal notranslate"><span class="pre">spaCy</span></code> for some of its parameters.</p>
 <div class="section" id="id6">
 <h3>CLI<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">spacy_module</span> <span class="n">run</span><span class="o">-</span><span class="n">spacy</span> 
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ontospacy</span> <span class="n">run</span>
 </pre></div>
 </div>
 </div>
@@ -344,7 +344,7 @@ is the reference to the OGER documentation.</p>
 <p>Both are rendered using one command - <code class="docutils literal notranslate"><span class="pre">run-viz</span></code>.</p>
 <div class="section" id="id8">
 <h3>CLI<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ontorunner</span><span class="o">.</span><span class="n">spacy_module</span> <span class="n">run</span><span class="o">-</span><span class="n">viz</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;text&quot;</span> 
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ontospacy</span> <span class="n">viz</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;text&quot;</span> 
 </pre></div>
 </div>
 </div>
