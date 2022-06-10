@@ -1,5 +1,4 @@
 """Run Spacy."""
-import shutil
 from os.path import join, isdir, isfile, splitext
 from glob import glob
 from multiprocessing import freeze_support
@@ -13,7 +12,6 @@ from ontorunner import (DATA_DIR, INPUT_DIR_NAME, OUTPUT_DIR, OUTPUT_DIR_NAME,
                         SETTINGS_FILE_PATH, _get_config, IMAGE_DIR)
 from ontorunner.pipes.OntoRuler import OntoRuler
 from ontorunner.post import NODE_AND_EDGE_NAME, util
-from html2image import Html2Image
 
 SCI_SPACY_LINKERS = ["umls", "mesh"]
 DEFAULT_TEXT = """A bacterial isolate, designated \
@@ -379,8 +377,7 @@ def run_viz(input_text: str = DEFAULT_TEXT):
 
     dep_html_path = Path(join(OUTPUT_DIR, "dependencies.html"))
     ent_html_path = Path(join(OUTPUT_DIR, "entities.html"))
-    ent_html_output_path = join(IMAGE_DIR, "entities.svg")
-    dep_svg_output_path = join(IMAGE_DIR, "dependencies.svg")
+    ent_html_output_path = join(OUTPUT_DIR, "entities.html")
     ent_png_output_name = "entities.png"
     dep_png_output_path = join(IMAGE_DIR, "dependencies.png")
     # model_path = Path(join(SERIAL_DIR, "onto_obj.pickle"))
@@ -409,13 +406,11 @@ def run_viz(input_text: str = DEFAULT_TEXT):
     # Images
     dep_svg = displacy.render(doc, style="dep")
     ent_html = displacy.render(doc, style="ent")
-    Path(dep_svg_output_path).open("w", encoding="utf-8").write(dep_svg)
+    # Path(dep_svg_output_path).open("w", encoding="utf-8").write(dep_svg)
     Path(ent_html_output_path).open("w", encoding="utf-8").write(ent_html)
 
-    cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
-    hti = Html2Image()
-    hti.screenshot(html_file=ent_html_output_path, save_as=ent_png_output_name, css_str="body{background-color: white;}")
-    shutil.move(ent_png_output_name, join(IMAGE_DIR, ent_png_output_name))
+    # cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
+    
 
 @main.command("run-viz")
 @click.option(
