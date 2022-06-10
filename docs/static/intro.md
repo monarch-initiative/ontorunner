@@ -34,7 +34,7 @@ Generate `nodes.tsv` and `edges.tsv` files from your OBO JSON ontology file,
 
 ### CLI
 ```
-python -m ontorunner.pre.util json2tsv -i ontology.json -o output
+onto-util json2tsv -i ontology.json -o output
 ```
 ### Python
 ```
@@ -48,7 +48,7 @@ Generate termlist from the `output_nodes.tsv` generated in the previous step.
 ### CLI
 The conversion can be done as follows,
 ```
-python -m ontorunner.pre.util prepare-termlist -i output_nodes.tsv -o termlist.tsv
+onto-util prepare-termlist -i output_nodes.tsv -o termlist.tsv
 ```
 
 ### Python

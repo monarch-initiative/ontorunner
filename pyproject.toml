@@ -22,7 +22,7 @@ CairoSVG = "^2.5.2"
 [tool.poetry.scripts]
 ontospacy = "ontorunner.spacy_module:main"
 ontoger = "ontorunner.oger_module:cli"
-ontopre = "ontorunner.pre.util:cli"
+onto-util = "ontorunner.pre.util:cli"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"

@@ -60,7 +60,7 @@ def prepare_termlist(input, output) -> None:
 @click.group()
 def cli():
     """
-    Pre-processing steps:
+    Utility functions:
      * delete-cache: Delete all serialized files in the 'serialized' folder.
      * json2tsv: Convert ontology.json to ontology_nodes.tsv and ontology_edges.tsv.
      * prepare-termlist: Convert ontology_nodes.tsv into ontology_termlist.tsv which is
