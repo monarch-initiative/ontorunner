@@ -409,6 +409,7 @@ def run_viz(input_text: str = DEFAULT_TEXT):
     Path(dep_svg_output_path).open("w", encoding="utf-8").write(dep_svg)
     cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
     #***********************************************************************
+    
 @main.command("run-viz")
 @click.option(
     "-t",
