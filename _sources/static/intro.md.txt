@@ -137,7 +137,7 @@ spacy_module.run_viz("text")
 
  ![Sentence Dependency](../../data/images/example_dependency.svg)
 
- [Click here for larger view](../../data/images/example_dependency.svg)
+ [Click here for larger view](https://raw.githubusercontent.com/monarch-initiative/ontorunner/master/data/images/example_dependency.svg)
 
  ### Entity display using displaCy. 
 
