@@ -122,4 +122,4 @@ There will be two output tsv files generated:
  ![Sentence Dependency](../../data/images/sentence.svg)
 
  ### Entity SVG image. 
- ![Sentence Dependency](../../data/images/enities.svg)
+ ![Sentence Dependency](../../data/images/entities.svg)
