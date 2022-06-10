@@ -1,5 +1,5 @@
 """Run Spacy."""
-
+import shutil
 from os.path import join, isdir, isfile, splitext
 from glob import glob
 from multiprocessing import freeze_support
@@ -381,7 +381,7 @@ def run_viz(input_text: str = DEFAULT_TEXT):
     ent_html_path = Path(join(OUTPUT_DIR, "entities.html"))
     ent_html_output_path = join(IMAGE_DIR, "entities.svg")
     dep_svg_output_path = join(IMAGE_DIR, "dependencies.svg")
-    ent_png_output_path = join(IMAGE_DIR, "entities.png")
+    ent_png_output_name = "entities.png"
     dep_png_output_path = join(IMAGE_DIR, "dependencies.png")
     # model_path = Path(join(SERIAL_DIR, "onto_obj.pickle"))
 
@@ -414,8 +414,8 @@ def run_viz(input_text: str = DEFAULT_TEXT):
 
     cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
     hti = Html2Image()
-    hti.screenshot(html_file=ent_html_output_path, save_as=ent_png_output_path, css_str="body{background-color: white;}")
-
+    hti.screenshot(html_file=ent_html_output_path, save_as=ent_png_output_name, css_str="body{background-color: white;}")
+    shutil.move(ent_png_output_name, join(IMAGE_DIR, ent_png_output_name))
 
 @main.command("run-viz")
 @click.option(

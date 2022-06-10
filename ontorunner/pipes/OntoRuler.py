@@ -3,7 +3,7 @@ import multiprocessing
 import os
 import pickle
 from pathlib import Path
-
+from timeit import default_timer as timer
 import pandas as pd
 import spacy
 from scispacy.linking import EntityLinker  # noqa F401
@@ -67,6 +67,7 @@ class OntoRuler(object):
 
         if os.path.isfile(self.phrase_matcher_pickled):
             print("Found serialized files!")
+            start = timer()
             with open(os.path.join(self.terms_pickled), "rb") as tf:
                 self.terms = pickle.load(tf)
             with open(self.pattern_list_pickled, "rb") as plp:
@@ -80,7 +81,8 @@ class OntoRuler(object):
 
         ruler = self.nlp.add_pipe("entity_ruler", after="craft_ner")
         ruler.add_patterns(self.list_of_pattern_dicts)
-        print("Patterns added!")
+        end1 = start = timer()
+        print(f"Patterns added! Time elapsed to import: {end1 - start}")
 
         # variables for spans and docs extensions
         self.span_term_extension = "is_an_ontology_term"
@@ -100,7 +102,8 @@ class OntoRuler(object):
 
         Doc.set_extension(self.has_id_extension, getter=self.has_curies, force=True)
         Doc.set_extension(self.label.lower(), default=[], force=True)
-        print("Extensions set!")
+        end2 = timer()
+        print(f"Extensions set! Time elapsed to set ext: {end2 - end1}")
 
         self.nlp.add_pipe(
             "scispacy_linker",
