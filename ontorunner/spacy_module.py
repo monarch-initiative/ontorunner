@@ -394,6 +394,7 @@ def run_viz(input_text: str = DEFAULT_TEXT):
 
     # displacy.render documentation: https://spacy.io/api/top-level#displacy.render
     # *HTML output ******************************************************
+
     viz_options = {
         "collapse_punct": True,
         "collapse_phrases": True,
@@ -408,6 +409,7 @@ def run_viz(input_text: str = DEFAULT_TEXT):
     )
     dep_html_path.open("w", encoding="utf-8").write(dep_html)
     ent_html_path.open("w", encoding="utf-8").write(ent_html)
+
     # *********************************************************************
     # * Images
     dep_svg = displacy.render(doc, style="dep")

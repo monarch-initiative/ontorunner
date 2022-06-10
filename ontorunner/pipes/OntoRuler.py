@@ -75,13 +75,18 @@ class OntoRuler(object):
                 self.list_of_pattern_dicts = pickle.load(plp)
             with open(self.phrase_matcher_pickled, "rb") as pmp:
                 self.phrase_matcher = pickle.load(pmp)
-            timer1 = timer()
+            timer0 = timer()
             print(
-                f"Serialized files imported! Time elapsed: {round(timer1 - start)} seconds."
+                f"Serialized files imported! Time elapsed: {round(timer0 - start)} seconds."
             )
 
         else:
+            timer0 = timer()
             self.extract_termlist_info(to_pickle=to_pickle)
+            print(
+                f"Extracted termlist info! Time elapsed: {round(timer0 - start)} seconds."
+            )
+        timer1 = timer()
 
         ruler = self.nlp.add_pipe("entity_ruler", after="craft_ner")
         ruler.add_patterns(self.list_of_pattern_dicts)

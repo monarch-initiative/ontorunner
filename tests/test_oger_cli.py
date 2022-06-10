@@ -79,10 +79,8 @@ class TestOgerCLI(unittest.TestCase):
         s = self.settings
         process = subprocess.Popen(
             [
-                "python",
-                "-m",
-                "ontorunner.oger_module",
-                "run-oger",
+                "ontoger",
+                "run",
                 "-s",
                 s,
                 "-n",
@@ -105,10 +103,8 @@ class TestOgerCLI(unittest.TestCase):
     def test_cli_run_oger_without_settings(self) -> None:
         process = subprocess.Popen(
             [
-                "python",
-                "-m",
-                "ontorunner.oger_module",
-                "run-oger",
+                "ontooger",
+                "run",
                 "-c",
                 self.txt,
                 "-t",
