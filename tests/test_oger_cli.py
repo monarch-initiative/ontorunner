@@ -27,7 +27,7 @@ class TestOgerCLI(unittest.TestCase):
     def test_cli_json2tsv(self) -> None:
         ofilename = os.path.join(self.output, "envo")
         ofiles = [ofilename + "_nodes.tsv", ofilename + "_edges.tsv"]
-        cli_ofile_rows = [6405, 9643]
+        cli_ofile_rows = [6405, 9645]
         process = subprocess.Popen(
             [
                 "python",
