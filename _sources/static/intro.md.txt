@@ -68,7 +68,7 @@ You can run OGER against a text document as follows,
 ontoger run -c abstract.txt -t termlist.tsv -o out.json -f bioc_json
 ```
 
-> **Note:** This command is just to demonstrate how to OGER.
+> **Note:** This command is just to demonstrate how to run OGER.
 > For more use cases, [here](https://github.com/OntoGene/OGER/wiki/run)
 > is the reference to the OGER documentation.
 
