@@ -140,5 +140,11 @@ sphinx/_build
 **/.DS_Store
 
 ontorunner/settings.ini
-data/serialized/*
+data/serialized/*.pickle
 data/nodes_and_edges/*.tsv
+data/images/*.*
+data/output/*
+
+# Exceptions
+!data/images/example_*.*
+!data/output/example_*.*

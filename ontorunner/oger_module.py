@@ -84,12 +84,12 @@ def cli():
     """
     Run the OGER module.
 
-    e.g. python -m ontorunner.oger_module run-oger -s ontorunner/settings.ini
+    e.g. ontoger run -s ontorunner/settings.ini
     """
     pass
 
 
-@cli.command("run-oger")
+@cli.command("run")
 @click.option("--content", "-c", type=click.Path(exists=True))
 @click.option("--termlist", "-t", type=click.Path(exists=True))
 @click.option("--output", "-o", type=str)

@@ -16,9 +16,13 @@ TERMS_DIR_NAME = "terms"
 SERIAL_DIR_NAME = "serialized"
 INPUT_DIR_NAME = "input"
 OUTPUT_DIR_NAME = "output"
+IMAGES_DIR_NAME = "images"
 
 PARENT_DIR = abspath(join(dirname(__file__), pardir))
 DATA_DIR = join(PARENT_DIR, DATA_DIR_NAME)
+IMAGE_DIR = join(DATA_DIR, IMAGES_DIR_NAME)
+OUTPUT_DIR = join(DATA_DIR, OUTPUT_DIR_NAME)
+SERIAL_DIR = join(DATA_DIR, SERIAL_DIR_NAME)
 ONTO_TERMS_FILENAME = "onto_termlist.tsv"
 TERMS_PICKLED_FILENAME = "terms.pickle"
 PATTERN_LIST_PICKLED_FILENAME = "patterns.pickle"

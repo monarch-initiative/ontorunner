@@ -17,7 +17,12 @@ six = "^1.16.0"
 spacy = ">=3.2.0,<3.3.0"
 scispacy = "0.5.0"
 dframcy = "^0.1.6"
+CairoSVG = "^2.5.2"
 
+[tool.poetry.scripts]
+ontospacy = "ontorunner.spacy_module:main"
+ontoger = "ontorunner.oger_module:cli"
+onto-util = "ontorunner.pre.util:cli"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"

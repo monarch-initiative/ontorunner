@@ -27,7 +27,7 @@ class TestOgerCLI(unittest.TestCase):
     def test_cli_json2tsv(self) -> None:
         ofilename = os.path.join(self.output, "envo")
         ofiles = [ofilename + "_nodes.tsv", ofilename + "_edges.tsv"]
-        cli_ofile_rows = [6405, 9643]
+        cli_ofile_rows = [6405, 9645]
         process = subprocess.Popen(
             [
                 "python",
@@ -79,10 +79,8 @@ class TestOgerCLI(unittest.TestCase):
         s = self.settings
         process = subprocess.Popen(
             [
-                "python",
-                "-m",
-                "ontorunner.oger_module",
-                "run-oger",
+                "ontoger",
+                "run",
                 "-s",
                 s,
                 "-n",
@@ -105,10 +103,8 @@ class TestOgerCLI(unittest.TestCase):
     def test_cli_run_oger_without_settings(self) -> None:
         process = subprocess.Popen(
             [
-                "python",
-                "-m",
-                "ontorunner.oger_module",
-                "run-oger",
+                "ontoger",
+                "run",
                 "-c",
                 self.txt,
                 "-t",

@@ -34,7 +34,7 @@ Generate `nodes.tsv` and `edges.tsv` files from your OBO JSON ontology file,
 
 ### CLI
 ```
-python -m ontorunner.pre.util json2tsv -i ontology.json -o output
+onto-util json2tsv -i ontology.json -o output
 ```
 ### Python
 ```
@@ -48,7 +48,7 @@ Generate termlist from the `output_nodes.tsv` generated in the previous step.
 ### CLI
 The conversion can be done as follows,
 ```
-python -m ontorunner.pre.util prepare-termlist -i output_nodes.tsv -o termlist.tsv
+onto-util prepare-termlist -i output_nodes.tsv -o termlist.tsv
 ```
 
 ### Python
@@ -65,10 +65,10 @@ You can run OGER against a text document as follows,
 
 ### CLI
 ```
-python -m ontorunner.oger_module run-oger -c abstract.txt -t termlist.tsv -o out.json -f bioc_json
+ontoger run -c abstract.txt -t termlist.tsv -o out.json -f bioc_json
 ```
 
-> **Note:** This command is just to demonstrate how to OGER.
+> **Note:** This command is just to demonstrate how to run OGER.
 > For more use cases, [here](https://github.com/OntoGene/OGER/wiki/run)
 > is the reference to the OGER documentation.
 
@@ -78,7 +78,7 @@ You can run `OGER` using a 'settings' file as follows,
 
 ### CLI
 ```
-python -m ontorunner.oger_module run-oger -s settings.ini
+ontoger run -s settings.ini
 ```
 
 ### Python
@@ -104,7 +104,7 @@ By default, these files are expected to be in the [`data/input`](https://github.
 The `settings.ini` file used in `OGER` above is also used by `spaCy` for some of its parameters.
  ### CLI
 ```
-python -m ontorunner.spacy_module run-spacy 
+ontospacy run
 ```
 
 ### Python
@@ -115,3 +115,78 @@ spacy_module.run_spacy()
 There will be two output tsv files generated:
  - `ontology_ontoRunNER.tsv`: This file is the output with the ontology termlists (generated above) as the dictionary for entity recognition.
  - `umls_ontoRunNER.tsv`: This file is the output derived by using `sciSpaCY`'s `EntityLinker`. By default the linker is `umls` but you can provide others as listed [here](https://github.com/allenai/scispacy#entitylinker).
+
+ ## Visualization using `spaCy.displaCy`.
+
+SpaCy visualizers are also available through ontoRunNER! There are two types of visualizers offered by displaCy:
+ - Displays dependencies
+ - Highlights entities
+
+Both are rendered using one command - `run-viz`.
+ ### CLI
+```
+ontospacy viz -t "text" 
+```
+
+### Python
+```
+from ontorunner import spacy_module
+spacy_module.run_viz("text")
+```
+ ### Dependency display using displaCy.
+
+ ![Sentence Dependency](../../data/images/example_dependency.svg)
+
+ [Click here for larger view](https://raw.githubusercontent.com/monarch-initiative/ontorunner/master/data/images/example_dependency.svg)
+
+ ### Entity display using displaCy. 
+
+<html>
+<div class="entities" style="line-height: 2.5; direction: ltr">
+A
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    bacterial
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">TAXON</span>
+</mark>
+ isolate, designated 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    strain
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">pato-subset</span>
+</mark>
+ SZ,was obtained from noncontaminated 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    creek
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">envo</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    sediment
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">envo</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    microcosms
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">TAXON</span>
+</mark>
+ based on its ability to derive 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    energy
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">envo</span>
+</mark>
+ from 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    acetate
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">CHEBI</span>
+</mark>
+ 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    oxidation
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">mop</span>
+</mark>
+ coupled to 
+<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">
+    tetrachloroethene
+    <span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">mesh_subset</span>
+</mark>
+.</div>
+</html>

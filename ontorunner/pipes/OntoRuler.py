@@ -3,6 +3,7 @@ import multiprocessing
 import os
 import pickle
 from pathlib import Path
+from timeit import default_timer as timer
 
 import pandas as pd
 import spacy
@@ -67,20 +68,31 @@ class OntoRuler(object):
 
         if os.path.isfile(self.phrase_matcher_pickled):
             print("Found serialized files!")
+            start = timer()
             with open(os.path.join(self.terms_pickled), "rb") as tf:
                 self.terms = pickle.load(tf)
             with open(self.pattern_list_pickled, "rb") as plp:
                 self.list_of_pattern_dicts = pickle.load(plp)
             with open(self.phrase_matcher_pickled, "rb") as pmp:
                 self.phrase_matcher = pickle.load(pmp)
-            print("Serialized files imported!")
+            timer0 = timer()
+            print(
+                f"Serialized files imported! Time elapsed: {round(timer0 - start)} seconds."
+            )
 
         else:
+            start = timer()
             self.extract_termlist_info(to_pickle=to_pickle)
+            timer0 = timer()
+            print(
+                f"Extracted termlist info! Time elapsed: {round(timer0 - start)} seconds."
+            )
+        timer1 = timer()
 
         ruler = self.nlp.add_pipe("entity_ruler", after="craft_ner")
         ruler.add_patterns(self.list_of_pattern_dicts)
-        print("Patterns added!")
+        timer2 = timer()
+        print(f"Patterns added! Time elapsed: {round(timer2 - timer1)} seconds.")
 
         # variables for spans and docs extensions
         self.span_term_extension = "is_an_ontology_term"
@@ -100,13 +112,15 @@ class OntoRuler(object):
 
         Doc.set_extension(self.has_id_extension, getter=self.has_curies, force=True)
         Doc.set_extension(self.label.lower(), default=[], force=True)
-        print("Extensions set!")
+        timer3 = timer()
+        print(f"Extensions set! Time elapsed: {round(timer3 - timer2)} seconds.")
 
         self.nlp.add_pipe(
             "scispacy_linker",
             config={"resolve_abbreviations": True, "linker_name": linker},
         )
-        print("SciSpacy loaded!")
+        timer4 = timer()
+        print(f"SciSpacy loaded! Time elapsed: {round(timer4 - timer3)} seconds.")
 
     # getter function for doc level
     def has_curies(self, tokens):
