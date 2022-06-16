@@ -236,6 +236,7 @@ def run_spacy(
     linker: str = "umls",
     to_pickle: bool = True,
     need_ancestors: bool = True,
+    viz: bool = True,
 ):
     """
     Run spacy with sciSpacy pipeline.
@@ -243,6 +244,9 @@ def run_spacy(
     :param data_dir: Path to the data directory.
     :param settings: Path to settings.ini file.
     :param linker: Type of sciSpacy linker desired ([umls]/mesh).
+    :param to_pickle: Pickle intermediate files. (True/False)
+    :param need_ancestors: Include ancestors of annotated terms. (True/False)
+    :param viz: Include visualizations (png and svg) in output. (True/False)
     """
     if linker not in SCI_SPACY_LINKERS:
         raise (
@@ -307,6 +311,10 @@ def run_spacy(
     export_tsv(kb_df, data_dir, "sciSpacy_" + linker + "_ontoRunNER")
     export_tsv(onto_df, data_dir, "ontology_ontoRunNER")
 
+    # if viz:
+    #     # TODO: Need to implement more robustly depending on input.
+    #     run_viz(DEFAULT_TEXT, onto_ruler_obj)
+
 
 @main.command("run")
 @click.option("-d", "--data-dir", help="Data directory path.", default=DATA_DIR)
@@ -330,12 +338,14 @@ def run_spacy(
     default=True,
 )
 @click.option("--need-ancestors", "-a", type=bool, default=False)
+@click.option("--viz", "-v", type=bool, default=True)
 def run_spacy_click(
     data_dir: Path,
     settings_file: Path,
     linker: str,
     pickle_files: bool,
     need_ancestors: bool,
+    viz: bool,
 ):
     """CLI for running the spacy module.
 
@@ -353,10 +363,11 @@ def run_spacy_click(
         linker=linker,
         to_pickle=pickle_files,
         need_ancestors=need_ancestors,
+        viz=viz,
     )
 
 
-def run_viz(input_text: str = DEFAULT_TEXT):
+def run_viz(input_text: str = DEFAULT_TEXT, obj: OntoRuler = None):
     """Text that needs to be annotated.
 
     :param input_text:Text to be annotated, defaults to DEFAULT_TEXT
@@ -387,8 +398,10 @@ def run_viz(input_text: str = DEFAULT_TEXT):
     dep_svg_output_path = join(IMAGE_DIR, "dependencies.svg")
     dep_png_output_path = join(IMAGE_DIR, "dependencies.png")
     # model_path = Path(join(SERIAL_DIR, "onto_obj.pickle"))
-
-    onto_ruler_obj = OntoRuler()
+    if obj:
+        onto_ruler_obj = obj
+    else:
+        onto_ruler_obj = OntoRuler()
 
     doc = onto_ruler_obj.nlp(text)
 
@@ -398,7 +411,7 @@ def run_viz(input_text: str = DEFAULT_TEXT):
     viz_options = {
         "collapse_punct": True,
         "collapse_phrases": True,
-        # "compact": True,
+        "compact": True,
         "distance": 75,
     }
     dep_html = displacy.render(
@@ -431,7 +444,7 @@ def run_viz_click(text: str):
 
     :param text: Text to be annotated.
     """
-    run_viz(text)
+    run_viz(input_text=text)
 
 
 if __name__ == "__main__":
