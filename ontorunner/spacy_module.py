@@ -311,9 +311,9 @@ def run_spacy(
     export_tsv(kb_df, data_dir, "sciSpacy_" + linker + "_ontoRunNER")
     export_tsv(onto_df, data_dir, "ontology_ontoRunNER")
 
-    if viz:
-        # TODO: Need to implement more robustly depending in input.
-        run_viz(DEFAULT_TEXT, onto_ruler_obj)
+    # if viz:
+    #     # TODO: Need to implement more robustly depending on input.
+    #     run_viz(DEFAULT_TEXT, onto_ruler_obj)
 
 
 @main.command("run")
@@ -411,7 +411,7 @@ def run_viz(input_text: str = DEFAULT_TEXT, obj: OntoRuler = None):
     viz_options = {
         "collapse_punct": True,
         "collapse_phrases": True,
-        # "compact": True,
+        "compact": True,
         "distance": 75,
     }
     dep_html = displacy.render(
