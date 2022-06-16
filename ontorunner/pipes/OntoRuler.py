@@ -205,7 +205,10 @@ class OntoRuler(object):
             # pattern_dict["label"] = origin.split(".")[
             #     0
             # ]  # could be object_id/object_label
-            pattern_dict["label"] = object_id.replace("_SYNONYM", "")
+            pattern_label = (
+                object_id.replace("_SYNONYM", "") + " [ " + object_label + " ]"
+            )
+            pattern_dict["label"] = pattern_label
             pattern_dict["pattern"] = matched_term
 
         return terms_dict, pattern_dict, self.nlp(matched_term)

@@ -236,7 +236,7 @@ def run_spacy(
     linker: str = "umls",
     to_pickle: bool = True,
     need_ancestors: bool = True,
-    viz: bool = True
+    viz: bool = True,
 ):
     """
     Run spacy with sciSpacy pipeline.
@@ -311,9 +311,9 @@ def run_spacy(
     export_tsv(kb_df, data_dir, "sciSpacy_" + linker + "_ontoRunNER")
     export_tsv(onto_df, data_dir, "ontology_ontoRunNER")
 
-    # if viz:
-    # # TODO: Need to implement more robustly depending in input.
-    #     run_viz(DEFAULT_TEXT, onto_ruler_obj)
+    if viz:
+        # TODO: Need to implement more robustly depending in input.
+        run_viz(DEFAULT_TEXT, onto_ruler_obj)
 
 
 @main.command("run")
@@ -345,7 +345,7 @@ def run_spacy_click(
     linker: str,
     pickle_files: bool,
     need_ancestors: bool,
-    viz: bool
+    viz: bool,
 ):
     """CLI for running the spacy module.
 
@@ -363,7 +363,7 @@ def run_spacy_click(
         linker=linker,
         to_pickle=pickle_files,
         need_ancestors=need_ancestors,
-        viz = viz,
+        viz=viz,
     )
 
 
