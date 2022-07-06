@@ -344,14 +344,20 @@ is the reference to the OGER documentation.</p>
 <p>Both are rendered using one command - <code class="docutils literal notranslate"><span class="pre">run-viz</span></code>.</p>
 <div class="section" id="id8">
 <h3>CLI<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ontospacy</span> <span class="n">viz</span> <span class="o">-</span><span class="n">t</span> <span class="s2">&quot;text&quot;</span> 
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ontospacy</span> <span class="n">viz</span> <span class="o">-</span><span class="n">t</span> <span class="o">**</span><span class="n">some</span> <span class="n">text</span><span class="o">**</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="id9">
 <h3>Python<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ontorunner</span> <span class="kn">import</span> <span class="n">spacy_module</span>
-<span class="n">spacy_module</span><span class="o">.</span><span class="n">run_viz</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+
+<span class="n">test</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;A bacterial isolate, designated </span><span class="se">\</span>
+<span class="s2">strain SZ,was obtained from noncontaminated creek </span><span class="se">\</span>
+<span class="s2">sediment microcosms based on its ability to derive </span><span class="se">\</span>
+<span class="s2">energy from acetate oxidation coupled to tetrachloroethene.&quot;&quot;&quot;</span>
+
+<span class="n">spacy_module</span><span class="o">.</span><span class="n">run_viz</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
