@@ -125,13 +125,19 @@ SpaCy visualizers are also available through ontoRunNER! There are two types of 
 Both are rendered using one command - `run-viz`.
  ### CLI
 ```
-ontospacy viz -t "text" 
+ontospacy viz -t **some text**
 ```
 
 ### Python
 ```
 from ontorunner import spacy_module
-spacy_module.run_viz("text")
+
+test = """A bacterial isolate, designated \
+strain SZ,was obtained from noncontaminated creek \
+sediment microcosms based on its ability to derive \
+energy from acetate oxidation coupled to tetrachloroethene."""
+
+spacy_module.run_viz(text)
 ```
  ### Dependency display using displaCy.
 

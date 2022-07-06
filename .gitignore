@@ -144,7 +144,13 @@ data/serialized/*.pickle
 data/nodes_and_edges/*.tsv
 data/images/*.*
 data/output/*
+notebook/data/output/*.tsv
+notebook/data/nodes_and_edges/*_*.tsv
+notebook/data/terms/*.tsv
+notebook/data/terms/envo_termlist.*
+notebook/data/serialized/phrase_matcher.pickle
 
 # Exceptions
 !data/images/example_*.*
 !data/output/example_*.*
+
