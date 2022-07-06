@@ -15,7 +15,7 @@ from ontorunner import (DATA_DIR, IMAGE_DIR, INPUT_DIR_NAME, OUTPUT_DIR,
 from ontorunner.pipes.OntoRuler import OntoRuler
 from ontorunner.post import NODE_AND_EDGE_NAME, util
 
-SCI_SPACY_LINKERS = ["umls", "mesh"]
+SCI_SPACY_LINKERS = ["umls", "mesh", "go", "hpo", "rxnorm"]
 DEFAULT_TEXT = """A bacterial isolate, designated \
 strain SZ,was obtained from noncontaminated creek \
 sediment microcosms based on its ability to derive \
@@ -237,7 +237,7 @@ def run_spacy(
     to_pickle: bool = True,
     need_ancestors: bool = True,
     viz: bool = True,
-):
+) -> OntoRuler:
     """
     Run spacy with sciSpacy pipeline.
 
@@ -247,7 +247,9 @@ def run_spacy(
     :param to_pickle: Pickle intermediate files. (True/False)
     :param need_ancestors: Include ancestors of annotated terms. (True/False)
     :param viz: Include visualizations (png and svg) in output. (True/False)
+    :return: OntoRuler object.
     """
+
     if linker not in SCI_SPACY_LINKERS:
         raise (
             ValueError(
@@ -311,8 +313,9 @@ def run_spacy(
     export_tsv(kb_df, data_dir, "sciSpacy_" + linker + "_ontoRunNER")
     export_tsv(onto_df, data_dir, "ontology_ontoRunNER")
 
+    return onto_ruler_obj
     # if viz:
-    #     # TODO: Need to implement more robustly depending on input.
+    #     # TODO: Need robust implementation depending on input.
     #     run_viz(DEFAULT_TEXT, onto_ruler_obj)
 
 
@@ -327,9 +330,10 @@ def run_spacy(
 @click.option(
     "-l",
     "--linker",
-    type=click.Choice(["umls", "mesh"]),
-    help="Which sciSpacy linker to use.('umls'[Default] or 'mesh')",
+    type=click.Choice(SCI_SPACY_LINKERS),
+    help="Which sciSpacy linker to use.('umls'/'mesh'/'go'/'hpo'/'rxnorm')",
     default="umls",
+    show_default=True,
 )
 @click.option(
     "-p",
@@ -411,8 +415,8 @@ def run_viz(input_text: str = DEFAULT_TEXT, obj: OntoRuler = None):
     viz_options = {
         "collapse_punct": True,
         "collapse_phrases": True,
-        "compact": True,
-        "distance": 75,
+        # "compact": True,
+        # "distance": 75,
     }
     dep_html = displacy.render(
         doc, style="dep", page=True, minify=True, options=viz_options
@@ -420,15 +424,18 @@ def run_viz(input_text: str = DEFAULT_TEXT, obj: OntoRuler = None):
     ent_html = displacy.render(
         doc, style="ent", page=True, minify=True, options=viz_options
     )
-    dep_html_path.open("w", encoding="utf-8").write(dep_html)
-    ent_html_path.open("w", encoding="utf-8").write(ent_html)
+    if dep_html:
+        dep_html_path.open("w", encoding="utf-8").write(dep_html)
+    if ent_html:
+        ent_html_path.open("w", encoding="utf-8").write(ent_html)
 
     # *********************************************************************
     # * Images
     dep_svg = displacy.render(doc, style="dep")
     # ent_html = displacy.render(doc, style="ent")
-    Path(dep_svg_output_path).open("w", encoding="utf-8").write(dep_svg)
-    cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
+    if dep_svg:
+        Path(dep_svg_output_path).open("w", encoding="utf-8").write(dep_svg)
+        cairosvg.svg2png(url=dep_svg_output_path, write_to=dep_png_output_path)
     # ***********************************************************************
 
 
