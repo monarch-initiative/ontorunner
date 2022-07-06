@@ -144,6 +144,10 @@ data/serialized/*.pickle
 data/nodes_and_edges/*.tsv
 data/images/*.*
 data/output/*
+notebook/data/output/*.tsv
+notebook/data/nodes_and_edges/*_*.tsv
+notebook/data/terms/*.tsv
+notebook/data/terms/envo_termlist.*
 
 # Exceptions
 !data/images/example_*.*
