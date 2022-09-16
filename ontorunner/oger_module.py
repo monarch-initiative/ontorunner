@@ -19,7 +19,7 @@ def run_oger(
     settings="settings.ini",
     workers=1,
     nodes_and_edges=NODE_AND_EDGE_DIR,
-    need_ancestors=True,
+    need_ancestors=False,
 ) -> None:
     """Run OGER.
 
@@ -104,7 +104,7 @@ def cli():
     type=click.Path(exists=True),
     default=NODE_AND_EDGE_DIR,
 )
-@click.option("--need-ancestors", "-a", type=bool, default=True)
+@click.option("--need-ancestors", "-a", type=bool, default=False)
 def run_oger_click(
     content,
     termlist,
