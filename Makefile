@@ -14,11 +14,11 @@ terms/%_termlist.tsv: $(NODES_AND_EDGES_DIR)/%_nodes.tsv
 
 # Run OGER
 oger:
-	$(RUN) python -m ontorunner.oger_module run-oger -s ontorunner/settings.ini -w 5 -a False
+	$(RUN) ontoger run -s ontorunner/settings.ini -w 5 -a False
 
 # Run Spacy
 spacy:
-	$(RUN) python -m ontorunner.spacy_module run-spacy -s ontorunner/settings.ini -a False
+	$(RUN) ontospacy run -s ontorunner/settings.ini -a False
 
 # Update Sphinx *.rst files
 sphinx-clean:
