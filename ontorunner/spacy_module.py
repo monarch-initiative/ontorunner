@@ -235,8 +235,8 @@ def run_spacy(
     settings_file: Path = SETTINGS_FILE_PATH,
     linker: str = "umls",
     to_pickle: bool = True,
-    need_ancestors: bool = True,
-    viz: bool = True,
+    need_ancestors: bool = False,
+    viz: bool = False,
 ) -> OntoRuler:
     """
     Run spacy with sciSpacy pipeline.
@@ -342,7 +342,7 @@ def run_spacy(
     default=True,
 )
 @click.option("--need-ancestors", "-a", type=bool, default=False)
-@click.option("--viz", "-v", type=bool, default=True)
+@click.option("--viz", "-v", type=bool, default=False)
 def run_spacy_click(
     data_dir: Path,
     settings_file: Path,
