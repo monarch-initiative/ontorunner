@@ -374,7 +374,7 @@ def parse(
                 dialect = sniffer.sniff(open(f).readline(sample_bytes))
                 if dialect.delimiter == "\t" or dialect.delimiter == ",":
                     input_df = pd.read_csv(
-                        f, sep="\t", low_memory=False, index_col=None
+                        f, sep=dialect.delimiter, low_memory=False, index_col=None
                     )
                 else:
                     id = f.split("/")[-1].split(".txt")[0]
